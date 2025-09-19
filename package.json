@@ -1,5 +1,5 @@
 {
-  "name": "calog",
+  "name": "Calog",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,10 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native/new-app-screen": "0.81.4",
+    "nativewind": "^2.0.11",
     "react": "19.1.0",
     "react-native": "0.81.4",
-    "@react-native/new-app-screen": "0.81.4",
-    "react-native-safe-area-context": "^5.5.2"
+    "react-native-css-interop": "^0.2.1",
+    "react-native-reanimated": "^4.1.0",
+    "react-native-safe-area-context": "^5.5.2",
+    "react-native-worklets": "^0.5.1",
+    "tailwindcss": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -26,6 +31,7 @@
     "@react-native/eslint-config": "0.81.4",
     "@react-native/metro-config": "0.81.4",
     "@react-native/typescript-config": "0.81.4",
+    "@types/css-modules": "^1.0.5",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.1.0",
     "@types/react-test-renderer": "^19.1.0",
