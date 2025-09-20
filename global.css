@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set Space Grotesk as default font for all elements */
+@layer base {
+  * {
+    font-family: 'SpaceGrotesk-Regular', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  /* Override for specific font weights */
+  .font-bold {
+    font-family: 'SpaceGrotesk-Bold', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-semibold {
+    font-family: 'SpaceGrotesk-SemiBold', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-medium {
+    font-family: 'SpaceGrotesk-Medium', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-light {
+    font-family: 'SpaceGrotesk-Light', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  /* Custom font weights */
+  .font-space-grotesk {
+    font-family: 'SpaceGrotesk-Regular', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-space-grotesk-bold {
+    font-family: 'SpaceGrotesk-Bold', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-space-grotesk-medium {
+    font-family: 'SpaceGrotesk-Medium', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-space-grotesk-light {
+    font-family: 'SpaceGrotesk-Light', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  .font-space-grotesk-semibold {
+    font-family: 'SpaceGrotesk-SemiBold', system-ui, -apple-system, sans-serif !important;
+  }
+}
