@@ -27,8 +27,12 @@ function AppContent() {
     <View className="flex-1 bg-primary">
       <View className="flex-1 justify-center items-center p-4">
        <Image
-  source={require('./src/assets/images/logo.jpeg')}
-  className="size-1/4"
+  source={require('./src/assets/images/logo.png')}
+  className="size-40"
+        />
+        <Image
+  source={require('./src/assets/images/logo1.png')}
+  className="size-40 rounded-full"
 />
         
 
