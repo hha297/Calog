@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ViewStyle, TextStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
 import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
+import { Logo } from '../../components/ui/Logo';
 import { validateLoginForm, LoginFormData, LoginFormErrors } from '../../utils/authValidation';
-import AntDesign from '@react-native-vector-icons/ant-design';
 
 interface LoginScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -19,6 +20,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         });
         const [errors, setErrors] = useState<LoginFormErrors>({});
         const [isLoading, setIsLoading] = useState(false);
+        const [rememberMe, setRememberMe] = useState(false);
+
+        // Clear errors and form data when screen comes into focus
+        useFocusEffect(
+                React.useCallback(() => {
+                        setErrors({});
+                        setFormData({ email: '', password: '' });
+                        setRememberMe(false);
+                }, []),
+        );
 
         const handleInputChange = (field: keyof LoginFormData, value: string) => {
                 setFormData((prev) => ({ ...prev, [field]: value }));
@@ -54,131 +65,123 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 console.log('Google OAuth - UI only');
         };
 
-        const handleAppleAuth = () => {
-                // TODO: Implement Apple OAuth with react-native-app-auth
-                console.log('Apple OAuth - UI only');
-        };
-
-        const handleFacebookAuth = () => {
-                // TODO: Implement Facebook OAuth with react-native-app-auth
-                console.log('Facebook OAuth - UI only');
-        };
-
         return (
                 <SafeAreaView className="flex-1 bg-primary">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
+                                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
                         >
                                 <ScrollView
                                         className="flex-1 px-6"
-                                        contentContainerStyle={{ flexGrow: 1 }}
+                                        contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
                                         keyboardShouldPersistTaps="handled"
+                                        showsVerticalScrollIndicator={false}
                                 >
                                         {/* Logo */}
-                                        <View className="mb-6 mt-4">
-                                                <AntDesign name="book" size={24} color="#4CAF50" />
+                                        <View className="my-4 items-center pt-8">
+                                                <Logo size={96} />
                                         </View>
 
-                                        <View className="flex-1 justify-center py-8">
-                                                {/* Header */}
-                                                <View className="mb-8">
-                                                        <CText
-                                                                size="3xl"
-                                                                weight="bold"
-                                                                className="mb-2 text-center text-text-light"
-                                                        >
-                                                                Welcome Back
-                                                        </CText>
-                                                        <CText size="base" className="text-center text-text-muted">
-                                                                Sign in to your account
-                                                        </CText>
-                                                </View>
+                                        {/* Header */}
+                                        <View className="mb-8">
+                                                <CText
+                                                        size="2xl"
+                                                        weight="bold"
+                                                        className="mb-2 text-center text-text-light"
+                                                >
+                                                        Welcome Back
+                                                </CText>
+                                                <CText size="base" className="text-center text-text-muted">
+                                                        Consistency builds strength – log in and keep pushing forward.
+                                                </CText>
+                                        </View>
 
-                                                {/* Form */}
-                                                <View className="mb-6">
-                                                        <TextField
-                                                                label="Email"
-                                                                placeholder="Enter your email"
-                                                                value={formData.email}
-                                                                onChangeText={(value) =>
-                                                                        handleInputChange('email', value)
-                                                                }
-                                                                error={errors.email}
-                                                                keyboardType="email-address"
-                                                                autoCapitalize="none"
-                                                        />
-
-                                                        <TextField
-                                                                label="Password"
-                                                                placeholder="Enter your password"
-                                                                value={formData.password}
-                                                                onChangeText={(value) =>
-                                                                        handleInputChange('password', value)
-                                                                }
-                                                                error={errors.password}
-                                                                secureTextEntry
-                                                        />
-                                                </View>
-
-                                                {/* Login Button */}
-                                                <Button
-                                                        title="Sign In"
-                                                        onPress={handleLogin}
-                                                        loading={isLoading}
-                                                        className="mb-4"
+                                        {/* Form */}
+                                        <View className="mb-6">
+                                                <TextField
+                                                        label="Email"
+                                                        placeholder="Enter your email"
+                                                        value={formData.email}
+                                                        onChangeText={(value) => handleInputChange('email', value)}
+                                                        error={errors.email}
+                                                        keyboardType="email-address"
+                                                        autoCapitalize="none"
                                                 />
 
-                                                {/* Forgot Password Link */}
+                                                <TextField
+                                                        label="Password"
+                                                        placeholder="Enter your password"
+                                                        value={formData.password}
+                                                        onChangeText={(value) => handleInputChange('password', value)}
+                                                        error={errors.password}
+                                                        secureTextEntry
+                                                />
+                                        </View>
+
+                                        {/* Login Button */}
+                                        <Button
+                                                title="Sign In"
+                                                onPress={handleLogin}
+                                                loading={isLoading}
+                                                disabled={
+                                                        !formData.email.trim() || !formData.password.trim() || isLoading
+                                                }
+                                                className="mb-4"
+                                        />
+
+                                        {/* Remember Me & Forgot Password */}
+                                        <View className="mb-4 mt-3 flex-row items-center justify-between">
+                                                {/* Remember Me */}
                                                 <TouchableOpacity
-                                                        onPress={() => navigation.navigate('ForgotPassword')}
-                                                        className="mb-6"
+                                                        className="flex-row items-center"
+                                                        onPress={() => setRememberMe(!rememberMe)}
                                                 >
-                                                        <CText className="text-center text-tertiary">
+                                                        <View
+                                                                className={`mr-2 h-5 w-5 items-center justify-center rounded border-2 ${
+                                                                        rememberMe
+                                                                                ? 'border-tertiary bg-tertiary'
+                                                                                : 'border-gray-300'
+                                                                }`}
+                                                        >
+                                                                {rememberMe && (
+                                                                        <CText className="text-xs text-white">✓</CText>
+                                                                )}
+                                                        </View>
+                                                        <CText className="text-text-muted">Remember me</CText>
+                                                </TouchableOpacity>
+
+                                                {/* Forgot Password */}
+                                                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                                                        <CText className="!text-tertiary" weight="medium">
                                                                 Forgot password?
                                                         </CText>
                                                 </TouchableOpacity>
+                                        </View>
 
-                                                {/* Divider */}
-                                                <View className="mb-6 flex-row items-center">
-                                                        <View className="h-px flex-1 bg-gray-600" />
-                                                        <CText className="mx-4 text-text-muted">OR</CText>
-                                                        <View className="h-px flex-1 bg-gray-600" />
-                                                </View>
+                                        {/* Divider */}
+                                        <View className="mb-6 flex-row items-center">
+                                                <View className="h-px flex-1 bg-white" />
+                                                <CText className="mx-4 text-text-muted">OR</CText>
+                                                <View className="h-px flex-1 bg-white" />
+                                        </View>
 
-                                                {/* OAuth Buttons */}
-                                                <View className="mb-6">
-                                                        <CText className="mb-3 text-center text-text-muted">
-                                                                Or continue with
+                                        {/* OAuth Buttons */}
+                                        <View className="mb-6">
+                                                <CText className="mb-3 text-center text-text-muted">
+                                                        Or continue with
+                                                </CText>
+                                                <OAuthButton provider="google" onPress={handleGoogleAuth} />
+                                        </View>
+
+                                        {/* Sign Up Link */}
+                                        <View className="flex-row justify-center">
+                                                <CText className="text-text-muted">Don't have an account? </CText>
+                                                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                                                        <CText className="!text-tertiary" weight="medium">
+                                                                Sign up
                                                         </CText>
-                                                        <View className="flex-row justify-between">
-                                                                <OAuthButton
-                                                                        provider="google"
-                                                                        onPress={handleGoogleAuth}
-                                                                        className="mr-2 flex-1"
-                                                                />
-                                                                <OAuthButton
-                                                                        provider="apple"
-                                                                        onPress={handleAppleAuth}
-                                                                        className="mx-1 flex-1"
-                                                                />
-                                                                <OAuthButton
-                                                                        provider="facebook"
-                                                                        onPress={handleFacebookAuth}
-                                                                        className="ml-2 flex-1"
-                                                                />
-                                                        </View>
-                                                </View>
-
-                                                {/* Sign Up Link */}
-                                                <View className="flex-row justify-center">
-                                                        <CText className="text-text-muted">
-                                                                Don't have an account?{' '}
-                                                        </CText>
-                                                        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                                                                <CText className="text-tertiary">Sign up</CText>
-                                                        </TouchableOpacity>
-                                                </View>
+                                                </TouchableOpacity>
                                         </View>
                                 </ScrollView>
                         </KeyboardAvoidingView>
