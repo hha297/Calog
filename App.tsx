@@ -6,12 +6,19 @@
  */
 
 import './global.css';
-import { StatusBar, useColorScheme, Text } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthNavigator } from './src/navigation/AuthNavigator';
+import BootSplash from 'react-native-bootsplash';
+import { useEffect } from 'react';
 
 function App() {
         const isDarkMode = useColorScheme() === 'dark';
+
+        useEffect(() => {
+                // Hide bootsplash when app is ready
+                BootSplash.hide({ fade: true });
+        }, []);
 
         return (
                 <SafeAreaProvider>

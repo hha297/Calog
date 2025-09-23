@@ -16,22 +16,22 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                 switch (provider) {
                         case 'google':
                                 return {
-                                        label: 'Google',
+                                        label: 'Continue with Google',
                                         icon: <AntDesign name="google" size={18} color="#FFFFFF" />,
                                 };
                         case 'apple':
                                 return {
-                                        label: 'Apple',
+                                        label: 'Continue with Apple',
                                         icon: <AntDesign name="apple" size={18} color="#FFFFFF" />,
                                 };
                         case 'facebook':
                                 return {
-                                        label: 'Facebook',
+                                        label: 'Continue with Facebook',
                                         icon: <FontAwesome name="facebook" size={18} color="#FFFFFF" />,
                                 };
                         default:
                                 return {
-                                        label: 'Continue',
+                                        label: 'Continue with Email',
                                         icon: <AntDesign name="mail" size={18} color="#757575" />,
                                 };
                 }
@@ -42,14 +42,14 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
         return (
                 <TouchableOpacity
                         style={{} as ViewStyle}
-                        className={`min-h-[48px] items-center justify-center rounded-lg border border-gray-300 bg-secondary px-3 py-3 ${disabled ? 'opacity-50' : ''} ${className}`}
+                        className={`min-h-[48px] items-center justify-center rounded-lg border border-tertiary bg-secondary px-3 py-3 ${disabled ? 'opacity-50' : ''} ${className}`}
                         onPress={onPress}
                         disabled={disabled}
                         activeOpacity={0.8}
                 >
                         <View className="flex-row items-center space-x-3">
                                 {config.icon}
-                                <CText size="sm" className="pl-2 text-white">
+                                <CText size="base" className="pl-3 !text-white">
                                         {config.label}
                                 </CText>
                         </View>

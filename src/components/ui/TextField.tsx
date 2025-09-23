@@ -31,14 +31,14 @@ export const TextField: React.FC<TextFieldProps> = ({
 
         return (
                 <View style={{} as ViewStyle} className={`mb-4 ${className}`}>
-                        <CText size="sm" className="mb-2 text-text-light">
+                        <CText size="base" className="mb-2 text-text-light">
                                 {label}
                         </CText>
 
                         <View className="relative">
                                 <TextInput
                                         style={[{ fontFamily: 'SpaceGrotesk-Regular' } as TextStyle]}
-                                        className={`rounded-lg border bg-secondary px-4 py-3 font-space-grotesk text-text-light ${
+                                        className={`rounded-lg border bg-secondary px-4 py-3 font-space-grotesk text-white ${
                                                 isFocused ? 'border-tertiary' : 'border-gray-600'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}
@@ -58,16 +58,16 @@ export const TextField: React.FC<TextFieldProps> = ({
                                                 onPress={() => setIsSecureVisible(!isSecureVisible)}
                                         >
                                                 {isSecureVisible ? (
-                                                        <AntDesign name="eye" size={20} color="#9E9E9E" />
+                                                        <AntDesign name="eye" size={16} color="#9E9E9E" />
                                                 ) : (
-                                                        <AntDesign name="eye-invisible" size={20} color="#9E9E9E" />
+                                                        <AntDesign name="eye-invisible" size={16} color="#9E9E9E" />
                                                 )}
                                         </TouchableOpacity>
                                 )}
                         </View>
 
                         {error && (
-                                <CText size="xs" className="mt-1 text-status-error">
+                                <CText size="sm" className="mt-1 !text-status-error">
                                         {error}
                                 </CText>
                         )}

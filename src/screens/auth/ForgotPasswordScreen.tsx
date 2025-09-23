@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ViewStyle, TextStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
 import { validateEmail } from '../../utils/authValidation';
-import AntDesign from '@react-native-vector-icons/ant-design';
 import { CText } from '../../components/ui/CText';
+import { Logo } from '../../components/ui/Logo';
 
 interface ForgotPasswordScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -16,6 +16,13 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
         const [error, setError] = useState('');
         const [isLoading, setIsLoading] = useState(false);
         const [isEmailSent, setIsEmailSent] = useState(false);
+
+        // Clear errors and form data when component mounts
+        useEffect(() => {
+                setError('');
+                setEmail('');
+                setIsEmailSent(false);
+        }, []);
 
         const handleInputChange = (value: string) => {
                 setEmail(value);
@@ -67,7 +74,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                 <CText className="mb-2 text-center text-text-muted">
                                                         We've sent a password reset link to
                                                 </CText>
-                                                <CText className="text-center text-tertiary">{email}</CText>
+                                                <CText className="text-center !text-tertiary">{email}</CText>
                                         </View>
 
                                         {/* Instructions */}
@@ -106,22 +113,18 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                         contentContainerStyle={{ flexGrow: 1 }}
                                         keyboardShouldPersistTaps="handled"
                                 >
-                                        {/* Logo */}
-                                        <View className="mb-6 mt-4">
-                                                <AntDesign name="book" size={24} color="#4CAF50" />
-                                        </View>
-
                                         <View className="flex-1 justify-center py-8">
                                                 {/* Header */}
                                                 <View className="mb-8">
                                                         <CText
                                                                 weight="bold"
-                                                                className="mb-2 text-center text-3xl text-text-light"
+                                                                className="mb-2 text-center text-text-light"
+                                                                size="3xl"
                                                         >
                                                                 Forgot Password?
                                                         </CText>
                                                         <CText className="text-center text-text-muted">
-                                                                No worries, we'll send you reset instructions
+                                                                We'll send you reset instructions to your email.
                                                         </CText>
                                                 </View>
 
@@ -143,6 +146,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                         title="Send Reset Link"
                                                         onPress={handleResetPassword}
                                                         loading={isLoading}
+                                                        disabled={!email.trim() || isLoading}
                                                         className="mb-6"
                                                 />
 
@@ -151,7 +155,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                         onPress={() => navigation.navigate('Login')}
                                                         className="items-center"
                                                 >
-                                                        <CText className="text-tertiary">Back to Sign In</CText>
+                                                        <CText className="!text-tertiary">Back to Sign In</CText>
                                                 </TouchableOpacity>
                                         </View>
                                 </ScrollView>
