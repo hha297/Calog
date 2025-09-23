@@ -15,14 +15,6 @@ module.exports = {
                                 tertiary: '#4CAF50', // Green
                                 accent: '#FFC107', // Yellow/amber
 
-                                // Text colors
-                                text: {
-                                        primary: '#212121',
-                                        secondary: '#757575',
-                                        light: '#FFFFFF',
-                                        muted: '#9E9E9E',
-                                },
-
                                 // Green palette
                                 green: {
                                         50: '#E8F5E8',
@@ -50,12 +42,17 @@ module.exports = {
                                 'gradient-green-light': 'linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%)',
                                 'gradient-green-dark': 'linear-gradient(135deg, #388E3C 0%, #1B5E20 100%)',
                         },
-                        fontFamily: {
-                                'space-grotesk': ['SpaceGrotesk-Regular'],
-                                'space-grotesk-bold': ['SpaceGrotesk-Bold'],
-                                'space-grotesk-medium': ['SpaceGrotesk-Medium'],
-                                'space-grotesk-light': ['SpaceGrotesk-Light'],
-                                'space-grotesk-semibold': ['SpaceGrotesk-SemiBold'],
+                        extend: {
+                                fontFamily: {
+                                        primary: 'SpaceGrotesk-Regular',
+                                        space: {
+                                                regular: 'SpaceGrotesk-Regular',
+                                                medium: 'SpaceGrotesk-Medium',
+                                                semibold: 'SpaceGrotesk-SemiBold',
+                                                bold: 'SpaceGrotesk-Bold',
+                                                light: 'SpaceGrotesk-Light',
+                                        },
+                                },
                         },
                 },
         },
