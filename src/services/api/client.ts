@@ -11,6 +11,7 @@ const API_BASE_URL = __DEV__
 class ApiClient {
         private baseURL: string;
         private accessToken: string | null = null;
+        private onUnauthorized: (() => void) | null = null;
 
         constructor(baseURL: string) {
                 this.baseURL = baseURL;
@@ -19,6 +20,11 @@ class ApiClient {
         // Set access token for authenticated requests
         setAccessToken(token: string | null) {
                 this.accessToken = token;
+        }
+
+        // Set unauthorized callback
+        setUnauthorizedCallback(callback: () => void) {
+                this.onUnauthorized = callback;
         }
 
         // Get headers for requests
@@ -58,6 +64,14 @@ class ApiClient {
                         const data = await response.json();
 
                         if (!response.ok) {
+                                // Handle 401 Unauthorized - token expired or invalid
+                                if (response.status === 401) {
+                                        // Clear token and trigger logout
+                                        this.accessToken = null;
+                                        if (this.onUnauthorized) {
+                                                this.onUnauthorized();
+                                        }
+                                }
                                 throw new Error(data.message || `HTTP ${response.status}`);
                         }
 

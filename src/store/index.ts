@@ -18,6 +18,14 @@ export const useAuthStore = create<AuthState>()(
                         isLoading: false,
                         error: null,
 
+                        // Setup unauthorized callback for API client
+                        setupUnauthorizedCallback: () => {
+                                apiClient.setUnauthorizedCallback(() => {
+                                        // Auto-logout when token is invalid
+                                        get().logout();
+                                });
+                        },
+
                         // Actions
                         login: async (tokens: AuthTokens, user: User, rememberMe = false) => {
                                 try {

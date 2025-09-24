@@ -137,7 +137,7 @@ export const useLogoutMutation = () => {
 
 // Refresh token mutation
 export const useRefreshTokenMutation = () => {
-        const { refresh } = useAuthStore();
+        const { refresh, logout } = useAuthStore();
 
         return useMutation({
                 mutationFn: async (data: RefreshTokenRequest) => {
@@ -157,13 +157,16 @@ export const useRefreshTokenMutation = () => {
                                 text2: 'Please sign in again',
                                 position: 'top',
                         });
+
+                        // Auto-logout on refresh failure
+                        logout();
                 },
         });
 };
 
 // Get current user query
 export const useCurrentUserQuery = () => {
-        const { isAuthenticated, accessToken } = useAuthStore();
+        const { isAuthenticated, accessToken, logout } = useAuthStore();
 
         return useQuery({
                 queryKey: authKeys.user(),
@@ -175,6 +178,8 @@ export const useCurrentUserQuery = () => {
                 retry: (failureCount, error: any) => {
                         // Don't retry on 401 errors (unauthorized)
                         if (error?.message?.includes('401') || error?.message?.includes('unauthorized')) {
+                                // Auto-logout on 401 error
+                                logout();
                                 return false;
                         }
                         return failureCount < 3;
@@ -184,7 +189,7 @@ export const useCurrentUserQuery = () => {
 
 // Auto-refresh token hook
 export const useAutoRefreshToken = () => {
-        const { refreshToken, refresh } = useAuthStore();
+        const { refreshToken, refresh, logout } = useAuthStore();
         const refreshMutation = useRefreshTokenMutation();
 
         return useMutation({
@@ -196,7 +201,8 @@ export const useAutoRefreshToken = () => {
                 },
                 onError: (error) => {
                         console.error('Auto refresh error:', error);
-                        // The refresh function in the store already handles logout on failure
+                        // Auto-logout on refresh failure
+                        logout();
                 },
         });
 };

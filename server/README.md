@@ -129,7 +129,6 @@ server/
 2. Add controller methods in `/controllers/`
 3. Define routes in `/routes/`
 4. Add validation middleware
-5. Test endpoints
 
 ### Error Handling
 
@@ -142,17 +141,6 @@ server/
 - Use `ResponseUtils.success()` for success responses
 - Use `ResponseUtils.error()` for error responses
 - Include appropriate HTTP status codes
-
-## 🧪 Testing
-
-```bash
-# Start server
-npm start
-
-# Test endpoints
-curl http://localhost:4000/health
-curl -X POST http://localhost:4000/auth/signup -d '{"fullName":"Test","email":"test@test.com","password":"123456"}'
-```
 
 ## 📦 Dependencies
 
