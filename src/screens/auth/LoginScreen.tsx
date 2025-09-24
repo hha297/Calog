@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ViewStyle, TextStyle } from 'react-native';
+import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Button } from '../../components/ui/Button';
@@ -8,6 +8,8 @@ import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
 import { validateLoginForm, LoginFormData, LoginFormErrors } from '../../utils/authValidation';
+import { useLoginMutation } from '../../hooks/useAuth';
+import { useAuthStore } from '../../store';
 
 interface LoginScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -19,8 +21,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 password: '',
         });
         const [errors, setErrors] = useState<LoginFormErrors>({});
-        const [isLoading, setIsLoading] = useState(false);
         const [rememberMe, setRememberMe] = useState(false);
+
+        const { clearError } = useAuthStore();
+        const loginMutation = useLoginMutation();
 
         // Clear errors and form data when screen comes into focus
         useFocusEffect(
@@ -28,7 +32,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                         setErrors({});
                         setFormData({ email: '', password: '' });
                         setRememberMe(false);
-                }, []),
+                        clearError();
+                }, [clearError]),
         );
 
         const handleInputChange = (field: keyof LoginFormData, value: string) => {
@@ -40,24 +45,22 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         };
 
         const handleLogin = async () => {
-                // TODO: wire to real endpoint
-                // TODO: persist token with SecureStore/Keychain
-                // TODO: add JWT refresh + logout flow
-
                 const validation = validateLoginForm(formData);
                 if (!validation.isValid) {
                         setErrors(validation.errors);
                         return;
                 }
 
-                setIsLoading(true);
-
-                // Mock API call
-                setTimeout(() => {
-                        setIsLoading(false);
-                        // Navigate to Profile screen
-                        navigation.navigate('Profile');
-                }, 1500);
+                try {
+                        await loginMutation.mutateAsync({
+                                ...formData,
+                                rememberMe,
+                        });
+                        // Navigation will be handled by the auth flow
+                } catch (error) {
+                        console.error('Login failed:', error);
+                        // Error is handled by the mutation and toast
+                }
         };
 
         const handleGoogleAuth = () => {
@@ -88,11 +91,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                 <CText
                                                         size="2xl"
                                                         weight="bold"
-                                                        className="mb-2 text-center text-text-light"
+                                                        className="text-text-light mb-2 text-center"
                                                 >
                                                         Welcome Back
                                                 </CText>
-                                                <CText size="base" className="text-center text-text-muted">
+                                                <CText size="base" className="text-text-muted text-center">
                                                         Consistency builds strength – log in and keep pushing forward.
                                                 </CText>
                                         </View>
@@ -123,9 +126,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                         <Button
                                                 title="Sign In"
                                                 onPress={handleLogin}
-                                                loading={isLoading}
+                                                loading={loginMutation.isPending}
                                                 disabled={
-                                                        !formData.email.trim() || !formData.password.trim() || isLoading
+                                                        !formData.email.trim() ||
+                                                        !formData.password.trim() ||
+                                                        loginMutation.isPending
                                                 }
                                                 className="mb-4"
                                         />
@@ -162,13 +167,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
                                                 <View className="h-px flex-1 bg-white" />
-                                                <CText className="mx-4 text-text-muted">OR</CText>
+                                                <CText className="text-text-muted mx-4">OR</CText>
                                                 <View className="h-px flex-1 bg-white" />
                                         </View>
 
                                         {/* OAuth Buttons */}
                                         <View className="mb-6">
-                                                <CText className="mb-3 text-center text-text-muted">
+                                                <CText className="text-text-muted mb-3 text-center">
                                                         Or continue with
                                                 </CText>
                                                 <OAuthButton provider="google" onPress={handleGoogleAuth} />

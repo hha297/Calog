@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ViewStyle, TextStyle } from 'react-native';
+import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
@@ -7,6 +7,8 @@ import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
 import { validateSignupForm, SignupFormData, SignupFormErrors } from '../../utils/authValidation';
+import { useSignupMutation } from '../../hooks/useAuth';
+import { useAuthStore } from '../../store';
 
 interface SignupScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -20,13 +22,16 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                 confirmPassword: '',
         });
         const [errors, setErrors] = useState<SignupFormErrors>({});
-        const [isLoading, setIsLoading] = useState(false);
+
+        const { clearError } = useAuthStore();
+        const signupMutation = useSignupMutation();
 
         // Clear errors and form data when component mounts
         useEffect(() => {
                 setErrors({});
                 setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-        }, []);
+                clearError();
+        }, [clearError]);
 
         const handleInputChange = (field: keyof SignupFormData, value: string) => {
                 setFormData((prev) => ({ ...prev, [field]: value }));
@@ -37,24 +42,23 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         };
 
         const handleSignup = async () => {
-                // TODO: wire to real endpoint
-                // TODO: persist token with SecureStore/Keychain
-                // TODO: add JWT refresh + logout flow
-
                 const validation = validateSignupForm(formData);
                 if (!validation.isValid) {
                         setErrors(validation.errors);
                         return;
                 }
 
-                setIsLoading(true);
-
-                // Mock API call
-                setTimeout(() => {
-                        setIsLoading(false);
-                        // Navigate to Profile screen
-                        navigation.navigate('Profile');
-                }, 1500);
+                try {
+                        await signupMutation.mutateAsync({
+                                fullName: formData.name,
+                                email: formData.email,
+                                password: formData.password,
+                        });
+                        // Navigation will be handled by the auth flow
+                } catch (error) {
+                        console.error('Signup failed:', error);
+                        // Error is handled by the mutation and toast
+                }
         };
 
         const handleGoogleAuth = () => {
@@ -84,11 +88,11 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                 <CText
                                                         size="2xl"
                                                         weight="bold"
-                                                        className="mb-2 text-center text-text-light"
+                                                        className="text-text-light mb-2 text-center"
                                                 >
                                                         Start Your Journey
                                                 </CText>
-                                                <CText size="base" className="text-center text-text-muted">
+                                                <CText size="base" className="text-text-muted text-center">
                                                         Join Calog to track your nutrition, workouts, and progress – all
                                                         in one place.
                                                 </CText>
@@ -140,13 +144,13 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         <Button
                                                 title="Create Account"
                                                 onPress={handleSignup}
-                                                loading={isLoading}
+                                                loading={signupMutation.isPending}
                                                 disabled={
                                                         !formData.name.trim() ||
                                                         !formData.email.trim() ||
                                                         !formData.password.trim() ||
                                                         !formData.confirmPassword.trim() ||
-                                                        isLoading
+                                                        signupMutation.isPending
                                                 }
                                                 className="mb-6"
                                         />
@@ -154,13 +158,13 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
                                                 <View className="h-px flex-1 bg-white" />
-                                                <CText className="mx-4 text-text-muted">OR</CText>
+                                                <CText className="text-text-muted mx-4">OR</CText>
                                                 <View className="h-px flex-1 bg-white" />
                                         </View>
 
                                         {/* OAuth Buttons */}
                                         <View className="mb-6">
-                                                <CText className="mb-3 text-center text-text-muted">
+                                                <CText className="text-text-muted mb-3 text-center">
                                                         Or continue with
                                                 </CText>
                                                 <OAuthButton provider="google" onPress={handleGoogleAuth} />

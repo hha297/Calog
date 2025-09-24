@@ -1,24 +1,27 @@
 import React from 'react';
-import { View, TouchableOpacity, ScrollView, ViewStyle, TextStyle } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../components/ui/Button';
 import { CText } from '../components/ui/CText';
+import { useAuthStore } from '../store';
+import { useLogoutMutation } from '../hooks/useAuth';
 
 interface ProfileScreenProps {
         navigation: any; // TODO: Add proper navigation typing
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-        const handleLogout = () => {
-                // TODO: Clear JWT token from SecureStore/Keychain
-                // TODO: Clear user session data
-                // TODO: Reset navigation stack
+        const { user, isAuthenticated } = useAuthStore();
+        const logoutMutation = useLogoutMutation();
 
-                // Mock logout - navigate back to Login
-                navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Login' }],
-                });
+        const handleLogout = async () => {
+                try {
+                        await logoutMutation.mutateAsync();
+                        // Navigation will be handled by the auth flow
+                } catch (error) {
+                        console.error('Logout failed:', error);
+                        // Error is handled by the mutation and toast
+                }
         };
 
         return (
@@ -30,11 +33,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                                 <CText
                                                         size="3xl"
                                                         weight="bold"
-                                                        className="mb-2 text-center text-text-light"
+                                                        className="text-text-light mb-2 text-center"
                                                 >
                                                         Profile
                                                 </CText>
-                                                <CText className="text-center text-text-muted">
+                                                <CText className="text-text-muted text-center">
                                                         Manage your account
                                                 </CText>
                                         </View>
@@ -45,7 +48,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                                         <CText className="mr-2 text-lg">🎨</CText>
                                                         <CText className="text-tertiary">UI Demo Mode</CText>
                                                 </View>
-                                                <CText className="text-sm leading-5 text-text-muted">
+                                                <CText className="text-text-muted text-sm leading-5">
                                                         You're viewing a demo state. Secure session (JWT/Secure Storage)
                                                         will be added later.
                                                 </CText>
@@ -55,21 +58,31 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                         <View className="mb-6 rounded-lg bg-secondary p-6">
                                                 <View className="mb-4 items-center">
                                                         <View className="mb-3 h-20 w-20 items-center justify-center rounded-full bg-tertiary">
-                                                                <CText className="text-2xl text-white">JD</CText>
+                                                                <CText className="text-2xl text-white">
+                                                                        {user?.fullName?.charAt(0)?.toUpperCase() ||
+                                                                                'U'}
+                                                                </CText>
                                                         </View>
-                                                        <CText className="mb-1 text-xl text-text-light">John Doe</CText>
-                                                        <CText className="text-text-muted">john.doe@example.com</CText>
+                                                        <CText className="text-text-light mb-1 text-xl">
+                                                                {user?.fullName || 'User'}
+                                                        </CText>
+                                                        <CText className="text-text-muted">
+                                                                {user?.email || 'user@example.com'}
+                                                        </CText>
+                                                        <CText className="mt-2 text-sm text-tertiary">
+                                                                {user?.role?.toUpperCase() || 'FREE'} Plan
+                                                        </CText>
                                                 </View>
                                         </View>
 
                                         {/* Account Settings */}
                                         <View className="mb-6">
-                                                <CText className="mb-4 text-lg text-text-light">Account Settings</CText>
+                                                <CText className="text-text-light mb-4 text-lg">Account Settings</CText>
 
                                                 <View className="space-y-3">
                                                         <TouchableOpacity className="rounded-lg bg-secondary p-4">
                                                                 <CText className="text-text-light">Edit Profile</CText>
-                                                                <CText className="mt-1 text-sm text-text-muted">
+                                                                <CText className="text-text-muted mt-1 text-sm">
                                                                         Update your personal information
                                                                 </CText>
                                                         </TouchableOpacity>
@@ -78,7 +91,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                                                 <CText className="text-text-light">
                                                                         Change Password
                                                                 </CText>
-                                                                <CText className="mt-1 text-sm text-text-muted">
+                                                                <CText className="text-text-muted mt-1 text-sm">
                                                                         Update your password
                                                                 </CText>
                                                         </TouchableOpacity>
@@ -87,7 +100,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                                                 <CText className="text-text-light">
                                                                         Privacy Settings
                                                                 </CText>
-                                                                <CText className="mt-1 text-sm text-text-muted">
+                                                                <CText className="text-text-muted mt-1 text-sm">
                                                                         Manage your privacy preferences
                                                                 </CText>
                                                         </TouchableOpacity>
@@ -96,19 +109,19 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
                                         {/* App Settings */}
                                         <View className="mb-8">
-                                                <CText className="mb-4 text-lg text-text-light">App Settings</CText>
+                                                <CText className="text-text-light mb-4 text-lg">App Settings</CText>
 
                                                 <View className="space-y-3">
                                                         <TouchableOpacity className="rounded-lg bg-secondary p-4">
                                                                 <CText className="text-text-light">Notifications</CText>
-                                                                <CText className="mt-1 text-sm text-text-muted">
+                                                                <CText className="text-text-muted mt-1 text-sm">
                                                                         Manage notification preferences
                                                                 </CText>
                                                         </TouchableOpacity>
 
                                                         <TouchableOpacity className="rounded-lg bg-secondary p-4">
                                                                 <CText className="text-text-light">Theme</CText>
-                                                                <CText className="mt-1 text-sm text-text-muted">
+                                                                <CText className="text-text-muted mt-1 text-sm">
                                                                         Dark mode (current)
                                                                 </CText>
                                                         </TouchableOpacity>
@@ -119,13 +132,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                                         <Button
                                                 title="Sign Out"
                                                 onPress={handleLogout}
+                                                loading={logoutMutation.isPending}
                                                 variant="ghost"
                                                 className="mb-4"
                                         />
 
                                         {/* Footer */}
                                         <View className="items-center">
-                                                <CText className="text-xs text-text-muted">
+                                                <CText className="text-text-muted text-xs">
                                                         Version 1.0.0 • UI Demo
                                                 </CText>
                                         </View>
