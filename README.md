@@ -35,7 +35,47 @@ A full-stack authentication system for React Native with Express.js backend, Mon
 
 ## 🛠️ Setup Instructions
 
-### 1. Backend Setup
+### Quick Start (Recommended)
+
+- [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
+- [Android Studio Installation](https://developer.android.com/studio/install)
+
+```bash
+# Install all dependencies
+npm install
+cd server && npm install && cd ..
+
+# For iOS (install pods)
+cd ios && pod install && cd ..
+
+# For Android (create local.properties)
+# Make sure you have Android SDK installed and configured.
+echo "sdk.dir=C:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk" > android local.properties
+
+# Run both backend and frontend
+
+npm run dev # Executes: concurrently "cd server && npm run dev" "npx react-native run-android"
+npm run dev:ios # Executes: concurrently "cd server && npm run dev" "npx react-native run-ios"
+npm run dev:metro # Executes: concurrently "cd server && npm run dev" "npm start"
+
+```
+
+### Individual Scripts
+
+```bash
+# Frontend only
+npm start          # Executes: react-native start (Metro bundler)
+npm run android    # Executes: react-native run-android
+npm run ios        # Executes: react-native run-ios
+
+# Backend only
+npm run server     # Executes: cd server && npm run dev (Development mode with nodemon)
+npm run server:start # Executes: cd server && npm start (Production mode)
+```
+
+### Manual Setup
+
+#### Backend Setup
 
 ```bash
 # Navigate to server directory
@@ -51,7 +91,7 @@ npm install
 npm run dev
 ```
 
-### 2. Frontend Setup
+#### Frontend Setup
 
 ```bash
 # Install dependencies
@@ -72,17 +112,78 @@ npm run android
 
 ### 3. Environment Variables
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `server` directory by copying the template:
 
 ```env
 PORT=4000
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/calog?retryWrites=true&w=majority
-JWT_ACCESS_SECRET=your-access-secret
-JWT_REFRESH_SECRET=your-refresh-secret
+JWT_ACCESS_SECRET=your-access-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret-key
 JWT_ACCESS_EXPIRES=30m
 JWT_REFRESH_EXPIRES=7d
 NODE_ENV=development
 ```
+
+**⚠️ Security Note:** Replace the placeholder values with your actual credentials:
+
+- `username:password` - Your MongoDB Atlas credentials
+- `cluster.mongodb.net` - Your MongoDB cluster URL
+- `your-access-secret-key` - A strong random string for JWT access tokens
+- `your-refresh-secret-key` - A different strong random string for JWT refresh tokens
+
+**🔒 Security Best Practices:**
+
+- Never commit `.env` files to version control
+- Use strong, unique secrets for JWT tokens
+- Rotate secrets regularly in production
+- Use environment-specific configurations
+- Enable MongoDB Atlas IP whitelisting
+
+### Android Configuration (Emulator Only)
+
+**📱 Prerequisites:**
+
+- Android Studio must be installed
+- Android SDK must be configured
+- Follow official guide: [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
+
+**⚠️ Important:** This setup is only required for Android emulator development. Physical Android devices don't need this configuration.
+
+**📱 Android Emulator Setup:**
+
+1. **Install Android Studio:**
+      - Download from [Android Studio](https://developer.android.com/studio/install)
+      - Install with default settings
+
+2. **Find Android SDK Path:**
+      - Open Android Studio
+      - Go to `File` → `Settings` → `Appearance & Behavior` → `System Settings` → `Android SDK`
+      - Copy the "Android SDK Location" path (usually: `C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk`)
+
+3. **Create Virtual Device (AVD):**
+      - Open Android Studio
+      - Go to `Tools` → `AVD Manager`
+      - Click `Create Virtual Device`
+      - Choose a device (e.g., Pixel 4) and Android version
+      - Click `Finish`
+
+4. **Create local.properties:**
+
+      ```bash
+      echo "sdk.dir=C:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk" > android/local.properties
+      ```
+
+5. **Start Emulator:**
+      - Start the AVD from Android Studio or run: `emulator -avd YOUR_AVD_NAME`
+      - Then run: `npm run dev`
+
+**📚 Official Links:**
+
+- [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
+- [Android Studio Installation](https://developer.android.com/studio/install)
+- [Create Virtual Device](https://developer.android.com/studio/run/managing-avds)
+
+**⚠️ Note:** Replace `YOUR_USERNAME` with your actual Windows username, or use the SDK path from Android Studio.
 
 ## 🔧 API Endpoints
 
@@ -137,7 +238,7 @@ NODE_ENV=development
 
 ### Backend Structure
 
-```
+```text
 server/
 ├── index.js              # Express server setup
 ├── models/
@@ -151,7 +252,7 @@ server/
 
 ### Frontend Structure
 
-```
+```text
 src/
 ├── components/ui/        # Reusable UI components
 ├── hooks/
@@ -195,8 +296,7 @@ src/
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Submit a pull request
 
 ## 📄 License
 
