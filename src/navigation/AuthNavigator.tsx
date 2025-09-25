@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '../screens/auth/LoginScreen';
 import { SignupScreen } from '../screens/auth/SignupScreen';
 import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
+import { TermsOfServiceScreen } from '../screens/auth/TermsOfServiceScreen';
+import { PrivacyPolicyScreen } from '../screens/auth/PrivacyPolicyScreen';
 import { AuthStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -35,6 +37,20 @@ export const AuthNavigator: React.FC = () => {
                                 component={ForgotPasswordScreen}
                                 options={{
                                         title: 'Reset Password',
+                                }}
+                        />
+                        <Stack.Screen
+                                name="TermsOfService"
+                                component={TermsOfServiceScreen}
+                                options={{
+                                        title: 'Terms of Service',
+                                }}
+                        />
+                        <Stack.Screen
+                                name="PrivacyPolicy"
+                                component={PrivacyPolicyScreen}
+                                options={{
+                                        title: 'Privacy Policy',
                                 }}
                         />
                 </Stack.Navigator>

@@ -8,7 +8,7 @@ import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
 import { validateLoginForm, LoginFormData, LoginFormErrors } from '../../utils/authValidation';
-import { useLoginMutation } from '../../hooks/useAuth';
+import { useLoginMutation, useGoogleLoginMutation } from '../../hooks/useAuth';
 import { useAuthStore } from '../../store';
 
 interface LoginScreenProps {
@@ -25,6 +25,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
         const { clearError } = useAuthStore();
         const loginMutation = useLoginMutation();
+        const googleLoginMutation = useGoogleLoginMutation();
 
         // Clear errors and form data when screen comes into focus
         useFocusEffect(
@@ -63,9 +64,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                 }
         };
 
-        const handleGoogleAuth = () => {
-                // TODO: Implement Google OAuth with react-native-app-auth
-                console.log('Google OAuth - UI only');
+        const handleGoogleAuth = async () => {
+                try {
+                        await googleLoginMutation.mutateAsync();
+                        // Navigation will be handled by the auth flow
+                } catch (error) {
+                        console.error('Google login failed:', error);
+                        // Error is handled by the mutation and toast
+                }
         };
 
         return (
@@ -173,10 +179,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* OAuth Buttons */}
                                         <View className="mb-6">
-                                                <CText className="text-text-muted mb-3 text-center">
-                                                        Or continue with
-                                                </CText>
-                                                <OAuthButton provider="google" onPress={handleGoogleAuth} />
+                                                <OAuthButton
+                                                        provider="google"
+                                                        onPress={handleGoogleAuth}
+                                                        disabled={googleLoginMutation.isPending}
+                                                />
                                         </View>
 
                                         {/* Sign Up Link */}

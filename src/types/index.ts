@@ -4,8 +4,12 @@ export type UserRole = 'free' | 'premium' | 'admin';
 // User interface
 export interface User {
         _id: string;
-        fullName: string;
+        id?: string; // For Google Sign-In compatibility
+        googleId?: string; // Google OAuth ID
+        fullName?: string; // Optional for Google users
+        name?: string; // Google display name
         email: string;
+        avatar?: string; // Google profile picture
         role: UserRole;
         createdAt: string;
         updatedAt: string;
@@ -15,6 +19,9 @@ export interface User {
 export interface AuthTokens {
         accessToken: string;
         refreshToken?: string;
+        idToken?: string; // For Google Sign-In
+        expiresIn?: number;
+        tokenType?: string;
 }
 
 export interface AuthResponse {
@@ -100,6 +107,8 @@ export type AuthStackParamList = {
         Login: undefined;
         Signup: undefined;
         ForgotPassword: undefined;
+        TermsOfService: undefined;
+        PrivacyPolicy: undefined;
 };
 
 export type MainStackParamList = {

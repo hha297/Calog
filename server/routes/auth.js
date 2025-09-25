@@ -47,6 +47,15 @@ router.post('/refresh', AuthController.refreshToken);
 // POST /auth/logout
 router.post('/logout', authMiddleware, AuthController.logout);
 
+// POST /auth/google - Handle Google Sign-In from mobile app
+router.post('/google', AuthController.googleSignIn);
+
+// GET /auth/google - Initiate Google OAuth flow (for web)
+router.get('/google', AuthController.googleAuth);
+
+// GET /auth/google/callback - Handle Google OAuth callback (for web)
+router.get('/google/callback', AuthController.googleCallback);
+
 // GET /auth/me - Get current user info
 router.get('/me', authMiddleware, AuthController.getCurrentUser);
 

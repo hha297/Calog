@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "402294542982",
+    "project_id": "calog-473206",
+    "storage_bucket": "calog-473206.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402294542982:android:b8568dc424464c70b53707",
+        "android_client_info": {
+          "package_name": "com.calog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402294542982-tl1373dckpan07glv8p9knqdem21ncjv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.calog",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "402294542982-o05e120bfkjqidce9b9p3mf1gr4e6o22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHw-lJsyDHhlFzHrfRwvm86_6JIh-Qczo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402294542982-o05e120bfkjqidce9b9p3mf1gr4e6o22.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402294542982-t850lohjgqaivhjacmcu5m1rduri5khf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.calog"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
