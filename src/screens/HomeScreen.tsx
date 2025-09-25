@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CText } from '../components/ui/CText';
 import { Button } from '../components/ui/Button';
 import { useAuthStore } from '../store';
-import { G } from 'react-native-svg';
 
 interface HomeScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -42,14 +41,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         {/* User Info Card */}
                                         <View className="mb-6 rounded-lg bg-secondary p-6">
                                                 <View className="items-center">
-                                                        <View className="mb-3 h-16 w-16 items-center justify-center rounded-full bg-tertiary">
-                                                                <CText className="text-xl text-white">
-                                                                        {user?.fullName?.charAt(0)?.toUpperCase() ||
-                                                                                'U'}
-                                                                </CText>
+                                                        {/* Avatar */}
+                                                        <View className="mb-3 h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-tertiary">
+                                                                {user?.avatar ? (
+                                                                        <Image
+                                                                                source={{ uri: user.avatar }}
+                                                                                className="h-16 w-16 rounded-full"
+                                                                                resizeMode="cover"
+                                                                        />
+                                                                ) : (
+                                                                        <CText className="text-xl text-white">
+                                                                                {(user?.name || user?.fullName)
+                                                                                        ?.charAt(0)
+                                                                                        ?.toUpperCase()}
+                                                                        </CText>
+                                                                )}
                                                         </View>
                                                         <CText className="text-text-light mb-1 text-lg">
-                                                                {user?.fullName || 'User'}
+                                                                {user?.name || user?.fullName || 'User'}
                                                         </CText>
                                                         <CText className="text-text-muted">
                                                                 {user?.email || 'user@example.com'}

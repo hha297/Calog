@@ -13,6 +13,7 @@ import BootSplash from 'react-native-bootsplash';
 import Toast from 'react-native-toast-message';
 import { useEffect } from 'react';
 import { initializeAuth, useAuthStore } from './src/store';
+import { GoogleSigninService } from './src/services/googleSigninService';
 
 function App() {
         const isDarkMode = useColorScheme() === 'dark';
@@ -24,6 +25,11 @@ function App() {
 
                 // Initialize authentication state
                 initializeAuth();
+
+                // Initialize Google Sign-In
+                GoogleSigninService.initialize().catch((error) => {
+                        console.error('Failed to initialize Google Sign-In:', error);
+                });
 
                 // Hide bootsplash when app is ready
                 BootSplash.hide({ fade: true });

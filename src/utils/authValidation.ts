@@ -67,6 +67,7 @@ export interface SignupFormErrors {
         email?: string;
         password?: string;
         confirmPassword?: string;
+        terms?: string;
 }
 
 export const validateSignupForm = (data: SignupFormData): { isValid: boolean; errors: SignupFormErrors } => {

@@ -27,6 +27,11 @@ class ApiClient {
                 this.onUnauthorized = callback;
         }
 
+        // Get base URL
+        getBaseUrl(): string {
+                return this.baseURL;
+        }
+
         // Get headers for requests
         private getHeaders(): Record<string, string> {
                 const headers: Record<string, string> = {

@@ -206,3 +206,48 @@ export const useAutoRefreshToken = () => {
                 },
         });
 };
+
+// Google OAuth login mutation
+export const useGoogleLoginMutation = () => {
+        const { login } = useAuthStore();
+        const queryClient = useQueryClient();
+
+        return useMutation({
+                mutationFn: async () => {
+                        return authApi.googleSignIn();
+                },
+                onSuccess: async (response) => {
+                        // Login with Google response
+                        await login(
+                                {
+                                        accessToken: response.accessToken,
+                                        refreshToken: response.refreshToken,
+                                },
+                                response.user,
+                                true, // Remember user after Google login
+                        );
+
+                        // Invalidate and refetch user data
+                        queryClient.invalidateQueries({ queryKey: authKeys.user() });
+
+                        // Show success toast
+                        Toast.show({
+                                type: 'success',
+                                text1: 'Welcome!',
+                                text2: `Hello ${response.user.name || response.user.email}! 👋`,
+                                position: 'top',
+                        });
+                },
+                onError: (error) => {
+                        console.error('Google login error:', error);
+
+                        // Show error toast
+                        Toast.show({
+                                type: 'error',
+                                text1: 'Google Login Failed',
+                                text2: error instanceof Error ? error.message : 'Something went wrong',
+                                position: 'top',
+                        });
+                },
+        });
+};

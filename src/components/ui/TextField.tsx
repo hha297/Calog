@@ -31,14 +31,14 @@ export const TextField: React.FC<TextFieldProps> = ({
 
         return (
                 <View style={{} as ViewStyle} className={`mb-4 ${className}`}>
-                        <CText size="base" className="mb-2 text-text-light">
+                        <CText size="base" className="text-text-light mb-2">
                                 {label}
                         </CText>
 
                         <View className="relative">
                                 <TextInput
                                         style={[{ fontFamily: 'SpaceGrotesk-Regular' } as TextStyle]}
-                                        className={`rounded-lg border bg-secondary px-4 py-3 font-space-grotesk text-white ${
+                                        className={`font-space-grotesk rounded-lg border bg-secondary px-4 py-3 text-white ${
                                                 isFocused ? 'border-tertiary' : 'border-gray-600'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}

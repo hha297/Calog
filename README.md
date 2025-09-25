@@ -1,303 +1,263 @@
-# Calog - Complete Authentication System
+# Calog - React Native App with Google OAuth
 
-A full-stack authentication system for React Native with Express.js backend, MongoDB, JWT tokens, and secure storage.
+Complete React Native + Node.js/Express + MongoDB system with Google OAuth integration.
 
 ## 🚀 Features
 
-### Backend (Express.js + MongoDB)
+- **Backend**: Node.js + Express + MongoDB (Mongoose)
+- **Frontend**: React Native with TypeScript
+- **Authentication**: Google OAuth + JWT
+- **Database**: MongoDB with Mongoose
+- **Security**: Secure token storage, JWT refresh, rate limiting
+- **Port**: Backend runs on port 4000
 
-- ✅ User registration and login
-- ✅ JWT access tokens (30 minutes expiry)
-- ✅ JWT refresh tokens (7 days expiry, rolling)
-- ✅ Password hashing with bcrypt
-- ✅ User roles (free, premium, admin)
-- ✅ Authentication middleware for protected routes
-- ✅ Rate limiting and security headers
-- ✅ Input validation with express-validator
-
-### Frontend (React Native + TypeScript)
-
-- ✅ Sign up and sign in screens with validation
-- ✅ Remember me functionality
-- ✅ Secure token storage with react-native-keychain
-- ✅ Auto-refresh token on app start
-- ✅ Zustand state management
-- ✅ React Query for API calls and caching
-- ✅ Authentication flow with React Navigation
-- ✅ Logout functionality
-
-## 📋 Prerequisites
+## 📋 System Requirements
 
 - Node.js >= 20
-- MongoDB Atlas account (or local MongoDB)
+- MongoDB
 - React Native development environment
-- iOS Simulator or Android Emulator
+- Google Cloud Console account
 
-## 🛠️ Setup Instructions
+## 🛠️ Installation
 
-### Quick Start (Recommended)
-
-- [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
-- [Android Studio Installation](https://developer.android.com/studio/install)
+### 1. Clone and install dependencies
 
 ```bash
-# Install all dependencies
+# Clone repository
+git clone <your-repo-url>
+cd calog
+
+# Install dependencies for React Native app
 npm install
-cd server && npm install && cd ..
 
-# For iOS (install pods)
-cd ios && pod install && cd ..
-
-# For Android (create local.properties)
-# Make sure you have Android SDK installed and configured.
-echo "sdk.dir=C:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk" > android local.properties
-
-# Run both backend and frontend
-
-npm run dev # Executes: concurrently "cd server && npm run dev" "npx react-native run-android"
-npm run dev:ios # Executes: concurrently "cd server && npm run dev" "npx react-native run-ios"
-npm run dev:metro # Executes: concurrently "cd server && npm run dev" "npm start"
-
-```
-
-### Individual Scripts
-
-```bash
-# Frontend only
-npm start          # Executes: react-native start (Metro bundler)
-npm run android    # Executes: react-native run-android
-npm run ios        # Executes: react-native run-ios
-
-# Backend only
-npm run server     # Executes: cd server && npm run dev (Development mode with nodemon)
-npm run server:start # Executes: cd server && npm start (Production mode)
-```
-
-### Manual Setup
-
-#### Backend Setup
-
-```bash
-# Navigate to server directory
+# Install dependencies for backend
 cd server
-
-# Install dependencies
 npm install
+cd ..
+```
 
-# Create .env file with your MongoDB URI and JWT secrets
-# Copy the content below to server/.env file
+### 2. Configure Google OAuth
 
-# Start the server
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing project
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials:
+      - Application type: Web application
+      - Authorized redirect URIs: `http://localhost:4000/auth/google/callback`
+5. Save Client ID and Client Secret
+
+### 3. Configure MongoDB
+
+```bash
+# Start MongoDB (if using local)
+mongod
+
+# Or use MongoDB Atlas (cloud)
+# Create cluster and get connection string
+```
+
+### 4. Configure Environment Variables
+
+Create `.env` file in `server` directory:
+
+```bash
+# Server Configuration
+PORT=4000
+NODE_ENV=development
+
+# MongoDB Configuration
+MONGO_URI=mongodb://localhost:27017/calog
+# Or MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/calog
+
+# JWT Configuration
+JWT_ACCESS_SECRET=your-super-secret-access-key-here-make-it-long-and-random
+JWT_REFRESH_SECRET=your-super-secret-refresh-key-here-make-it-long-and-random
+JWT_ACCESS_EXPIRES=15m
+JWT_REFRESH_EXPIRES=7d
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=your-google-client-id-here
+GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+GOOGLE_REDIRECT_URI=http://localhost:4000/auth/google/callback
+
+# React Native App Configuration
+REACT_NATIVE_REDIRECT_URL=calog://auth/callback
+```
+
+### 5. Configure React Native OAuth
+
+Update `src/services/googleOAuth.ts`:
+
+```typescript
+const googleConfig = {
+        issuer: 'https://accounts.google.com',
+        clientId: 'YOUR_GOOGLE_CLIENT_ID_HERE', // Replace with actual Client ID
+        redirectUrl: 'calog://auth/callback',
+        scopes: ['openid', 'profile', 'email'],
+        // ... rest of config
+};
+```
+
+### 6. Configure Deep Linking (Android)
+
+Update `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<activity
+    android:name=".MainActivity"
+    android:exported="true"
+    android:launchMode="singleTask">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="calog" />
+    </intent-filter>
+</activity>
+```
+
+### 7. Configure Deep Linking (iOS)
+
+Update `ios/calog/Info.plist`:
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleURLName</key>
+        <string>calog</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>calog</string>
+        </array>
+    </dict>
+</array>
+```
+
+## 🚀 Running the Application
+
+### 1. Start Backend
+
+```bash
+cd server
 npm run dev
 ```
 
-#### Frontend Setup
+Backend will run on `http://localhost:4000`
+
+### 2. Start React Native App
 
 ```bash
-# Install dependencies
-npm install
+# Android
+npm run android
 
-# For iOS
-cd ios && pod install && cd ..
-
-# Start Metro bundler
-npm start
-
-# Run on iOS
+# iOS
 npm run ios
 
-# Run on Android
-npm run android
+# Or run Metro bundler only
+npm start
 ```
 
-### 3. Environment Variables
+### 3. Run Both Together
 
-Create a `.env` file in the `server` directory by copying the template:
+```bash
+# Android + Backend
+npm run dev
 
-```env
-PORT=4000
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/calog?retryWrites=true&w=majority
-JWT_ACCESS_SECRET=your-access-secret-key
-JWT_REFRESH_SECRET=your-refresh-secret-key
-JWT_ACCESS_EXPIRES=30m
-JWT_REFRESH_EXPIRES=7d
-NODE_ENV=development
+# iOS + Backend
+npm run dev:ios
 ```
 
-**⚠️ Security Note:** Replace the placeholder values with your actual credentials:
+## 📱 Usage
 
-- `username:password` - Your MongoDB Atlas credentials
-- `cluster.mongodb.net` - Your MongoDB cluster URL
-- `your-access-secret-key` - A strong random string for JWT access tokens
-- `your-refresh-secret-key` - A different strong random string for JWT refresh tokens
-
-**🔒 Security Best Practices:**
-
-- Never commit `.env` files to version control
-- Use strong, unique secrets for JWT tokens
-- Rotate secrets regularly in production
-- Use environment-specific configurations
-- Enable MongoDB Atlas IP whitelisting
-
-### Android Configuration (Emulator Only)
-
-**📱 Prerequisites:**
-
-- Android Studio must be installed
-- Android SDK must be configured
-- Follow official guide: [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
-
-**⚠️ Important:** This setup is only required for Android emulator development. Physical Android devices don't need this configuration.
-
-**📱 Android Emulator Setup:**
-
-1. **Install Android Studio:**
-      - Download from [Android Studio](https://developer.android.com/studio/install)
-      - Install with default settings
-
-2. **Find Android SDK Path:**
-      - Open Android Studio
-      - Go to `File` → `Settings` → `Appearance & Behavior` → `System Settings` → `Android SDK`
-      - Copy the "Android SDK Location" path (usually: `C:\Users\YOUR_USERNAME\AppData\Local\Android\Sdk`)
-
-3. **Create Virtual Device (AVD):**
-      - Open Android Studio
-      - Go to `Tools` → `AVD Manager`
-      - Click `Create Virtual Device`
-      - Choose a device (e.g., Pixel 4) and Android version
-      - Click `Finish`
-
-4. **Create local.properties:**
-
-      ```bash
-      echo "sdk.dir=C:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk" > android/local.properties
-      ```
-
-5. **Start Emulator:**
-      - Start the AVD from Android Studio or run: `emulator -avd YOUR_AVD_NAME`
-      - Then run: `npm run dev`
-
-**📚 Official Links:**
-
-- [Android Studio AVD Manager](https://developer.android.com/studio/run/managing-avds)
-- [Android Studio Installation](https://developer.android.com/studio/install)
-- [Create Virtual Device](https://developer.android.com/studio/run/managing-avds)
-
-**⚠️ Note:** Replace `YOUR_USERNAME` with your actual Windows username, or use the SDK path from Android Studio.
+1. Open React Native app
+2. Tap "Login with Google"
+3. Select Google account
+4. App will automatically login and save user info
+5. Use `/auth/me` endpoint to get user information
 
 ## 🔧 API Endpoints
 
-### Authentication Routes
+### Authentication
 
-| Method | Endpoint        | Description          | Body                                     |
-| ------ | --------------- | -------------------- | ---------------------------------------- |
-| POST   | `/auth/signup`  | Register new user    | `{ fullName, email, password }`          |
-| POST   | `/auth/login`   | Login user           | `{ email, password, rememberMe? }`       |
-| POST   | `/auth/refresh` | Refresh access token | `{ refreshToken }`                       |
-| POST   | `/auth/logout`  | Logout user          | `{ refreshToken? }`                      |
-| GET    | `/auth/me`      | Get current user     | Headers: `Authorization: Bearer <token>` |
+- `GET /auth/google` - Initiate Google OAuth flow
+- `GET /auth/google/callback` - Handle Google OAuth callback
+- `GET /auth/me` - Get current user info (requires JWT)
+- `POST /auth/refresh` - Refresh JWT token
+- `POST /auth/logout` - Logout
 
-## 🔐 Security Features
+### Health Check
 
-### Token Management
+- `GET /health` - Check server status
 
-- **Access Token**: 30 minutes expiry, stored in memory
-- **Refresh Token**: 7 days expiry, stored securely in Keychain
-- **Rolling Refresh**: New refresh token issued on each refresh
-- **Token Rotation**: Old refresh tokens are invalidated
+## 🗄️ Database Schema
 
-### Password Security
+### User Model
 
-- Bcrypt hashing with salt rounds of 12
-- Minimum 6 character password requirement
-- Password confirmation validation on frontend only
-
-### Storage Security
-
-- Refresh tokens stored in iOS Keychain / Android Keystore
-- Access tokens stored in memory only
-- Automatic cleanup on logout
-
-## 📱 User Experience
-
-### Authentication Flow
-
-1. **App Start**: Check for stored refresh token
-2. **Auto-Login**: If valid refresh token exists, auto-login user
-3. **Manual Login**: User can sign in with email/password
-4. **Remember Me**: Optional persistent login for 7 days
-5. **Auto-Refresh**: Tokens refreshed automatically in background
-6. **Logout**: Clear all tokens and return to login screen
-
-### Remember Me Behavior
-
-- **Checked**: Refresh token stored securely, auto-login on app restart
-- **Unchecked**: Session-based login, expires when app closes
-
-## 🏗️ Architecture
-
-### Backend Structure
-
-```text
-server/
-├── index.js              # Express server setup
-├── models/
-│   └── User.js          # User schema with roles
-├── routes/
-│   └── auth.js           # Authentication routes
-├── middleware/
-│   └── auth.js           # JWT authentication middleware
-└── package.json
+```javascript
+{
+    googleId: String,        // Google OAuth ID
+    email: String,           // Email (required)
+    name: String,            // Google display name
+    avatar: String,          // Google profile picture
+    refreshToken: String,    // Google refresh token
+    role: String,            // 'free', 'premium', 'admin'
+    createdAt: Date,
+    updatedAt: Date
+}
 ```
 
-### Frontend Structure
+## 🔒 Security Features
 
-```text
-src/
-├── components/ui/        # Reusable UI components
-├── hooks/
-│   └── useAuth.ts       # React Query auth hooks
-├── navigation/          # Navigation setup
-├── screens/auth/        # Authentication screens
-├── services/
-│   ├── api/            # API client and endpoints
-│   └── secureStorage.ts # Keychain storage service
-├── store/
-│   └── index.ts        # Zustand auth store
-└── types/
-    └── index.ts        # TypeScript definitions
-```
+- JWT access tokens (15 minutes)
+- JWT refresh tokens (7 days)
+- Secure token storage with Keychain/Keystore
+- Rate limiting (100 requests/15 minutes)
+- CORS protection
+- Helmet security headers
+- Password hashing with bcrypt
+- Token rotation
 
-## 🚀 Deployment
+## 🐛 Troubleshooting
 
-### Backend Deployment
+### Google OAuth Errors
 
-1. Deploy to Heroku, Vercel, or your preferred platform
-2. Set environment variables in production
-3. Update MongoDB connection string
-4. Configure CORS for production domain
+1. Check Client ID and Client Secret
+2. Ensure redirect URI is correct
+3. Check Google Cloud Console settings
 
-### Frontend Deployment
+### MongoDB Errors
 
-1. Build for production
-2. Deploy to App Store / Google Play Store
-3. Update API base URL for production
+1. Ensure MongoDB is running
+2. Check connection string
+3. Check network connectivity
 
-## 📝 Notes
+### Deep Linking Errors
 
-- The authentication system is production-ready
-- All sensitive data is properly secured
-- Error handling is comprehensive
-- The UI is responsive and accessible
-- TypeScript provides type safety throughout
+1. Check scheme configuration
+2. Test with `adb` commands (Android)
+3. Check Info.plist (iOS)
+
+## 📝 Development Notes
+
+- Backend uses Express with security middleware
+- Frontend uses Zustand for state management
+- React Query for API calls and caching
+- TypeScript for type safety
+- NativeWind for styling
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+1. Fork repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License - see LICENSE file for details.

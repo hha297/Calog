@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
@@ -7,7 +7,7 @@ import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
 import { validateSignupForm, SignupFormData, SignupFormErrors } from '../../utils/authValidation';
-import { useSignupMutation } from '../../hooks/useAuth';
+import { useSignupMutation, useGoogleLoginMutation } from '../../hooks/useAuth';
 import { useAuthStore } from '../../store';
 
 interface SignupScreenProps {
@@ -22,14 +22,17 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                 confirmPassword: '',
         });
         const [errors, setErrors] = useState<SignupFormErrors>({});
+        const [agreeToTerms, setAgreeToTerms] = useState(false);
 
         const { clearError } = useAuthStore();
         const signupMutation = useSignupMutation();
+        const googleLoginMutation = useGoogleLoginMutation();
 
         // Clear errors and form data when component mounts
         useEffect(() => {
                 setErrors({});
                 setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+                setAgreeToTerms(false);
                 clearError();
         }, [clearError]);
 
@@ -42,6 +45,11 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         };
 
         const handleSignup = async () => {
+                if (!agreeToTerms) {
+                        setErrors({ terms: 'You must agree to the Terms of Service and Privacy Policy' });
+                        return;
+                }
+
                 const validation = validateSignupForm(formData);
                 if (!validation.isValid) {
                         setErrors(validation.errors);
@@ -61,9 +69,14 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                 }
         };
 
-        const handleGoogleAuth = () => {
-                // TODO: Implement Google OAuth with react-native-app-auth
-                console.log('Google OAuth - UI only');
+        const handleGoogleAuth = async () => {
+                try {
+                        await googleLoginMutation.mutateAsync();
+                        // Navigation will be handled by the auth flow
+                } catch (error) {
+                        console.error('Google signup failed:', error);
+                        // Error is handled by the mutation and toast
+                }
         };
 
         return (
@@ -99,7 +112,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* Form */}
-                                        <View className="mb-6">
+                                        <View className="mb-4">
                                                 <TextField
                                                         label="Full Name"
                                                         placeholder="Enter your full name"
@@ -140,6 +153,71 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                 />
                                         </View>
 
+                                        {/* Terms & Privacy Checkbox */}
+                                        <View className="mb-6">
+                                                <View className="flex-row items-center">
+                                                        <TouchableOpacity
+                                                                className="mr-3 mt-1"
+                                                                onPress={() => setAgreeToTerms(!agreeToTerms)}
+                                                        >
+                                                                <View
+                                                                        className={`h-5 w-5 items-center justify-center rounded border-2 ${
+                                                                                agreeToTerms
+                                                                                        ? 'border-tertiary bg-tertiary'
+                                                                                        : 'border-gray-300'
+                                                                        }`}
+                                                                >
+                                                                        {agreeToTerms && (
+                                                                                <CText className="text-xs text-white">
+                                                                                        ✓
+                                                                                </CText>
+                                                                        )}
+                                                                </View>
+                                                        </TouchableOpacity>
+                                                        <View className="flex-1">
+                                                                <View className="flex-row flex-wrap">
+                                                                        <CText className="text-text-muted">
+                                                                                I agree to{' '}
+                                                                        </CText>
+                                                                        <Pressable
+                                                                                onPress={() => {
+                                                                                        navigation.navigate(
+                                                                                                'TermsOfService',
+                                                                                        );
+                                                                                }}
+                                                                        >
+                                                                                <CText
+                                                                                        className="!text-tertiary"
+                                                                                        weight="medium"
+                                                                                >
+                                                                                        Terms of Service
+                                                                                </CText>
+                                                                        </Pressable>
+                                                                        <CText className="text-text-muted"> and </CText>
+                                                                        <Pressable
+                                                                                onPress={() => {
+                                                                                        navigation.navigate(
+                                                                                                'PrivacyPolicy',
+                                                                                        );
+                                                                                }}
+                                                                        >
+                                                                                <CText
+                                                                                        className="!text-tertiary"
+                                                                                        weight="medium"
+                                                                                >
+                                                                                        Privacy Policy
+                                                                                </CText>
+                                                                        </Pressable>
+                                                                </View>
+                                                                {errors.terms && (
+                                                                        <CText className="mt-1 text-xs text-red-500">
+                                                                                {errors.terms}
+                                                                        </CText>
+                                                                )}
+                                                        </View>
+                                                </View>
+                                        </View>
+
                                         {/* Signup Button */}
                                         <Button
                                                 title="Create Account"
@@ -150,6 +228,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                         !formData.email.trim() ||
                                                         !formData.password.trim() ||
                                                         !formData.confirmPassword.trim() ||
+                                                        !agreeToTerms ||
                                                         signupMutation.isPending
                                                 }
                                                 className="mb-6"
@@ -164,10 +243,11 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
 
                                         {/* OAuth Buttons */}
                                         <View className="mb-6">
-                                                <CText className="text-text-muted mb-3 text-center">
-                                                        Or continue with
-                                                </CText>
-                                                <OAuthButton provider="google" onPress={handleGoogleAuth} />
+                                                <OAuthButton
+                                                        provider="google"
+                                                        onPress={handleGoogleAuth}
+                                                        disabled={googleLoginMutation.isPending}
+                                                />
                                         </View>
 
                                         {/* Login Link */}
