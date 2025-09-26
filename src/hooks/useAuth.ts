@@ -36,20 +36,43 @@ export const useSignupMutation = () => {
                         // Show success toast
                         Toast.show({
                                 type: 'success',
-                                text1: 'Account Created!',
-                                text2: 'Welcome to Calog!',
+                                text1: '🎉 Account Created!',
+                                text2: "Welcome to Calog! Let's start your fitness journey.",
                                 position: 'top',
+                                visibilityTime: 3000,
                         });
                 },
                 onError: (error) => {
                         console.error('Signup error:', error);
 
+                        // Parse error message for better user experience
+                        let errorTitle = 'Signup Failed';
+                        let errorMessage = 'Something went wrong. Please try again.';
+
+                        if (error instanceof Error) {
+                                const message = error.message.toLowerCase();
+                                if (message.includes('already registered') || message.includes('already exists')) {
+                                        errorTitle = 'Email Already Exists';
+                                        errorMessage =
+                                                'This email is already registered. Please sign in or use a different email.';
+                                } else if (message.includes('validation') || message.includes('required')) {
+                                        errorTitle = 'Invalid Information';
+                                        errorMessage = 'Please check your information and try again.';
+                                } else if (message.includes('network') || message.includes('connection')) {
+                                        errorTitle = 'Connection Error';
+                                        errorMessage = 'Please check your internet connection and try again.';
+                                } else {
+                                        errorMessage = error.message;
+                                }
+                        }
+
                         // Show error toast
                         Toast.show({
                                 type: 'error',
-                                text1: 'Signup Failed',
-                                text2: error instanceof Error ? error.message : 'Something went wrong',
+                                text1: errorTitle,
+                                text2: errorMessage,
                                 position: 'top',
+                                visibilityTime: 4000,
                         });
                 },
         });
@@ -81,20 +104,49 @@ export const useLoginMutation = () => {
                         // Show success toast
                         Toast.show({
                                 type: 'success',
-                                text1: 'Welcome Back!',
-                                text2: `Hello ${response.user.fullName}! 👋`,
+                                text1: '👋 Welcome Back!',
+                                text2: `Hello ${response.user.fullName}! Ready to continue your journey?`,
                                 position: 'top',
+                                visibilityTime: 3000,
                         });
                 },
                 onError: (error) => {
                         console.error('Login error:', error);
 
+                        // Parse error message for better user experience
+                        let errorTitle = 'Login Failed';
+                        let errorMessage = 'Invalid credentials. Please try again.';
+
+                        if (error instanceof Error) {
+                                const message = error.message.toLowerCase();
+                                if (message.includes('account not found') || message.includes('not found')) {
+                                        errorTitle = 'Account Not Found';
+                                        errorMessage =
+                                                'No account found with this email. Please sign up or check your email.';
+                                } else if (
+                                        message.includes('incorrect password') ||
+                                        message.includes('wrong password')
+                                ) {
+                                        errorTitle = 'Incorrect Password';
+                                        errorMessage = 'The password you entered is incorrect. Please try again.';
+                                } else if (message.includes('network') || message.includes('connection')) {
+                                        errorTitle = 'Connection Error';
+                                        errorMessage = 'Please check your internet connection and try again.';
+                                } else if (message.includes('unauthorized') || message.includes('invalid')) {
+                                        errorTitle = 'Invalid Credentials';
+                                        errorMessage = 'Please check your email and password and try again.';
+                                } else {
+                                        errorMessage = error.message;
+                                }
+                        }
+
                         // Show error toast
                         Toast.show({
                                 type: 'error',
-                                text1: 'Login Failed',
-                                text2: error instanceof Error ? error.message : 'Invalid credentials',
+                                text1: errorTitle,
+                                text2: errorMessage,
                                 position: 'top',
+                                visibilityTime: 4000,
                         });
                 },
         });
@@ -116,9 +168,10 @@ export const useLogoutMutation = () => {
                         // Show success toast
                         Toast.show({
                                 type: 'success',
-                                text1: 'Signed Out',
-                                text2: 'See you next time! 👋',
+                                text1: '👋 Signed Out',
+                                text2: 'See you next time! Keep up the great work.',
                                 position: 'top',
+                                visibilityTime: 3000,
                         });
                 },
                 onError: (error) => {
@@ -233,20 +286,44 @@ export const useGoogleLoginMutation = () => {
                         // Show success toast
                         Toast.show({
                                 type: 'success',
-                                text1: 'Welcome!',
-                                text2: `Hello ${response.user.name || response.user.email}! 👋`,
+                                text1: '🎉 Welcome!',
+                                text2: `Hello ${response.user.name || response.user.email}! Thanks for joining with Google.`,
                                 position: 'top',
+                                visibilityTime: 3000,
                         });
                 },
                 onError: (error) => {
                         console.error('Google login error:', error);
 
+                        // Parse error message for better user experience
+                        let errorTitle = 'Google Login Failed';
+                        let errorMessage = 'Something went wrong with Google sign-in. Please try again.';
+
+                        if (error instanceof Error) {
+                                const message = error.message.toLowerCase();
+                                if (message.includes('cancelled') || message.includes('canceled')) {
+                                        errorTitle = 'Sign-in Cancelled';
+                                        errorMessage =
+                                                'Google sign-in was cancelled. Please try again if you want to continue.';
+                                } else if (message.includes('network') || message.includes('connection')) {
+                                        errorTitle = 'Connection Error';
+                                        errorMessage = 'Please check your internet connection and try again.';
+                                } else if (message.includes('authentication') || message.includes('auth')) {
+                                        errorTitle = 'Authentication Error';
+                                        errorMessage =
+                                                'There was an issue with Google authentication. Please try again.';
+                                } else {
+                                        errorMessage = error.message;
+                                }
+                        }
+
                         // Show error toast
                         Toast.show({
                                 type: 'error',
-                                text1: 'Google Login Failed',
-                                text2: error instanceof Error ? error.message : 'Something went wrong',
+                                text1: errorTitle,
+                                text2: errorMessage,
                                 position: 'top',
+                                visibilityTime: 4000,
                         });
                 },
         });

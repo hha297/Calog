@@ -12,7 +12,11 @@ class AuthController {
 
                 const existingUser = await User.findOne({ email });
                 if (existingUser) {
-                        return ResponseUtils.error(res, 'User with this email already exists', 409);
+                        return ResponseUtils.error(
+                                res,
+                                'This email is already registered. Please sign in or use a different email.',
+                                409,
+                        );
                 }
 
                 const user = new User({
@@ -43,12 +47,16 @@ class AuthController {
 
                 const user = await User.findOne({ email });
                 if (!user) {
-                        return ResponseUtils.error(res, 'Invalid email or password', 401);
+                        return ResponseUtils.error(
+                                res,
+                                'Account not found. Please check your email or sign up for a new account.',
+                                401,
+                        );
                 }
 
                 const isPasswordValid = await user.comparePassword(password);
                 if (!isPasswordValid) {
-                        return ResponseUtils.error(res, 'Invalid email or password', 401);
+                        return ResponseUtils.error(res, 'Incorrect password. Please try again.', 401);
                 }
 
                 await user.removeExpiredRefreshTokens();
