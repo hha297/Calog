@@ -92,6 +92,7 @@ export interface AuthState {
         refreshToken: string | null;
         isAuthenticated: boolean;
         isLoading: boolean;
+        isInitializing: boolean;
         error: string | null;
 
         // Actions
@@ -102,6 +103,7 @@ export interface AuthState {
         setTokens: (tokens: AuthTokens) => void;
         clearError: () => void;
         setLoading: (loading: boolean) => void;
+        setInitializing: (initializing: boolean) => void;
         setupUnauthorizedCallback: () => void;
 }
 

@@ -1,21 +1,29 @@
 const jwt = require('jsonwebtoken');
 
-// JWT Utilities
+// ======================= JWT Utilities =======================
 class JWTUtils {
-        // Generate access and refresh tokens
-        static generateTokens(userId) {
-                const accessToken = jwt.sign({ userId, type: 'access' }, process.env.JWT_ACCESS_SECRET, {
+        // Generate only access token
+        static generateAccessToken(userId) {
+                return jwt.sign({ userId, type: 'access' }, process.env.JWT_ACCESS_SECRET, {
                         expiresIn: process.env.JWT_ACCESS_EXPIRES,
                 });
+        }
 
-                const refreshToken = jwt.sign({ userId, type: 'refresh' }, process.env.JWT_REFRESH_SECRET, {
+        // Generate only refresh token
+        static generateRefreshToken(userId) {
+                return jwt.sign({ userId, type: 'refresh' }, process.env.JWT_REFRESH_SECRET, {
                         expiresIn: process.env.JWT_REFRESH_EXPIRES,
                 });
+        }
 
+        // Generate both tokens (login/signup)
+        static generateTokens(userId) {
+                const accessToken = this.generateAccessToken(userId);
+                const refreshToken = this.generateRefreshToken(userId);
                 return { accessToken, refreshToken };
         }
 
-        // Calculate refresh token expiry date
+        // Calculate refresh token expiry date (for saving in DB)
         static getRefreshTokenExpiry() {
                 const expiresIn = process.env.JWT_REFRESH_EXPIRES;
                 const now = new Date();
@@ -31,29 +39,22 @@ class JWTUtils {
                         return new Date(now.getTime() + minutes * 60 * 1000);
                 }
 
-                // Default to 7 days
+                // Default 7 days
                 return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
         }
 
         // Verify refresh token
         static verifyRefreshToken(token) {
-                try {
-                        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
-                        if (decoded.type !== 'refresh') {
-                                throw new Error('Invalid token type');
-                        }
-
-                        return decoded;
-                } catch (error) {
-                        throw error;
+                const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+                if (decoded.type !== 'refresh') {
+                        throw new Error('Invalid token type');
                 }
+                return decoded;
         }
 }
 
-// Response Utilities
+// ======================= Response Utilities =======================
 class ResponseUtils {
-        // Send success response
         static success(res, data, message = 'Success', statusCode = 200) {
                 return res.status(statusCode).json({
                         success: true,
@@ -62,21 +63,12 @@ class ResponseUtils {
                 });
         }
 
-        // Send error response
         static error(res, message = 'Internal server error', statusCode = 500, errors = null) {
-                const response = {
-                        success: false,
-                        message,
-                };
-
-                if (errors) {
-                        response.errors = errors;
-                }
-
+                const response = { success: false, message };
+                if (errors) response.errors = errors;
                 return res.status(statusCode).json(response);
         }
 
-        // Send validation error response
         static validationError(res, errors) {
                 return res.status(400).json({
                         success: false,
@@ -84,31 +76,39 @@ class ResponseUtils {
                         errors,
                 });
         }
+
+        static serverError(res, message = 'Internal server error', statusCode = 500) {
+                return res.status(statusCode).json({
+                        success: false,
+                        message,
+                });
+        }
+
+        static notFound(res, message = 'Resource not found') {
+                return res.status(404).json({
+                        success: false,
+                        message,
+                });
+        }
 }
 
-// Error Utilities
+// ======================= Error Utilities =======================
 class ErrorUtils {
-        // Handle async errors
         static asyncHandler(fn) {
                 return (req, res, next) => {
                         Promise.resolve(fn(req, res, next)).catch(next);
                 };
         }
 
-        // Global error handler
         static globalErrorHandler(err, req, res, next) {
                 console.error('Global error:', err);
 
-                // JWT errors
                 if (err.name === 'JsonWebTokenError') {
                         return ResponseUtils.error(res, 'Invalid token', 401);
                 }
-
                 if (err.name === 'TokenExpiredError') {
                         return ResponseUtils.error(res, 'Token expired', 401);
                 }
-
-                // Mongoose validation errors
                 if (err.name === 'ValidationError') {
                         const errors = Object.values(err.errors).map((e) => ({
                                 field: e.path,
@@ -116,14 +116,11 @@ class ErrorUtils {
                         }));
                         return ResponseUtils.validationError(res, errors);
                 }
-
-                // Mongoose duplicate key error
                 if (err.code === 11000) {
                         const field = Object.keys(err.keyValue)[0];
                         return ResponseUtils.error(res, `${field} already exists`, 409);
                 }
 
-                // Default error
                 return ResponseUtils.error(res, 'Internal server error', 500);
         }
 }

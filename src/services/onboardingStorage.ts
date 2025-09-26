@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthStore } from '../store';
 
 const ONBOARDING_KEY = '@calog_onboarding_completed';
 const USER_PROFILE_KEY = '@calog_user_profile';

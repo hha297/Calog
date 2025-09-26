@@ -1,47 +1,38 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthState, User, AuthTokens } from '../types';
+import { AuthState, AuthTokens, User } from '../types';
 import { authApi } from '../services/api/authApi';
 import { secureStorage } from '../services/secureStorage';
 import { onboardingStorage } from '../services/onboardingStorage';
 import apiClient from '../services/api/client';
 
-// Create auth store
 export const useAuthStore = create<AuthState>()(
         persist(
                 (set, get) => ({
-                        // Initial state
+                        // ===== State =====
                         user: null,
                         accessToken: null,
                         refreshToken: null,
                         isAuthenticated: false,
                         isLoading: false,
+                        isInitializing: true,
                         error: null,
 
-                        // Setup unauthorized callback for API client
-                        setupUnauthorizedCallback: () => {
-                                apiClient.setUnauthorizedCallback(() => {
-                                        // Auto-logout when token is invalid
-                                        get().logout();
-                                });
-                        },
-
-                        // Actions
+                        // ===== Actions =====
                         login: async (tokens: AuthTokens, user: User, rememberMe = false) => {
                                 try {
                                         set({ isLoading: true, error: null });
 
-                                        // Set tokens in API client
+                                        // Set token cho apiClient
                                         apiClient.setAccessToken(tokens.accessToken);
 
-                                        // Store refresh token securely if rememberMe is true
-                                        if (rememberMe && tokens.refreshToken) {
+                                        // Lưu refresh token + user vào secureStorage
+                                        if (tokens.refreshToken) {
                                                 await secureStorage.storeRefreshToken(tokens.refreshToken);
                                                 await secureStorage.storeUserData(user);
                                         }
 
-                                        // Update state
                                         set({
                                                 user,
                                                 accessToken: tokens.accessToken,
@@ -49,13 +40,13 @@ export const useAuthStore = create<AuthState>()(
                                                 isAuthenticated: true,
                                                 isLoading: false,
                                         });
-                                } catch (error) {
-                                        console.error('Login error:', error);
+                                } catch (err) {
+                                        console.error('Login error:', err);
                                         set({
-                                                error: error instanceof Error ? error.message : 'Login failed',
+                                                error: err instanceof Error ? err.message : 'Login failed',
                                                 isLoading: false,
                                         });
-                                        throw error;
+                                        throw err;
                                 }
                         },
 
@@ -63,28 +54,19 @@ export const useAuthStore = create<AuthState>()(
                                 try {
                                         set({ isLoading: true });
 
-                                        const { refreshToken } = get();
-
-                                        // Call logout API if we have a refresh token
+                                        const refreshToken = get().refreshToken;
                                         if (refreshToken) {
                                                 try {
                                                         await authApi.logout({ refreshToken });
-                                                } catch (error) {
-                                                        // Continue with logout even if API call fails
-                                                        console.warn('Logout API call failed:', error);
+                                                } catch (err) {
+                                                        console.warn('Logout API failed:', err);
                                                 }
                                         }
 
-                                        // Clear secure storage
                                         await secureStorage.clearAll();
-
-                                        // Clear onboarding data
                                         await onboardingStorage.resetOnboarding();
-
-                                        // Clear API client token
                                         apiClient.setAccessToken(null);
 
-                                        // Reset state
                                         set({
                                                 user: null,
                                                 accessToken: null,
@@ -93,54 +75,35 @@ export const useAuthStore = create<AuthState>()(
                                                 isLoading: false,
                                                 error: null,
                                         });
-                                } catch (error) {
-                                        console.error('Logout error:', error);
+                                } catch (err) {
                                         set({
-                                                error: error instanceof Error ? error.message : 'Logout failed',
+                                                error: err instanceof Error ? err.message : 'Logout failed',
                                                 isLoading: false,
                                         });
-                                        throw error;
+                                        throw err;
                                 }
                         },
 
                         refresh: async () => {
                                 try {
-                                        const { refreshToken } = get();
+                                        // refreshToken lấy từ secureStorage, không rolling
+                                        const refreshToken = await secureStorage.getRefreshToken();
+                                        if (!refreshToken) throw new Error('No refresh token');
 
-                                        if (!refreshToken) {
-                                                throw new Error('No refresh token available');
-                                        }
+                                        const res = await authApi.refreshToken({ refreshToken });
 
-                                        set({ isLoading: true, error: null });
+                                        apiClient.setAccessToken(res.accessToken);
 
-                                        // Call refresh API
-                                        const response = await authApi.refreshToken({ refreshToken });
-
-                                        // Update tokens in API client
-                                        apiClient.setAccessToken(response.accessToken);
-
-                                        // Store new refresh token securely
-                                        await secureStorage.storeRefreshToken(response.refreshToken);
-
-                                        // Update state
                                         set({
-                                                accessToken: response.accessToken,
-                                                refreshToken: response.refreshToken,
-                                                isLoading: false,
+                                                accessToken: res.accessToken,
+                                                refreshToken, // giữ refreshToken cũ
+                                                isAuthenticated: true,
                                         });
 
                                         return true;
-                                } catch (error) {
-                                        console.error('Token refresh error:', error);
-
-                                        // If refresh fails, logout user
+                                } catch (err) {
+                                        console.error('Token refresh failed:', err);
                                         await get().logout();
-
-                                        set({
-                                                error: error instanceof Error ? error.message : 'Token refresh failed',
-                                                isLoading: false,
-                                        });
-
                                         return false;
                                 }
                         },
@@ -158,18 +121,19 @@ export const useAuthStore = create<AuthState>()(
                                 });
                         },
 
-                        clearError: () => {
-                                set({ error: null });
-                        },
+                        clearError: () => set({ error: null }),
+                        setLoading: (loading: boolean) => set({ isLoading: loading }),
+                        setInitializing: (initializing: boolean) => set({ isInitializing: initializing }),
 
-                        setLoading: (loading: boolean) => {
-                                set({ isLoading: loading });
+                        setupUnauthorizedCallback: () => {
+                                apiClient.setUnauthorizedCallback(() => {
+                                        get().logout();
+                                });
                         },
                 }),
                 {
                         name: 'auth-storage',
                         storage: createJSONStorage(() => AsyncStorage),
-                        // Only persist non-sensitive data
                         partialize: (state) => ({
                                 user: state.user,
                                 isAuthenticated: state.isAuthenticated,
@@ -178,44 +142,24 @@ export const useAuthStore = create<AuthState>()(
         ),
 );
 
-// Initialize auth state on app start
+// ===== App start init =====
 export const initializeAuth = async () => {
+        const { refresh, setUser, setInitializing } = useAuthStore.getState();
+
         try {
-                const { setTokens, setUser, setLoading } = useAuthStore.getState();
-
-                setLoading(true);
-
-                // Try to get refresh token from secure storage
-                const refreshToken = await secureStorage.getRefreshToken();
-
-                if (refreshToken) {
-                        // Try to refresh tokens
-                        const response = await authApi.refreshToken({ refreshToken });
-
-                        // Get user data
+                const ok = await refresh();
+                if (ok) {
                         const userData = await secureStorage.getUserData();
-
                         if (userData) {
-                                // Set tokens and user
-                                setTokens({
-                                        accessToken: response.accessToken,
-                                        refreshToken: response.refreshToken,
-                                });
                                 setUser(userData);
                         } else {
-                                // If no user data, fetch from API
-                                const userResponse = await authApi.getCurrentUser();
-                                setUser(userResponse.user);
-                                await secureStorage.storeUserData(userResponse.user);
+                                const { getCurrentUser } = await import('../services/api/authApi');
+                                const res = await getCurrentUser();
+                                setUser(res.user);
+                                await secureStorage.storeUserData(res.user);
                         }
                 }
-        } catch (error) {
-                console.error('Auth initialization error:', error);
-                // Clear any invalid tokens
-                await secureStorage.clearAll();
-                // Clear onboarding data on auth error
-                await onboardingStorage.resetOnboarding();
         } finally {
-                useAuthStore.getState().setLoading(false);
+                setInitializing(false);
         }
 };

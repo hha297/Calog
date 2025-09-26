@@ -17,8 +17,7 @@ export class GoogleSigninService {
                                 accountName: '', // [Android] specifies an account name on the device that should be used
                         });
                 } catch (error) {
-                        console.error('Google Sign-In initialization error:', error);
-                        throw error;
+                        throw new Error('Google authentication failed');
                 }
         }
 
@@ -85,8 +84,6 @@ export class GoogleSigninService {
                                 tokens: authTokens,
                         };
                 } catch (error: any) {
-                        console.error('Google Sign-In error:', error);
-
                         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                                 throw new Error('Sign-in was cancelled');
                         } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -94,7 +91,7 @@ export class GoogleSigninService {
                         } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                                 throw new Error('Google Play Services not available');
                         } else {
-                                throw new Error(`Sign-in failed: ${error.message}`);
+                                throw new Error('Google authentication failed');
                         }
                 }
         }

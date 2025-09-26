@@ -76,6 +76,8 @@ class ApiClient {
                                         if (this.onUnauthorized) {
                                                 this.onUnauthorized();
                                         }
+                                        // Throw specific error for auth failures
+                                        throw new Error('unauthorized');
                                 }
                                 throw new Error(data.message || `HTTP ${response.status}`);
                         }
