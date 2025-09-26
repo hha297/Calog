@@ -54,6 +54,41 @@ const userSchema = new mongoose.Schema(
                         enum: Object.values(UserRole),
                         default: UserRole.FREE,
                 },
+                // User profile data
+                profile: {
+                        gender: {
+                                type: String,
+                                enum: ['male', 'female', 'other'],
+                        },
+                        age: {
+                                type: Number,
+                                min: [13, 'Age must be at least 13'],
+                                max: [120, 'Age cannot exceed 120'],
+                        },
+                        height: {
+                                type: Number, // in cm
+                                min: [100, 'Height must be at least 100cm'],
+                                max: [250, 'Height cannot exceed 250cm'],
+                        },
+                        weight: {
+                                type: Number, // in kg
+                                min: [30, 'Weight must be at least 30kg'],
+                                max: [300, 'Weight cannot exceed 300kg'],
+                        },
+                        activityLevel: {
+                                type: String,
+                                enum: ['sedentary', 'light', 'moderate', 'active', 'very_active'],
+                        },
+                        goal: {
+                                type: String,
+                                enum: ['maintain', 'lose', 'gain'],
+                        },
+                        dailyCalorieGoal: {
+                                type: Number,
+                                min: [800, 'Daily calorie goal must be at least 800'],
+                                max: [5000, 'Daily calorie goal cannot exceed 5000'],
+                        },
+                },
                 refreshTokens: [
                         {
                                 token: String,
