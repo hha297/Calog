@@ -11,8 +11,20 @@ export interface User {
         email: string;
         avatar?: string; // Google profile picture
         role: UserRole;
+        profile?: UserProfile; // User profile data
         createdAt: string;
         updatedAt: string;
+}
+
+// User profile interface
+export interface UserProfile {
+        gender: 'male' | 'female' | 'other';
+        age: number;
+        height: number; // in cm
+        weight: number; // in kg
+        activityLevel: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
+        goal: 'maintain' | 'lose' | 'gain';
+        dailyCalorieGoal?: number; // calculated based on profile
 }
 
 // Authentication interfaces
@@ -120,5 +132,6 @@ export type MainStackParamList = {
 
 export type RootStackParamList = {
         Auth: undefined;
+        Onboarding: undefined;
         Main: undefined;
 };

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthState, User, AuthTokens } from '../types';
 import { authApi } from '../services/api/authApi';
 import { secureStorage } from '../services/secureStorage';
+import { onboardingStorage } from '../services/onboardingStorage';
 import apiClient from '../services/api/client';
 
 // Create auth store
@@ -76,6 +77,9 @@ export const useAuthStore = create<AuthState>()(
 
                                         // Clear secure storage
                                         await secureStorage.clearAll();
+
+                                        // Clear onboarding data
+                                        await onboardingStorage.resetOnboarding();
 
                                         // Clear API client token
                                         apiClient.setAccessToken(null);
@@ -209,6 +213,8 @@ export const initializeAuth = async () => {
                 console.error('Auth initialization error:', error);
                 // Clear any invalid tokens
                 await secureStorage.clearAll();
+                // Clear onboarding data on auth error
+                await onboardingStorage.resetOnboarding();
         } finally {
                 useAuthStore.getState().setLoading(false);
         }
