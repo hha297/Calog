@@ -43,10 +43,10 @@ export const authApi = {
                 try {
                         // Initialize Google Sign-In if not already done
                         await GoogleSigninService.initialize();
-                        
+
                         // Sign in with Google
                         const { user, tokens } = await GoogleSigninService.signIn();
-                        
+
                         // Send Google tokens to server for verification and user creation/login
                         const response = await apiClient.post<AuthResponse>('/auth/google', {
                                 idToken: tokens.idToken,
@@ -58,11 +58,10 @@ export const authApi = {
                                         avatar: user.avatar,
                                 },
                         });
-                        
+
                         return response;
                 } catch (error) {
-                        console.error('Google Sign-In API error:', error);
-                        throw error;
+                        throw new Error('Google authentication failed');
                 }
         },
 
@@ -71,7 +70,6 @@ export const authApi = {
                 try {
                         await GoogleSigninService.signOut();
                 } catch (error) {
-                        console.error('Google Sign-Out error:', error);
                         throw error;
                 }
         },

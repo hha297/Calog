@@ -53,9 +53,7 @@ mongoose.connect(MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
 })
-        .then(() => {
-                console.log('Connected to MongoDB');
-        })
+        .then(() => {})
         .catch((error) => {
                 console.error('MongoDB connection error:', error);
                 process.exit(1);
@@ -81,8 +79,6 @@ app.use('*', (req, res) => {
 // Global error handler
 app.use(ErrorUtils.globalErrorHandler);
 
-app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => {});
 
 module.exports = app;

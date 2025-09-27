@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -59,7 +59,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                         });
                         // Navigation will be handled by the auth flow
                 } catch (error) {
-                        console.error('Login failed:', error);
                         // Error is handled by the mutation and toast
                 }
         };
@@ -69,7 +68,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                         await googleLoginMutation.mutateAsync();
                         // Navigation will be handled by the auth flow
                 } catch (error) {
-                        console.error('Google login failed:', error);
                         // Error is handled by the mutation and toast
                 }
         };

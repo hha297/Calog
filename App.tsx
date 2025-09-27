@@ -11,29 +11,46 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import BootSplash from 'react-native-bootsplash';
 import Toast from 'react-native-toast-message';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { initializeAuth, useAuthStore } from './src/store';
 import { GoogleSigninService } from './src/services/googleSigninService';
+import { useProfileSync } from './src/hooks/useProfileSync';
+import { SplashScreen } from './src/components/SplashScreen';
 
 function App() {
         const isDarkMode = useColorScheme() === 'dark';
         const { setupUnauthorizedCallback } = useAuthStore();
+        const [ready, setReady] = useState(false);
+
+        // Auto-sync profile khi user login
+        useProfileSync();
 
         useEffect(() => {
-                // Setup unauthorized callback for auto-logout
-                setupUnauthorizedCallback();
+                const bootstrap = async () => {
+                        try {
+                                // Setup unauthorized callback
+                                setupUnauthorizedCallback();
 
-                // Initialize authentication state
-                initializeAuth();
+                                // Init auth state (check refresh token -> get access token)
+                                await initializeAuth();
 
-                // Initialize Google Sign-In
-                GoogleSigninService.initialize().catch((error) => {
-                        console.error('Failed to initialize Google Sign-In:', error);
-                });
+                                // Init Google Sign-In
+                                await GoogleSigninService.initialize();
+                        } catch (err) {
+                                console.error('App init error:', err);
+                        } finally {
+                                // Hide splash screen
+                                BootSplash.hide({ fade: true });
+                                setReady(true);
+                        }
+                };
 
-                // Hide bootsplash when app is ready
-                BootSplash.hide({ fade: true });
+                bootstrap();
         }, [setupUnauthorizedCallback]);
+
+        if (!ready) {
+                <SplashScreen />;
+        }
 
         return (
                 <SafeAreaProvider>

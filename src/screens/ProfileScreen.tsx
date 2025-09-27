@@ -13,9 +13,7 @@ export const ProfileScreen: React.FC = () => {
         const handleLogout = async () => {
                 try {
                         await logout();
-                } catch (error) {
-                        console.error('Logout error:', error);
-                }
+                } catch (error) {}
         };
 
         if (isLoading) {
@@ -113,7 +111,6 @@ export const ProfileScreen: React.FC = () => {
                                                 title="Edit Profile"
                                                 onPress={() => {
                                                         // TODO: Navigate to profile edit screen
-                                                        console.log('Edit profile');
                                                 }}
                                                 variant="secondary"
                                                 className="mb-4"

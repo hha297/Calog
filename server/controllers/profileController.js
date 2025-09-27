@@ -3,7 +3,7 @@ const { ResponseUtils } = require('../utils');
 
 class ProfileController {
         // Calculate daily calorie goal using Mifflin-St Jeor Equation
-        static calculateCalorieGoal(profile) {
+        static calculateCalorieGoalFromProfile(profile) {
                 const { gender, age, height, weight, activityLevel, goal } = profile;
 
                 // Activity multipliers
@@ -50,7 +50,7 @@ class ProfileController {
         // Update user profile
         static async updateProfile(req, res) {
                 try {
-                        const userId = req.user.id;
+                        const userId = req.user.userId;
                         const profileData = req.body.profile;
 
                         // Validate required fields
@@ -64,7 +64,7 @@ class ProfileController {
                         }
 
                         // Calculate daily calorie goal
-                        const dailyCalorieGoal = ProfileController.calculateCalorieGoal(profileData);
+                        const dailyCalorieGoal = ProfileController.calculateCalorieGoalFromProfile(profileData);
 
                         // Update user profile
                         const updatedUser = await User.findByIdAndUpdate(
@@ -86,13 +86,11 @@ class ProfileController {
                         if (!updatedUser) {
                                 return ResponseUtils.notFound(res, 'User not found');
                         }
-
                         return ResponseUtils.success(res, {
                                 message: 'Profile updated successfully',
                                 profile: updatedUser.profile,
                         });
                 } catch (error) {
-                        console.error('Update profile error:', error);
                         return ResponseUtils.serverError(res, 'Failed to update profile');
                 }
         }
@@ -100,7 +98,7 @@ class ProfileController {
         // Get user profile
         static async getProfile(req, res) {
                 try {
-                        const userId = req.user.id;
+                        const userId = req.user.userId;
 
                         const user = await User.findById(userId).select('profile');
                         if (!user) {
@@ -112,7 +110,6 @@ class ProfileController {
                                 profile: user.profile || {},
                         });
                 } catch (error) {
-                        console.error('Get profile error:', error);
                         return ResponseUtils.serverError(res, 'Failed to get profile');
                 }
         }
@@ -132,13 +129,12 @@ class ProfileController {
                                 }
                         }
 
-                        const dailyCalorieGoal = ProfileController.calculateCalorieGoal(profileData);
+                        const dailyCalorieGoal = ProfileController.calculateCalorieGoalFromProfile(profileData);
 
                         return ResponseUtils.success(res, {
                                 dailyCalorieGoal,
                         });
                 } catch (error) {
-                        console.error('Calculate calorie goal error:', error);
                         return ResponseUtils.serverError(res, 'Failed to calculate calorie goal');
                 }
         }

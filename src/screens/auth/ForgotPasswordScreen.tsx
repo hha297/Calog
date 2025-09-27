@@ -5,7 +5,6 @@ import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
 import { validateEmail } from '../../utils/authValidation';
 import { CText } from '../../components/ui/CText';
-import { Logo } from '../../components/ui/Logo';
 
 interface ForgotPasswordScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -67,11 +66,11 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                 </View>
                                                 <CText
                                                         weight="bold"
-                                                        className="mb-2 text-center text-2xl text-text-light"
+                                                        className="text-text-light mb-2 text-center text-2xl"
                                                 >
                                                         Check Your Email
                                                 </CText>
-                                                <CText className="mb-2 text-center text-text-muted">
+                                                <CText className="text-text-muted mb-2 text-center">
                                                         We've sent a password reset link to
                                                 </CText>
                                                 <CText className="text-center !text-tertiary">{email}</CText>
@@ -79,7 +78,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
 
                                         {/* Instructions */}
                                         <View className="mb-8">
-                                                <CText className="mb-4 text-center text-sm text-text-muted">
+                                                <CText className="text-text-muted mb-4 text-center text-sm">
                                                         Didn't receive the email? Check your spam folder or try again.
                                                 </CText>
                                         </View>
@@ -118,12 +117,12 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                 <View className="mb-8">
                                                         <CText
                                                                 weight="bold"
-                                                                className="mb-2 text-center text-text-light"
+                                                                className="text-text-light mb-2 text-center"
                                                                 size="3xl"
                                                         >
                                                                 Forgot Password?
                                                         </CText>
-                                                        <CText className="text-center text-text-muted">
+                                                        <CText className="text-text-muted text-center">
                                                                 We'll send you reset instructions to your email.
                                                         </CText>
                                                 </View>

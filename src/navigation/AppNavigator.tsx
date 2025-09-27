@@ -5,24 +5,22 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { OnboardingScreen } from '../screens/onboarding';
-import { useAuthStore, initializeAuth } from '../store';
+import { useAuthStore } from '../store';
 import { RootStackParamList } from '../types';
-import { onboardingStorage } from '../services/onboardingStorage';
+import { SplashScreen } from '../components/SplashScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Create a client
 const queryClient = new QueryClient({
         defaultOptions: {
                 queries: {
                         retry: (failureCount, error: any) => {
-                                // Don't retry on 401 errors
                                 if (error?.message?.includes('401') || error?.message?.includes('unauthorized')) {
                                         return false;
                                 }
                                 return failureCount < 3;
                         },
-                        staleTime: 5 * 60 * 1000, // 5 minutes
+                        staleTime: 5 * 60 * 1000,
                 },
                 mutations: {
                         retry: false,
@@ -31,58 +29,64 @@ const queryClient = new QueryClient({
 });
 
 export const AppNavigator: React.FC = () => {
-        const { isAuthenticated, isLoading } = useAuthStore();
+        const { isAuthenticated, isLoading, isInitializing } = useAuthStore();
         const [hasOnboarded, setHasOnboarded] = useState<boolean | null>(null);
 
-        // Initialize authentication on app start
-        useEffect(() => {
-                initializeAuth();
-        }, []);
-
-        // Check onboarding status when user is authenticated
         useEffect(() => {
                 if (isAuthenticated) {
-                        onboardingStorage.hasCompletedOnboarding().then(setHasOnboarded);
+                        checkUserProfile();
                 } else {
                         setHasOnboarded(null);
                 }
         }, [isAuthenticated]);
 
-        // Show loading screen while checking authentication or onboarding
-        if (isLoading || (isAuthenticated && hasOnboarded === null)) {
-                // You can replace this with a proper loading screen component
-                return null;
-        }
-
-        const handleOnboardingComplete = async (profile: any) => {
+        const checkUserProfile = async () => {
                 try {
-                        // Save profile data locally
-                        await onboardingStorage.saveUserProfile(profile);
-                        // Mark onboarding as completed
-                        await onboardingStorage.setOnboardingCompleted();
-                        setHasOnboarded(true);
-                } catch (error) {
-                        console.error('Error completing onboarding:', error);
+                        const { profileApi } = await import('../services/api/profileApi');
+                        const response = await profileApi.getProfile();
+                        const hasProfile = !!(
+                                response.profile &&
+                                response.profile.gender &&
+                                response.profile.age &&
+                                response.profile.height &&
+                                response.profile.weight
+                        );
+                        setHasOnboarded(hasProfile);
+                } catch {
+                        setHasOnboarded(false);
                 }
         };
+
+        // Show splash while initializing or loading
+        if (isInitializing || isLoading) {
+                return <SplashScreen />;
+        }
+
+        const shouldShowAuth = !isAuthenticated;
+        const shouldShowOnboarding = isAuthenticated && hasOnboarded === false;
+        const shouldShowMain = isAuthenticated && hasOnboarded === true;
+
+        if (isAuthenticated && hasOnboarded === null) {
+                return <SplashScreen />;
+        }
 
         return (
                 <QueryClientProvider client={queryClient}>
                         <NavigationContainer>
                                 <Stack.Navigator screenOptions={{ headerShown: false }}>
-                                        {!isAuthenticated ? (
+                                        {shouldShowAuth ? (
                                                 <Stack.Screen name="Auth" component={AuthNavigator} />
-                                        ) : !hasOnboarded ? (
+                                        ) : shouldShowOnboarding ? (
                                                 <Stack.Screen name="Onboarding">
                                                         {() => (
                                                                 <OnboardingScreen
-                                                                        onComplete={handleOnboardingComplete}
+                                                                        onComplete={() => setHasOnboarded(true)}
                                                                 />
                                                         )}
                                                 </Stack.Screen>
-                                        ) : (
+                                        ) : shouldShowMain ? (
                                                 <Stack.Screen name="Main" component={MainNavigator} />
-                                        )}
+                                        ) : null}
                                 </Stack.Navigator>
                         </NavigationContainer>
                 </QueryClientProvider>

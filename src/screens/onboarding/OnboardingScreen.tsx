@@ -1,18 +1,18 @@
 import React, { useState, useRef } from 'react';
-import { View, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CText } from '../../components/ui/CText';
 import { Button } from '../../components/ui/Button';
-import { Logo } from '../../components/ui/Logo';
-
-import { BasicProfileSlide } from './BasicProfileSlide';
-import { GoalSettingSlide } from './GoalSettingSlide';
 import { UserProfile } from '../../types';
 import { profileApi } from '../../services/api/profileApi';
+import { onboardingStorage } from '../../services/onboardingStorage';
 import Toast from 'react-native-toast-message';
+
 import { WelcomeSlide } from './WelcomeSlide';
 import { ValuePropositionSlide } from './ValuePropositionSlide';
+import { BasicProfileSlide } from './BasicProfileSlide';
+import { GoalSettingSlide } from './GoalSettingSlide';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,15 +27,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
         const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
         const sliderRef = useRef<AppIntroSlider>(null);
 
+        // All slides definition
         const slides = [
-                {
-                        key: 'welcome',
-                        component: WelcomeSlide,
-                },
-                {
-                        key: 'value-proposition',
-                        component: ValuePropositionSlide,
-                },
+                { key: 'welcome', component: WelcomeSlide },
+                { key: 'value-proposition', component: ValuePropositionSlide },
                 {
                         key: 'basic-profile',
                         component: BasicProfileSlide,
@@ -54,11 +49,11 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                 },
         ];
 
+        // Render each slide dynamically
         const renderSlide = ({ item }: { item: any }) => {
                 const SlideComponent = item.component;
                 return (
                         <SlideComponent
-                                onNext={item.onNext}
                                 onDataChange={item.onDataChange}
                                 onValidationChange={item.onValidationChange}
                                 profileData={profileData}
@@ -66,6 +61,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                 );
         };
 
+        // Handle final submit when "Finish" is pressed
         const handleDone = async () => {
                 if (
                         profileData.gender &&
@@ -76,45 +72,75 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                         profileData.goal
                 ) {
                         try {
-                                // Calculate daily calorie goal
+                                // Calculate calorie goal
                                 const calorieResponse = await profileApi.calculateCalorieGoal(
                                         profileData as UserProfile,
                                 );
+
                                 const completeProfile = {
                                         ...profileData,
                                         dailyCalorieGoal: calorieResponse.dailyCalorieGoal,
                                 } as UserProfile;
 
-                                // Update profile on server
-                                await profileApi.updateProfile(completeProfile);
+                                // Save profile to local storage first
+                                await onboardingStorage.saveUserProfile(completeProfile);
+                                await onboardingStorage.setOnboardingCompleted();
 
-                                // Show success message
-                                Toast.show({
-                                        type: 'success',
-                                        text1: 'Profile Setup Complete!',
-                                        text2: 'Welcome to Calog! 🎉',
-                                        position: 'top',
-                                });
+                                // Now sync to database since user is authenticated
+                                try {
+                                        await profileApi.updateProfile(completeProfile);
+
+                                        Toast.show({
+                                                type: 'success',
+                                                text1: 'Profile Setup Complete!',
+                                                text2: 'Welcome to Calog! 🎉',
+                                                position: 'top',
+                                        });
+                                } catch (error) {
+                                        Toast.show({
+                                                type: 'info',
+                                                text1: 'Profile Saved Locally',
+                                                text2: 'Will sync when connection improves',
+                                                position: 'top',
+                                        });
+                                }
 
                                 onComplete(completeProfile);
                         } catch (error) {
-                                console.error('Error completing onboarding:', error);
-
-                                // Still complete onboarding even if server sync fails
+                                // Show detailed error message
                                 Toast.show({
-                                        type: 'warning',
-                                        text1: 'Profile Saved Locally',
-                                        text2: 'Will sync when connection improves',
+                                        type: 'error',
+                                        text1: 'Setup Error',
+                                        text2: 'Something went wrong. Please try again.',
                                         position: 'top',
                                 });
 
+                                // Save locally - will sync when user signs up
+                                Toast.show({
+                                        type: 'info',
+                                        text1: 'Profile Saved Locally',
+                                        text2: 'Will sync when you sign up',
+                                        position: 'top',
+                                });
+
+                                // Save profile to local storage even if there's an error
+                                await onboardingStorage.saveUserProfile(profileData as UserProfile);
+                                await onboardingStorage.setOnboardingCompleted();
+
                                 onComplete(profileData as UserProfile);
                         }
+                } else {
+                        Toast.show({
+                                type: 'error',
+                                text1: 'Incomplete Profile',
+                                text2: 'Please fill in all required fields',
+                                position: 'top',
+                        });
                 }
         };
 
+        // Handle skipping onboarding
         const handleSkip = () => {
-                // Allow skipping onboarding with default values
                 const defaultProfile: UserProfile = {
                         gender: 'other',
                         age: 25,
@@ -126,76 +152,129 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                 onComplete(defaultProfile);
         };
 
+        // Go to the next slide (only if valid)
         const handleNext = () => {
-                // Check validation before allowing next
                 if (currentSlideIndex === 2 && !isBasicProfileValid) {
-                        return; // Don't proceed if basic profile is invalid
+                        return; // Prevent going next if basic profile form is invalid
                 }
-                sliderRef.current?.goToSlide(currentSlideIndex + 1);
+                const nextIndex = currentSlideIndex + 1;
+                setCurrentSlideIndex(nextIndex);
+                sliderRef.current?.goToSlide(nextIndex);
         };
 
+        // Go to the previous slide
         const handlePrev = () => {
-                sliderRef.current?.goToSlide(currentSlideIndex - 1);
+                if (currentSlideIndex === 0) return; // Do nothing on the first slide
+                const prevIndex = currentSlideIndex - 1;
+                setCurrentSlideIndex(prevIndex);
+                sliderRef.current?.goToSlide(prevIndex);
         };
 
-        return (
-                <SafeAreaView className="flex-1 bg-primary">
-                        <AppIntroSlider
-                                ref={sliderRef}
-                                renderItem={renderSlide}
-                                data={slides}
-                                onDone={handleDone}
-                                onSkip={handleSkip}
-                                onSlideChange={(index) => setCurrentSlideIndex(index)}
-                                showSkipButton={false}
-                                showDoneButton={true}
-                                showPrevButton={true}
-                                showNextButton={true}
-                                dotStyle={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                                        width: 8,
-                                        height: 8,
-                                }}
-                                activeDotStyle={{
-                                        backgroundColor: '#10B981', // tertiary color
-                                        width: 8,
-                                        height: 8,
-                                }}
-                                doneLabel="Finish"
-                                nextLabel="Next"
-                                prevLabel="Back"
-                                renderDoneButton={() => {
-                                        // Only disable Finish button on goal-setting slide (index 3)
-                                        const shouldDisable = currentSlideIndex === 3 && !isGoalValid;
-                                        return (
-                                                <View className="px-4 py-2">
-                                                        <CText
-                                                                className={`font-semibold ${shouldDisable ? 'text-text-muted' : 'text-tertiary'}`}
+        try {
+                return (
+                        <SafeAreaView className="flex-1 bg-primary">
+                                <AppIntroSlider
+                                        ref={sliderRef}
+                                        renderItem={renderSlide}
+                                        data={slides}
+                                        onSlideChange={(index) => setCurrentSlideIndex(index)}
+                                        scrollEnabled={false}
+                                        showNextButton={false}
+                                        showPrevButton={false}
+                                        showDoneButton={false}
+                                        showSkipButton={false}
+                                        renderPagination={() => {
+                                                const isNextDisabled = currentSlideIndex === 2 && !isBasicProfileValid;
+                                                const isPrevDisabled = currentSlideIndex === 0;
+                                                const isDoneDisabled = currentSlideIndex === 3 && !isGoalValid;
+
+                                                return (
+                                                        <View
+                                                                style={{
+                                                                        flexDirection: 'row',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'space-between',
+                                                                        paddingHorizontal: 16,
+                                                                        paddingVertical: 12,
+                                                                }}
                                                         >
-                                                                Finish
-                                                        </CText>
-                                                </View>
-                                        );
-                                }}
-                                renderNextButton={() => {
-                                        // Only disable Next button on basic-profile slide (index 2)
-                                        const shouldDisable = currentSlideIndex === 2 && !isBasicProfileValid;
-                                        return (
-                                                <View className="px-4 py-2">
-                                                        <CText
-                                                                className={`font-semibold ${shouldDisable ? 'text-text-muted' : 'text-tertiary'}`}
-                                                        >
-                                                                Next
-                                                        </CText>
-                                                </View>
-                                        );
-                                }}
-                                renderPrevButton={() => (
-                                        <View className="px-4 py-2">
-                                                <CText className="text-text-muted">Back</CText>
-                                        </View>
-                                )}
-                        />
-                </SafeAreaView>
-        );
+                                                                {/* Back button */}
+                                                                <Button
+                                                                        title="Back"
+                                                                        onPress={handlePrev}
+                                                                        disabled={isPrevDisabled}
+                                                                        variant="ghost"
+                                                                        size="small"
+                                                                        className="min-w-[80px]"
+                                                                />
+
+                                                                {/* Dots in the middle */}
+                                                                <View
+                                                                        style={{
+                                                                                flexDirection: 'row',
+                                                                                alignItems: 'center',
+                                                                        }}
+                                                                >
+                                                                        {slides.map((_, i) => (
+                                                                                <View
+                                                                                        key={i}
+                                                                                        style={{
+                                                                                                width: 8,
+                                                                                                height: 8,
+                                                                                                borderRadius: 4,
+                                                                                                marginHorizontal: 4,
+                                                                                                backgroundColor:
+                                                                                                        i ===
+                                                                                                        currentSlideIndex
+                                                                                                                ? '#10B981' // active dot
+                                                                                                                : 'rgba(255,255,255,0.3)', // inactive dot
+                                                                                        }}
+                                                                                />
+                                                                        ))}
+                                                                </View>
+
+                                                                {/* Next or Finish button */}
+                                                                {currentSlideIndex === slides.length - 1 ? (
+                                                                        <Button
+                                                                                title="Finish"
+                                                                                onPress={handleDone}
+                                                                                disabled={isDoneDisabled}
+                                                                                variant="ghost"
+                                                                                size="small"
+                                                                                className="min-w-[80px]"
+                                                                        />
+                                                                ) : (
+                                                                        <Button
+                                                                                title="Next"
+                                                                                onPress={handleNext}
+                                                                                disabled={isNextDisabled}
+                                                                                variant="ghost"
+                                                                                size="small"
+                                                                                className="min-w-[80px]"
+                                                                        />
+                                                                )}
+                                                        </View>
+                                                );
+                                        }}
+                                />
+                        </SafeAreaView>
+                );
+        } catch (error) {
+                // Show error toast
+                Toast.show({
+                        type: 'error',
+                        text1: 'App Error',
+                        text2: 'Something went wrong. Please restart the app.',
+                        position: 'top',
+                });
+
+                // Return fallback UI
+                return (
+                        <SafeAreaView className="flex-1 items-center justify-center bg-primary">
+                                <CText className="text-center text-white">
+                                        Something went wrong.{'\n'}Please restart the app.
+                                </CText>
+                        </SafeAreaView>
+                );
+        }
 };

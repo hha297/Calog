@@ -64,7 +64,6 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                         });
                         // Navigation will be handled by the auth flow
                 } catch (error) {
-                        console.error('Signup failed:', error);
                         // Error is handled by the mutation and toast
                 }
         };
@@ -74,7 +73,6 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                         await googleLoginMutation.mutateAsync();
                         // Navigation will be handled by the auth flow
                 } catch (error) {
-                        console.error('Google signup failed:', error);
                         // Error is handled by the mutation and toast
                 }
         };
