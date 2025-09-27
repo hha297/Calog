@@ -34,8 +34,6 @@ export const useProfileSync = () => {
                                         await onboardingStorage.resetOnboarding();
                                 }
                         } catch (error) {
-                                console.error('Profile sync error:', error);
-
                                 // Show error but don't block the app
                                 Toast.show({
                                         type: 'error',

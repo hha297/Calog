@@ -29,7 +29,6 @@ export class GoogleSigninService {
                         await GoogleSignin.hasPlayServices();
                         return true;
                 } catch (error) {
-                        console.error('Google Play Services not available:', error);
                         return false;
                 }
         }
@@ -103,7 +102,6 @@ export class GoogleSigninService {
                 try {
                         await GoogleSignin.signOut();
                 } catch (error) {
-                        console.error('Google Sign-Out error:', error);
                         throw error;
                 }
         }
@@ -115,7 +113,6 @@ export class GoogleSigninService {
                 try {
                         await GoogleSignin.revokeAccess();
                 } catch (error) {
-                        console.error('Google Revoke Access error:', error);
                         throw error;
                 }
         }
@@ -128,7 +125,6 @@ export class GoogleSigninService {
                         const userInfo = await GoogleSignin.getCurrentUser();
                         return userInfo;
                 } catch (error) {
-                        console.error('Get current user error:', error);
                         return null;
                 }
         }
@@ -141,7 +137,6 @@ export class GoogleSigninService {
                         const userInfo = await GoogleSignin.getCurrentUser();
                         return !!userInfo;
                 } catch (error) {
-                        console.error('Check sign-in status error:', error);
                         return false;
                 }
         }
@@ -153,7 +148,6 @@ export class GoogleSigninService {
                 try {
                         return await GoogleSignin.getTokens();
                 } catch (error) {
-                        console.error('Get tokens error:', error);
                         throw error;
                 }
         }

@@ -101,8 +101,6 @@ class ErrorUtils {
         }
 
         static globalErrorHandler(err, req, res, next) {
-                console.error('Global error:', err);
-
                 if (err.name === 'JsonWebTokenError') {
                         return ResponseUtils.error(res, 'Invalid token', 401);
                 }

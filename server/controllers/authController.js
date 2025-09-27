@@ -64,11 +64,11 @@ class AuthController {
                 let accessToken, refreshToken;
 
                 if (user.refreshTokens.length > 0) {
-                        // Đã có refresh token hợp lệ -> giữ nguyên refresh token cũ
+                        // Already has valid refresh token -> keep existing refresh token
                         refreshToken = user.refreshTokens[0].token;
                         accessToken = JWTUtils.generateAccessToken(user._id);
                 } else {
-                        // Chưa có refresh token -> tạo mới
+                        // No refresh token -> create new one
                         const tokens = JWTUtils.generateTokens(user._id);
                         accessToken = tokens.accessToken;
                         refreshToken = tokens.refreshToken;
@@ -104,7 +104,7 @@ class AuthController {
                         return ResponseUtils.error(res, 'Invalid refresh token', 401);
                 }
 
-                // ✅ Non-rolling: chỉ cấp access token mới
+                // ✅ Non-rolling: only issue new access token
                 const accessToken = JWTUtils.generateAccessToken(user._id);
 
                 ResponseUtils.success(res, { accessToken, refreshToken }, 'Access token refreshed successfully');
@@ -267,7 +267,6 @@ class AuthController {
                         const redirectUrl = `${process.env.REACT_NATIVE_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`;
                         res.redirect(redirectUrl);
                 } catch (error) {
-                        console.error('Google OAuth error:', error);
                         return ResponseUtils.error(res, 'Google authentication failed', 500);
                 }
         });

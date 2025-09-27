@@ -57,7 +57,7 @@ export const AppNavigator: React.FC = () => {
                 }
         };
 
-        // Show splash khi đang init hoặc loading
+        // Show splash while initializing or loading
         if (isInitializing || isLoading) {
                 return <SplashScreen />;
         }

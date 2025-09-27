@@ -43,8 +43,6 @@ export const useSignupMutation = () => {
                         });
                 },
                 onError: (error) => {
-                        console.error('Signup error:', error);
-
                         // Parse error message for better user experience
                         let errorTitle = 'Signup Failed';
                         let errorMessage = 'Something went wrong. Please try again.';
@@ -111,8 +109,6 @@ export const useLoginMutation = () => {
                         });
                 },
                 onError: (error) => {
-                        console.error('Login error:', error);
-
                         // Parse error message for better user experience
                         let errorTitle = 'Login Failed';
                         let errorMessage = 'Invalid credentials. Please try again.';
@@ -175,8 +171,6 @@ export const useLogoutMutation = () => {
                         });
                 },
                 onError: (error) => {
-                        console.error('Logout error:', error);
-
                         // Show error toast
                         Toast.show({
                                 type: 'error',
@@ -201,8 +195,6 @@ export const useRefreshTokenMutation = () => {
                         await refresh();
                 },
                 onError: (error) => {
-                        console.error('Refresh token error:', error);
-
                         // Show error toast for refresh failures
                         Toast.show({
                                 type: 'error',
@@ -253,7 +245,6 @@ export const useAutoRefreshToken = () => {
                         return refresh();
                 },
                 onError: (error) => {
-                        console.error('Auto refresh error:', error);
                         // Auto-logout on refresh failure
                         logout();
                 },
@@ -293,8 +284,6 @@ export const useGoogleLoginMutation = () => {
                         });
                 },
                 onError: (error) => {
-                        console.error('Google login error:', error);
-
                         // Parse error message for better user experience
                         let errorTitle = 'Google Login Failed';
                         let errorMessage = 'Something went wrong with Google sign-in. Please try again.';

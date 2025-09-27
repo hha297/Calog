@@ -91,7 +91,6 @@ class ProfileController {
                                 profile: updatedUser.profile,
                         });
                 } catch (error) {
-                        console.error('Update profile error:', error);
                         return ResponseUtils.serverError(res, 'Failed to update profile');
                 }
         }
@@ -111,7 +110,6 @@ class ProfileController {
                                 profile: user.profile || {},
                         });
                 } catch (error) {
-                        console.error('Get profile error:', error);
                         return ResponseUtils.serverError(res, 'Failed to get profile');
                 }
         }
@@ -137,7 +135,6 @@ class ProfileController {
                                 dailyCalorieGoal,
                         });
                 } catch (error) {
-                        console.error('Calculate calorie goal error:', error);
                         return ResponseUtils.serverError(res, 'Failed to calculate calorie goal');
                 }
         }

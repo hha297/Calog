@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import { Logo } from './ui';
+import { View, ActivityIndicator } from 'react-native';
+import { Logo, CText } from './ui';
 
 interface SplashScreenProps {
         message?: string;
@@ -14,9 +14,9 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ message = 'Loading..
                                 <Logo className="animate-spin" size={100} />
 
                                 {/* Loading Message */}
-                                <Text className="font-space-regular mt-4 text-center text-base text-white">
+                                <CText className="mt-4 text-center !text-tertiary" weight="bold" size="2xl">
                                         {message}
-                                </Text>
+                                </CText>
                         </View>
                 </View>
         );

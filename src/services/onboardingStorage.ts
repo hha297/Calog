@@ -11,7 +11,6 @@ export const onboardingStorage = {
                         const value = await AsyncStorage.getItem(ONBOARDING_KEY);
                         return value === 'true';
                 } catch (error) {
-                        console.error('Error checking onboarding status:', error);
                         return false;
                 }
         },
@@ -20,9 +19,7 @@ export const onboardingStorage = {
         async setOnboardingCompleted(): Promise<void> {
                 try {
                         await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
-                } catch (error) {
-                        console.error('Error setting onboarding completed:', error);
-                }
+                } catch (error) {}
         },
 
         // Reset onboarding status (for testing or logout)
@@ -30,18 +27,14 @@ export const onboardingStorage = {
                 try {
                         await AsyncStorage.removeItem(ONBOARDING_KEY);
                         await AsyncStorage.removeItem(USER_PROFILE_KEY);
-                } catch (error) {
-                        console.error('Error resetting onboarding:', error);
-                }
+                } catch (error) {}
         },
 
         // Save user profile data
         async saveUserProfile(profile: any): Promise<void> {
                 try {
                         await AsyncStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
-                } catch (error) {
-                        console.error('Error saving user profile:', error);
-                }
+                } catch (error) {}
         },
 
         // Get user profile data
@@ -50,7 +43,6 @@ export const onboardingStorage = {
                         const value = await AsyncStorage.getItem(USER_PROFILE_KEY);
                         return value ? JSON.parse(value) : null;
                 } catch (error) {
-                        console.error('Error getting user profile:', error);
                         return null;
                 }
         },

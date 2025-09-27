@@ -70,7 +70,6 @@ export const authApi = {
                 try {
                         await GoogleSigninService.signOut();
                 } catch (error) {
-                        console.error('Google Sign-Out error:', error);
                         throw error;
                 }
         },

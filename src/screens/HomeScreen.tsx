@@ -15,9 +15,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         const handleLogout = async () => {
                 try {
                         await logout();
-                } catch (error) {
-                        console.error('Logout failed:', error);
-                }
+                } catch (error) {}
         };
 
         return (

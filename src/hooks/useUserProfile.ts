@@ -16,7 +16,6 @@ export const useUserProfile = () => {
                         const profileData = await onboardingStorage.getUserProfile();
                         setProfile(profileData);
                 } catch (error) {
-                        console.error('Error loading user profile:', error);
                 } finally {
                         setIsLoading(false);
                 }
@@ -28,18 +27,14 @@ export const useUserProfile = () => {
                         const updatedProfile = { ...profile, ...newProfile } as UserProfile;
                         await onboardingStorage.saveUserProfile(updatedProfile);
                         setProfile(updatedProfile);
-                } catch (error) {
-                        console.error('Error updating user profile:', error);
-                }
+                } catch (error) {}
         };
 
         const clearProfile = async () => {
                 try {
                         await onboardingStorage.resetOnboarding();
                         setProfile(null);
-                } catch (error) {
-                        console.error('Error clearing user profile:', error);
-                }
+                } catch (error) {}
         };
 
         return {

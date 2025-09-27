@@ -97,8 +97,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                 position: 'top',
                                         });
                                 } catch (error) {
-                                        console.error('Database sync failed:', error);
-
                                         Toast.show({
                                                 type: 'info',
                                                 text1: 'Profile Saved Locally',
@@ -109,8 +107,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
                                 onComplete(completeProfile);
                         } catch (error) {
-                                console.error('Error completing onboarding:', error);
-
                                 // Show detailed error message
                                 Toast.show({
                                         type: 'error',
@@ -264,8 +260,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                         </SafeAreaView>
                 );
         } catch (error) {
-                console.error('OnboardingScreen render error:', error);
-
                 // Show error toast
                 Toast.show({
                         type: 'error',

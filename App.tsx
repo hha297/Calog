@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { initializeAuth, useAuthStore } from './src/store';
 import { GoogleSigninService } from './src/services/googleSigninService';
 import { useProfileSync } from './src/hooks/useProfileSync';
+import { SplashScreen } from './src/components/SplashScreen';
 
 function App() {
         const isDarkMode = useColorScheme() === 'dark';
@@ -30,7 +31,7 @@ function App() {
                                 // Setup unauthorized callback
                                 setupUnauthorizedCallback();
 
-                                // Init auth state (check refresh token -> lấy access token)
+                                // Init auth state (check refresh token -> get access token)
                                 await initializeAuth();
 
                                 // Init Google Sign-In
@@ -38,7 +39,7 @@ function App() {
                         } catch (err) {
                                 console.error('App init error:', err);
                         } finally {
-                                // Ẩn splash screen
+                                // Hide splash screen
                                 BootSplash.hide({ fade: true });
                                 setReady(true);
                         }
@@ -48,7 +49,7 @@ function App() {
         }, [setupUnauthorizedCallback]);
 
         if (!ready) {
-                return null; // Có thể thay bằng Splash component custom
+                <SplashScreen />;
         }
 
         return (

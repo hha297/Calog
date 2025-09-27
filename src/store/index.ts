@@ -27,7 +27,7 @@ export const useAuthStore = create<AuthState>()(
                                         // Set token cho apiClient
                                         apiClient.setAccessToken(tokens.accessToken);
 
-                                        // Lưu refresh token + user vào secureStorage
+                                        // Store refresh token + user in secureStorage
                                         if (tokens.refreshToken) {
                                                 await secureStorage.storeRefreshToken(tokens.refreshToken);
                                                 await secureStorage.storeUserData(user);
@@ -41,7 +41,6 @@ export const useAuthStore = create<AuthState>()(
                                                 isLoading: false,
                                         });
                                 } catch (err) {
-                                        console.error('Login error:', err);
                                         set({
                                                 error: err instanceof Error ? err.message : 'Login failed',
                                                 isLoading: false,
@@ -58,9 +57,7 @@ export const useAuthStore = create<AuthState>()(
                                         if (refreshToken) {
                                                 try {
                                                         await authApi.logout({ refreshToken });
-                                                } catch (err) {
-                                                        console.warn('Logout API failed:', err);
-                                                }
+                                                } catch (err) {}
                                         }
 
                                         await secureStorage.clearAll();
@@ -86,7 +83,7 @@ export const useAuthStore = create<AuthState>()(
 
                         refresh: async () => {
                                 try {
-                                        // refreshToken lấy từ secureStorage, không rolling
+                                        // refreshToken from secureStorage, not rolling
                                         const refreshToken = await secureStorage.getRefreshToken();
                                         if (!refreshToken) throw new Error('No refresh token');
 
@@ -96,13 +93,12 @@ export const useAuthStore = create<AuthState>()(
 
                                         set({
                                                 accessToken: res.accessToken,
-                                                refreshToken, // giữ refreshToken cũ
+                                                refreshToken, // keep old refreshToken
                                                 isAuthenticated: true,
                                         });
 
                                         return true;
                                 } catch (err) {
-                                        console.error('Token refresh failed:', err);
                                         await get().logout();
                                         return false;
                                 }
