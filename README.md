@@ -6,9 +6,11 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 
 - **Backend**: Node.js + Express + MongoDB (Mongoose)
 - **Frontend**: React Native with TypeScript
-- **Authentication**: Google OAuth + JWT
+- **Authentication**: Google OAuth + JWT with Keychain Storage
 - **Database**: MongoDB with Mongoose
 - **Security**: Secure token storage, JWT refresh, rate limiting
+- **Onboarding**: Multi-step profile collection with calorie calculation
+- **Persistent Login**: Users stay logged in using device keychain
 - **Port**: Backend runs on port 4000
 
 ## 📋 System Requirements
@@ -174,11 +176,32 @@ npm run dev:ios
 
 ## 📱 Usage
 
+### First Time Users
+
 1. Open React Native app
-2. Tap "Login with Google"
-3. Select Google account
-4. App will automatically login and save user info
-5. Use `/auth/me` endpoint to get user information
+2. Tap "Sign Up" to create account
+3. Complete onboarding process:
+      - Welcome screen with app introduction
+      - Value proposition and benefits
+      - Basic profile (gender, age, height, weight)
+      - Goal setting (activity level, fitness goals)
+4. Profile automatically calculates daily calorie goal
+5. App saves profile locally and syncs to database
+
+### Returning Users
+
+1. App automatically logs in using stored keychain tokens
+2. If tokens expired, app refreshes automatically
+3. Users stay logged in across app restarts
+4. Access all features without re-authentication
+
+### Google OAuth Users
+
+1. Tap "Login with Google"
+2. Select Google account
+3. App automatically creates/links account
+4. Same onboarding flow as traditional users
+5. Profile data synced to database
 
 ## 🔧 API Endpoints
 
@@ -214,13 +237,16 @@ npm run dev:ios
 ## 🔒 Security Features
 
 - JWT access tokens (15 minutes)
-- JWT refresh tokens (7 days)
-- Secure token storage with Keychain/Keystore
+- JWT refresh tokens (7 days for "Remember Me", 1 day otherwise)
+- **Keychain Storage**: Refresh tokens stored securely in device keychain/keystore
+- **Biometric Protection**: User data protected with biometrics when available
+- **Persistent Login**: Users stay logged in across app restarts and device reboots
+- **Auto-Refresh**: Seamless token refresh without user intervention
 - Rate limiting (100 requests/15 minutes)
 - CORS protection
 - Helmet security headers
 - Password hashing with bcrypt
-- Token rotation
+- Non-rolling refresh token system (keeps same refresh token)
 
 ## 🐛 Troubleshooting
 
@@ -249,6 +275,10 @@ npm run dev:ios
 - React Query for API calls and caching
 - TypeScript for type safety
 - NativeWind for styling
+- **Onboarding Flow**: Multi-step profile collection with validation
+- **Keychain Integration**: Secure storage using react-native-keychain
+- **Profile Management**: Local storage with database sync
+- **Auto-Login**: Persistent authentication across sessions
 
 ## 🤝 Contributing
 

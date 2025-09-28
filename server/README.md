@@ -116,10 +116,28 @@ server/
 
 ## 🔐 Authentication Flow
 
-1. **Signup/Login** → Generate JWT tokens
-2. **Protected Routes** → Verify JWT via middleware
-3. **Token Refresh** → Rolling refresh token system
-4. **Logout** → Revoke refresh tokens
+### Traditional Authentication
+
+1. **Signup/Login** → Generate JWT tokens with refresh token
+2. **Token Storage** → Refresh token stored securely in device keychain
+3. **Auto-Login** → App automatically logs in using stored refresh token
+4. **Token Refresh** → Non-rolling refresh token system (keeps same refresh token)
+5. **Remember Me** → Extended refresh token expiry (7 days vs 1 day)
+6. **Logout** → Revoke specific refresh token from database
+
+### Google OAuth Authentication
+
+1. **Google Sign-In** → Verify Google ID token
+2. **User Creation/Linking** → Create new user or link to existing account
+3. **Token Generation** → Generate JWT tokens for app access
+4. **Persistent Login** → Same keychain storage as traditional auth
+
+### Keychain Integration
+
+- **Secure Storage**: Refresh tokens stored in device keychain/keystore
+- **Biometric Protection**: User data protected with biometrics when available
+- **Auto-Login**: Users stay logged in across app restarts
+- **Cross-Session**: Login persists even after device restart
 
 ## 🛠️ Development Guidelines
 
@@ -153,3 +171,52 @@ server/
 - **helmet**: Security headers
 - **express-rate-limit**: Rate limiting
 - **dotenv**: Environment variables
+
+## 🗄️ Database Schema
+
+### User Model
+
+```javascript
+{
+    // Google OAuth fields
+    googleId: String,        // Google OAuth ID (unique, sparse)
+    name: String,            // Google display name
+    avatar: String,          // Google profile picture
+
+    // Traditional auth fields
+    fullName: String,        // User's full name
+    email: String,           // Email (required, unique)
+    passwordHash: String,    // Hashed password (for traditional auth)
+    role: String,           // 'free', 'premium', 'admin'
+
+    // User Profile (collected during onboarding)
+    profile: {
+        gender: String,         // 'male', 'female', 'other'
+        age: Number,           // 13-120 years
+        height: Number,        // Height in cm (100-250)
+        weight: Number,        // Weight in kg (30-300)
+        activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
+        goal: String,          // 'maintain', 'lose', 'gain'
+        dailyCalorieGoal: Number // Calculated based on profile (800-5000)
+    },
+
+    // Refresh token management
+    refreshTokens: [{
+        token: String,        // Refresh token
+        createdAt: Date,      // When token was created
+        expiresAt: Date       // When token expires
+    }],
+
+    createdAt: Date,
+    updatedAt: Date
+}
+```
+
+### Profile Onboarding Flow
+
+1. **Welcome Screen** → App introduction
+2. **Value Proposition** → Benefits of using Calog
+3. **Basic Profile** → Collect gender, age, height, weight
+4. **Goal Setting** → Activity level and fitness goals
+5. **Calorie Calculation** → Server calculates daily calorie goal
+6. **Profile Sync** → Save to database and local storage
