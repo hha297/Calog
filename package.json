@@ -16,6 +16,7 @@
         },
         "dependencies": {
                 "@react-native-async-storage/async-storage": "^1.21.0",
+                "@react-native-community/slider": "^5.0.1",
                 "@react-native-google-signin/google-signin": "^16.0.0",
                 "@react-native-vector-icons/ant-design": "^12.3.0",
                 "@react-native-vector-icons/fontawesome": "^12.3.0",

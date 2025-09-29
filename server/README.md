@@ -5,14 +5,17 @@
 ```
 server/
 ├── controllers/          # Business logic controllers
-│   └── authController.js # Authentication controller
+│   ├── authController.js # Authentication controller
+│   └── profileController.js # Profile and calorie calculation controller
 ├── middleware/           # Express middleware
 │   └── auth.js          # JWT authentication middleware
 ├── models/              # Database models
 │   ├── User.js          # User model with auth methods
 │   └── Food.js          # Food model (placeholder)
 ├── routes/               # API routes
-│   └── auth.js          # Authentication routes
+│   ├── auth.js          # Authentication routes
+│   ├── profile.js       # Profile management routes
+│   └── food.js          # Food management routes
 ├── utils/                # Utility functions
 │   └── index.js         # JWT, Response, Error utilities
 ├── .env                  # Environment variables
@@ -197,6 +200,9 @@ server/
         weight: Number,        // Weight in kg (30-300)
         activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
         goal: String,          // 'maintain', 'lose', 'gain'
+        targetWeight: Number,   // Target weight in kg (for lose/gain goals)
+        weightChangeRate: Number, // Weight change rate in kg/week (0.1-1.0)
+        tdee: Number,          // Total Daily Energy Expenditure
         dailyCalorieGoal: Number // Calculated based on profile (800-5000)
     },
 
@@ -216,7 +222,44 @@ server/
 
 1. **Welcome Screen** → App introduction
 2. **Value Proposition** → Benefits of using Calog
-3. **Basic Profile** → Collect gender, age, height, weight
-4. **Goal Setting** → Activity level and fitness goals
-5. **Calorie Calculation** → Server calculates daily calorie goal
+3. **Basic Profile** → Collect gender, age, height, weight, activity level
+4. **Weight Goal Setting** → Advanced goal configuration:
+      - Choose goal: Maintain, Lose, or Gain weight
+      - Set target weight (for lose/gain goals)
+      - Select weight change rate (0.1-1.0 kg/week)
+      - Real-time pace labels (Chill pace, Easy, Balanced, Hardcore, etc.)
+5. **Calorie Calculation** → Server calculates TDEE and daily calorie goal using Mifflin-St Jeor equation
 6. **Profile Sync** → Save to database and local storage
+
+## 🧮 Calorie Calculation System
+
+### Mifflin-St Jeor Equation
+
+**BMR (Basal Metabolic Rate) Calculation:**
+
+- **Male**: BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age + 5
+- **Female**: BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age - 161
+
+**TDEE (Total Daily Energy Expenditure):**
+
+- TDEE = BMR × Activity Multiplier
+
+**Activity Multipliers:**
+
+- Sedentary: 1.2
+- Light: 1.375
+- Moderate: 1.55
+- Active: 1.725
+- Very Active: 1.9
+
+**Daily Calorie Goal:**
+
+- **Maintain**: TDEE
+- **Lose**: TDEE - (weightChangeRate × 7700 ÷ 7)
+- **Gain**: TDEE + (weightChangeRate × 7700 ÷ 7)
+
+### Weight Goal Validation
+
+- **Lose Weight**: Target weight must be less than current weight
+- **Gain Weight**: Target weight must be greater than current weight
+- **Weight Change Rate**: 0.1-1.0 kg/week for safe progress

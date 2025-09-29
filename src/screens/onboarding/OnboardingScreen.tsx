@@ -63,14 +63,20 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
         // Handle final submit when "Finish" is pressed
         const handleDone = async () => {
-                if (
+                // Check required fields
+                const hasRequiredFields =
                         profileData.gender &&
                         profileData.age &&
                         profileData.height &&
                         profileData.weight &&
                         profileData.activityLevel &&
-                        profileData.goal
-                ) {
+                        profileData.goal;
+
+                // For lose/gain goals, also check if target weight and rate are provided
+                const hasWeightGoalFields =
+                        profileData.goal === 'maintain' || (profileData.targetWeight && profileData.weightChangeRate);
+
+                if (hasRequiredFields && hasWeightGoalFields) {
                         try {
                                 // Calculate calorie goal
                                 const calorieResponse = await profileApi.calculateCalorieGoal(

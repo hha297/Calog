@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { CText } from '../../components/ui/CText';
 import { Button } from '../../components/ui/Button';
+import { TextField } from '../../components/ui/TextField';
+import { WeightGoalSlider } from '../../components/ui/WeightGoalSlider';
 import { UserProfile } from '../../types';
-import { Scale, TrendingDown, TrendingUp } from 'lucide-react-native';
+import { AlertCircleIcon, Scale, TrendingDown, TrendingUp } from 'lucide-react-native';
 
 interface GoalSettingSlideProps {
         onNext?: () => void;
@@ -40,18 +42,89 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
         profileData,
 }) => {
         const [selectedGoal, setSelectedGoal] = useState(profileData?.goal || '');
+        const [targetWeight, setTargetWeight] = useState(profileData?.targetWeight?.toString() || '');
+        const [weightChangeRate, setWeightChangeRate] = useState(profileData?.weightChangeRate || 0.5);
 
         const handleGoalSelect = (goal: string) => {
                 setSelectedGoal(goal);
-                onDataChange?.({ ...profileData, goal: goal as any });
+                const newData = { ...profileData, goal: goal as any };
+
+                // Set default values based on goal
+                if (goal === 'lose') {
+                        newData.weightChangeRate = 0.5; // default 0.5 kg/week
+                        setWeightChangeRate(0.5);
+                } else if (goal === 'gain') {
+                        newData.weightChangeRate = 0.5; // default 0.5 kg/week
+                        setWeightChangeRate(0.5);
+                } else {
+                        // Clear weight goal fields for maintain
+                        delete newData.weightChangeRate;
+                        setWeightChangeRate(0);
+                        // Keep targetWeight value for when user switches back
+                }
+
+                onDataChange?.(newData);
         };
 
-        const isGoalValid = !!selectedGoal;
+        const handleTargetWeightChange = (value: string) => {
+                setTargetWeight(value);
+                const weight = parseFloat(value);
+                if (!isNaN(weight)) {
+                        onDataChange?.({ ...profileData, targetWeight: weight });
+                }
+        };
+
+        const handleWeightChangeRateChange = (value: number) => {
+                setWeightChangeRate(value);
+                onDataChange?.({ ...profileData, weightChangeRate: value });
+        };
+
+        const getTargetWeightError = (): string | null => {
+                if (!selectedGoal || selectedGoal === 'maintain') return null;
+
+                const targetWeightNum = parseFloat(targetWeight);
+                const currentWeight = profileData?.weight;
+
+                if (!currentWeight || isNaN(targetWeightNum)) return null;
+
+                if (selectedGoal === 'lose' && targetWeightNum >= currentWeight) {
+                        return `Target weight must be less than current weight (${currentWeight}kg)`;
+                }
+                if (selectedGoal === 'gain' && targetWeightNum <= currentWeight) {
+                        return `Target weight must be greater than current weight (${currentWeight}kg)`;
+                }
+
+                return null;
+        };
+
+        const isGoalValid = () => {
+                if (!selectedGoal) return false;
+                if (selectedGoal === 'maintain') return true;
+
+                // For lose/gain goals, require target weight and valid rate
+                const targetWeightNum = parseFloat(targetWeight);
+                if (isNaN(targetWeightNum) || targetWeightNum <= 0 || weightChangeRate <= 0) {
+                        return false;
+                }
+
+                // Check target weight validation
+                const currentWeight = profileData?.weight;
+                if (currentWeight) {
+                        if (selectedGoal === 'lose' && targetWeightNum >= currentWeight) {
+                                return false; // Target must be less than current for lose
+                        }
+                        if (selectedGoal === 'gain' && targetWeightNum <= currentWeight) {
+                                return false; // Target must be greater than current for gain
+                        }
+                }
+
+                return true;
+        };
 
         // Notify parent component about validation state
         useEffect(() => {
-                onValidationChange?.(isGoalValid);
-        }, [isGoalValid, onValidationChange]);
+                onValidationChange?.(isGoalValid());
+        }, [selectedGoal, targetWeight, weightChangeRate, onValidationChange]);
 
         return (
                 <View className="flex-1 bg-primary px-8 pt-8">
@@ -71,7 +144,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                 </View>
 
                                 {/* Goal Options */}
-                                <View className="mb-12 w-full">
+                                <View className="mb-4 w-full">
                                         {goalOptions.map((option) => {
                                                 const IconComponent = option.icon;
                                                 return (
@@ -120,6 +193,44 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                 );
                                         })}
                                 </View>
+
+                                {/* Weight Goal Configuration */}
+                                {(selectedGoal === 'lose' || selectedGoal === 'gain') && (
+                                        <View>
+                                                <CText size="xl" weight="medium" className="text-text-light mb-4">
+                                                        Goal Overview
+                                                </CText>
+
+                                                {/* Target Weight Input */}
+                                                <View className="mb-4">
+                                                        <TextField
+                                                                label="Target Weight"
+                                                                placeholder="Enter target weight"
+                                                                value={targetWeight}
+                                                                onChangeText={handleTargetWeightChange}
+                                                                keyboardType="numeric"
+                                                        />
+                                                        {/* Target Weight Validation Error */}
+                                                        {getTargetWeightError() && (
+                                                                <View className="mt-2 flex flex-row items-center rounded-lg border border-status-error/80 bg-status-error/20 p-3">
+                                                                        <AlertCircleIcon size={20} color="#F44336" />
+                                                                        <CText className="px-2 text-sm !text-status-error">
+                                                                                {getTargetWeightError()}
+                                                                        </CText>
+                                                                </View>
+                                                        )}
+                                                </View>
+
+                                                {/* Weight Change Rate Slider */}
+                                                <View className="mb-4">
+                                                        <WeightGoalSlider
+                                                                goal={selectedGoal as 'lose' | 'gain'}
+                                                                value={weightChangeRate}
+                                                                onValueChange={handleWeightChangeRateChange}
+                                                        />
+                                                </View>
+                                        </View>
+                                )}
                         </ScrollView>
                 </View>
         );

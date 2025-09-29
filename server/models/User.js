@@ -83,6 +83,21 @@ const userSchema = new mongoose.Schema(
                                 type: String,
                                 enum: ['maintain', 'lose', 'gain'],
                         },
+                        targetWeight: {
+                                type: Number, // in kg
+                                min: [30, 'Target weight must be at least 30kg'],
+                                max: [300, 'Target weight cannot exceed 300kg'],
+                        },
+                        weightChangeRate: {
+                                type: Number, // in kg/week
+                                min: [0.1, 'Weight change rate must be at least 0.1 kg/week'],
+                                max: [1.0, 'Weight change rate cannot exceed 1.0 kg/week'],
+                        },
+                        tdee: {
+                                type: Number, // Total Daily Energy Expenditure
+                                min: [800, 'TDEE must be at least 800'],
+                                max: [5000, 'TDEE cannot exceed 5000'],
+                        },
                         dailyCalorieGoal: {
                                 type: Number,
                                 min: [800, 'Daily calorie goal must be at least 800'],

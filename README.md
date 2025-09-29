@@ -9,7 +9,9 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 - **Authentication**: Google OAuth + JWT with Keychain Storage
 - **Database**: MongoDB with Mongoose
 - **Security**: Secure token storage, JWT refresh, rate limiting
-- **Onboarding**: Multi-step profile collection with calorie calculation
+- **Onboarding**: Multi-step profile collection with advanced weight goal settings
+- **Weight Goals**: Lose/Gain weight with target weight and rate selection
+- **Calorie Calculation**: TDEE and daily calorie goal calculation based on Mifflin-St Jeor equation
 - **Persistent Login**: Users stay logged in using device keychain
 - **Port**: Backend runs on port 4000
 
@@ -183,9 +185,9 @@ npm run dev:ios
 3. Complete onboarding process:
       - Welcome screen with app introduction
       - Value proposition and benefits
-      - Basic profile (gender, age, height, weight)
-      - Goal setting (activity level, fitness goals)
-4. Profile automatically calculates daily calorie goal
+      - Basic profile (gender, age, height, weight, activity level)
+      - Weight goal setting: - Choose goal: Maintain, Lose, or Gain weight - Set target weight (for lose/gain goals) - Select weight change rate (0.1-1.0 kg/week) - Real-time pace labels (Chill pace, Easy, Balanced, Hardcore, etc.)
+4. System automatically calculates TDEE and daily calorie goal
 5. App saves profile locally and syncs to database
 
 ### Returning Users
@@ -229,6 +231,18 @@ npm run dev:ios
     avatar: String,          // Google profile picture
     refreshToken: String,    // Google refresh token
     role: String,            // 'free', 'premium', 'admin'
+    profile: {
+        gender: String,      // 'male', 'female', 'other'
+        age: Number,         // 13-120
+        height: Number,      // Height in cm (100-250)
+        weight: Number,      // Weight in kg (30-300)
+        activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
+        goal: String,        // 'maintain', 'lose', 'gain'
+        targetWeight: Number, // Target weight in kg (for lose/gain goals)
+        weightChangeRate: Number, // Weight change rate in kg/week (0.1-1.0)
+        tdee: Number,        // Total Daily Energy Expenditure
+        dailyCalorieGoal: Number // Calculated daily calorie goal
+    },
     createdAt: Date,
     updatedAt: Date
 }
@@ -275,7 +289,9 @@ npm run dev:ios
 - React Query for API calls and caching
 - TypeScript for type safety
 - NativeWind for styling
-- **Onboarding Flow**: Multi-step profile collection with validation
+- **Onboarding Flow**: Multi-step profile collection with advanced weight goal settings
+- **Weight Goal System**: Target weight and rate selection with real-time pace labels
+- **Calorie Calculation**: TDEE and daily calorie goal using Mifflin-St Jeor equation
 - **Keychain Integration**: Secure storage using react-native-keychain
 - **Profile Management**: Local storage with database sync
 - **Auto-Login**: Persistent authentication across sessions
