@@ -24,6 +24,9 @@ export interface UserProfile {
         weight: number; // in kg
         activityLevel: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
         goal: 'maintain' | 'lose' | 'gain';
+        targetWeight?: number; // target weight in kg (for lose/gain goals)
+        weightChangeRate?: number; // weight change rate in kg/week (for lose/gain goals)
+        tdee?: number; // Total Daily Energy Expenditure
         dailyCalorieGoal?: number; // calculated based on profile
 }
 
