@@ -128,6 +128,14 @@ export type AuthStackParamList = {
         PrivacyPolicy: undefined;
 };
 
+export type MainTabParamList = {
+        Diary: undefined;
+        Analytics: undefined;
+        Scan: undefined;
+        Help: undefined;
+        Profile: undefined;
+};
+
 export type MainStackParamList = {
         Home: undefined;
         Profile: undefined;
