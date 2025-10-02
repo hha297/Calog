@@ -6,7 +6,7 @@ import { DiaryScreen } from '../screens/DiaryScreen';
 import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
+import { ProfileNavigator } from './ProfileNavigator';
 import { CText } from '../components/ui/CText';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
@@ -42,11 +42,11 @@ export const MainNavigator: React.FC = () => {
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        height: 72,
-                                        paddingTop: 8,
+                                        height: 88,
+                                        paddingTop: 16,
                                         backgroundColor: '#1e3738',
-                                        borderTopLeftRadius: 25,
-                                        borderTopRightRadius: 25,
+                                        borderTopLeftRadius: 32,
+                                        borderTopRightRadius: 32,
                                         borderTopWidth: 0,
                                         elevation: 15, // Android
                                         shadowColor: '#000', // iOS
@@ -70,7 +70,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-tertiary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Diary
@@ -93,7 +93,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-tertiary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Analytics
@@ -130,7 +130,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-tertiary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Help
@@ -143,7 +143,7 @@ export const MainNavigator: React.FC = () => {
                         {/* Profile Tab */}
                         <Tab.Screen
                                 name="Profile"
-                                component={ProfileScreen}
+                                component={ProfileNavigator}
                                 options={{
                                         title: 'Profile',
                                         tabBarIcon: ({ color, focused }) => (
@@ -153,7 +153,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-tertiary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Profile

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { CText } from '../../components/ui/CText';
 import { Button } from '../../components/ui/Button';
 import { TextField } from '../../components/ui/TextField';
-import { WeightGoalSlider } from '../../components/ui/WeightGoalSlider';
+import { Slider } from '../../components/ui/Slider';
 import { UserProfile } from '../../types';
 import { AlertCircleIcon, Scale, TrendingDown, TrendingUp } from 'lucide-react-native';
 
@@ -223,8 +223,8 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
 
                                                 {/* Weight Change Rate Slider */}
                                                 <View className="mb-4">
-                                                        <WeightGoalSlider
-                                                                goal={selectedGoal as 'lose' | 'gain'}
+                                                        <Slider
+                                                                type="weight_goal"
                                                                 value={weightChangeRate}
                                                                 onValueChange={handleWeightChangeRateChange}
                                                         />

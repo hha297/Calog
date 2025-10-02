@@ -13,6 +13,7 @@ interface TextFieldProps {
         keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
         autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
         className?: string;
+        style?: ViewStyle;
 }
 
 export const TextField: React.FC<TextFieldProps> = ({
@@ -25,12 +26,13 @@ export const TextField: React.FC<TextFieldProps> = ({
         keyboardType = 'default',
         autoCapitalize = 'none',
         className = '',
+        style,
 }) => {
         const [isFocused, setIsFocused] = useState(false);
         const [isSecureVisible, setIsSecureVisible] = useState(!secureTextEntry);
 
         return (
-                <View style={{} as ViewStyle} className={`mb-4 ${className}`}>
+                <View style={style} className={`mb-4 ${className}`}>
                         <CText size="base" className="text-text-light mb-2">
                                 {label}
                         </CText>

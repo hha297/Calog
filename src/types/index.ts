@@ -136,6 +136,11 @@ export type MainTabParamList = {
         Profile: undefined;
 };
 
+export type ProfileStackParamList = {
+        Profile: undefined;
+        PhysicalProfile: undefined;
+};
+
 export type MainStackParamList = {
         Home: undefined;
         Profile: undefined;
