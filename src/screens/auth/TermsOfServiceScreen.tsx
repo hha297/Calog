@@ -10,7 +10,7 @@ interface TermsOfServiceScreenProps {
 
 export const TermsOfServiceScreen: React.FC<TermsOfServiceScreenProps> = ({ navigation }) => {
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Header */}
@@ -138,12 +138,7 @@ export const TermsOfServiceScreen: React.FC<TermsOfServiceScreenProps> = ({ navi
                                         </View>
 
                                         {/* Back Button */}
-                                        <Button
-                                                title="Back"
-                                                onPress={() => navigation.goBack()}
-                                                variant="ghost"
-                                                className="mb-4"
-                                        />
+                                        <Button title="Back" onPress={() => navigation.goBack()} className="mb-4" />
                                 </View>
                         </ScrollView>
                 </SafeAreaView>

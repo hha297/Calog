@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, ChevronRightIcon } from 'lucide-react-native';
-import { CText } from '../components/ui/CText';
-import { Button } from '../components/ui/Button';
-import { EditModal, EditModalField } from '../components/ui/EditModal';
-import { useUserProfile } from '../hooks/useUserProfile';
-import { useAuthStore } from '../store';
+import { ArrowLeft, ChevronRightIcon, User, Camera, PenBoxIcon } from 'lucide-react-native';
+import { CText } from '../../components/ui/CText';
+import { Button } from '../../components/ui/Button';
+import { EditModal } from '../../components/ui/EditModal';
+import { BasicInfoView, MeasurementsView, ProfileInfoView, FitnessGoalView } from '../../components/profile';
+import { useUserProfile } from '../../hooks/useUserProfile';
+import { useAuthStore } from '../../store';
 
-// TODO: Fix UI for Personal Profile Update, add cancel modal when press outside modal
-// TODO: Finalize the UI for the modal
-
-export const PhysicalProfileScreen: React.FC = () => {
+export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
         const { profile, updateProfile } = useUserProfile();
         const { user } = useAuthStore();
@@ -22,8 +20,9 @@ export const PhysicalProfileScreen: React.FC = () => {
 
         const [editModalVisible, setEditModalVisible] = useState(false);
         const [editModalType, setEditModalType] = useState<
-                'weight_goal' | 'activity_level' | 'measurements' | 'basic_info' | null
+                'fitness_goal' | 'measurements' | 'basic_info' | 'profile_info' | null
         >(null);
+        const [formValues, setFormValues] = useState<Record<string, any>>({});
 
         const calculateBMI = (weight: number, height: number) => {
                 const heightInMeters = height / 100;
@@ -77,48 +76,71 @@ export const PhysicalProfileScreen: React.FC = () => {
                 return { bmr: Math.round(bmr), tdee: Math.round(tdee) };
         };
 
-        const handleEditWeightGoal = () => {
-                setEditModalType('weight_goal');
-                setEditModalVisible(true);
-        };
-
-        const handleEditActivityLevel = () => {
-                setEditModalType('activity_level');
+        const handleEditFitnessGoal = () => {
+                setEditModalType('fitness_goal');
+                setFormValues({
+                        activityLevel: currentProfile?.activityLevel || 'moderate',
+                        goal: currentProfile?.goal || 'maintain',
+                        targetWeight: currentProfile?.targetWeight || 70,
+                        weightChangeRate: currentProfile?.weightChangeRate || 0.5,
+                });
                 setEditModalVisible(true);
         };
 
         const handleEditBasicInfo = () => {
                 setEditModalType('basic_info');
+                setFormValues({
+                        gender: currentProfile?.gender || 'male',
+                        height: currentProfile?.height || 170,
+                        weight: currentProfile?.weight || 70,
+                        age: currentProfile?.age || 25,
+                });
                 setEditModalVisible(true);
         };
 
         const handleEditMeasurements = () => {
                 setEditModalType('measurements');
+                setFormValues({
+                        neck: currentProfile?.neck || 35,
+                        waist: currentProfile?.waist || 80,
+                        hip: currentProfile?.hip || 95,
+                        bicep: currentProfile?.bicep || 30,
+                        thigh: currentProfile?.thigh || 55,
+                });
                 setEditModalVisible(true);
         };
 
-        const handleSaveEdit = async (values: Record<string, any>) => {
+        const handleEditProfileInfo = () => {
+                setEditModalType('profile_info');
+                setFormValues({
+                        name: user?.fullName || user?.name || '',
+                        email: user?.email || '',
+                        avatar: user?.avatar || '',
+                });
+                setEditModalVisible(true);
+        };
+
+        const handleSaveEdit = async () => {
                 try {
-                        if (editModalType === 'weight_goal') {
+                        if (editModalType === 'basic_info') {
+                                await updateProfile(formValues);
+                        } else if (editModalType === 'fitness_goal') {
                                 await updateProfile({
-                                        goal: values.goal,
-                                        targetWeight: values.targetWeight,
-                                        weightChangeRate: values.weightChangeRate,
-                                });
-                        } else if (editModalType === 'activity_level') {
-                                await updateProfile({
-                                        activityLevel: values.activityLevel,
-                                });
-                        } else if (editModalType === 'basic_info') {
-                                await updateProfile({
-                                        gender: values.gender,
-                                        weight: values.weight,
-                                        height: values.height,
-                                        age: values.age,
+                                        activityLevel: formValues.activityLevel,
+                                        goal: formValues.goal,
+                                        targetWeight: formValues.targetWeight,
+                                        weightChangeRate: formValues.weightChangeRate,
                                 });
                         } else if (editModalType === 'measurements') {
-                                // TODO: Update body measurements
-                                console.log('Update measurements:', values);
+                                await updateProfile({
+                                        neck: formValues.neck,
+                                        waist: formValues.waist,
+                                        hip: formValues.hip,
+                                        bicep: formValues.bicep,
+                                        thigh: formValues.thigh,
+                                });
+                        } else if (editModalType === 'profile_info') {
+                                // TODO: Update user profile info (name, email, avatar)
                         }
                         setEditModalVisible(false);
                         setEditModalType(null);
@@ -127,174 +149,18 @@ export const PhysicalProfileScreen: React.FC = () => {
                 }
         };
 
-        const getEditModalFields = (): EditModalField[] => {
-                if (!currentProfile) return [];
-
+        const renderModalContent = () => {
                 switch (editModalType) {
                         case 'basic_info':
-                                return [
-                                        {
-                                                key: 'gender',
-                                                label: 'Gender',
-                                                type: 'gender_buttons',
-                                                value: currentProfile.gender,
-                                                options: [
-                                                        { label: 'Male', value: 'male' },
-                                                        { label: 'Female', value: 'female' },
-                                                ],
-                                        },
-                                        {
-                                                key: 'height',
-                                                label: 'Height (cm)',
-                                                type: 'slider',
-                                                value: currentProfile.height,
-                                                unit: 'cm',
-                                                min: 100,
-                                                max: 250,
-                                                step: 1,
-                                        },
-                                        {
-                                                key: 'weight_age',
-                                                label: 'Weight & Age',
-                                                type: 'dual_stepper',
-                                                value: '',
-                                                fields: [
-                                                        {
-                                                                key: 'weight',
-                                                                label: 'Weight (kg)',
-                                                                unit: 'kg',
-                                                                min: 30,
-                                                                max: 200,
-                                                                step: 1,
-                                                        },
-                                                        {
-                                                                key: 'age',
-                                                                label: 'Age',
-                                                                unit: 'years',
-                                                                min: 10,
-                                                                max: 100,
-                                                                step: 1,
-                                                        },
-                                                ],
-                                        },
-                                ];
-
-                        case 'weight_goal':
-                                return [
-                                        {
-                                                key: 'goal',
-                                                label: 'Goal',
-                                                type: 'select',
-                                                value: currentProfile.goal,
-                                                options: [
-                                                        { label: 'Maintain Weight', value: 'maintain' },
-                                                        { label: 'Lose Weight', value: 'lose' },
-                                                        { label: 'Gain Weight', value: 'gain' },
-                                                ],
-                                        },
-                                        {
-                                                key: 'targetWeight',
-                                                label: 'Target Weight',
-                                                type: 'number',
-                                                value: currentProfile.targetWeight || 0,
-                                                unit: 'kg',
-                                                min: 30,
-                                                max: 200,
-                                        },
-                                        {
-                                                key: 'weightChangeRate',
-                                                label: 'Weight Change Rate',
-                                                type: 'select',
-                                                value: currentProfile.weightChangeRate || 0.5,
-                                                options: [
-                                                        { label: 'Slow (0.25 kg/week)', value: 0.25 },
-                                                        { label: 'Moderate (0.5 kg/week)', value: 0.5 },
-                                                        { label: 'Fast (0.75 kg/week)', value: 0.75 },
-                                                        { label: 'Very Fast (1 kg/week)', value: 1.0 },
-                                                ],
-                                        },
-                                ];
-
-                        case 'activity_level':
-                                return [
-                                        {
-                                                key: 'activityLevel',
-                                                label: 'Activity Level',
-                                                type: 'select',
-                                                value: currentProfile.activityLevel,
-                                                options: [
-                                                        { label: 'Sedentary (little/no exercise)', value: 'sedentary' },
-                                                        {
-                                                                label: 'Light (light exercise 1-3 days/week)',
-                                                                value: 'light',
-                                                        },
-                                                        {
-                                                                label: 'Moderate (moderate exercise 3-5 days/week)',
-                                                                value: 'moderate',
-                                                        },
-                                                        {
-                                                                label: 'Active (heavy exercise 6-7 days/week)',
-                                                                value: 'active',
-                                                        },
-                                                        {
-                                                                label: 'Very Active (very heavy exercise, physical job)',
-                                                                value: 'very_active',
-                                                        },
-                                                ],
-                                        },
-                                ];
-
+                                return <BasicInfoView currentProfile={currentProfile} onValuesChange={setFormValues} />;
+                        case 'fitness_goal':
+                                return <FitnessGoalView formValues={formValues} setFormValues={setFormValues} />;
                         case 'measurements':
-                                return [
-                                        {
-                                                key: 'neck',
-                                                label: 'Neck',
-                                                type: 'number',
-                                                value: 0,
-                                                unit: 'cm',
-                                                min: 20,
-                                                max: 50,
-                                        },
-                                        {
-                                                key: 'waist',
-                                                label: 'Waist',
-                                                type: 'number',
-                                                value: 0,
-                                                unit: 'cm',
-                                                min: 50,
-                                                max: 150,
-                                        },
-                                        {
-                                                key: 'hip',
-                                                label: 'Hip',
-                                                type: 'number',
-                                                value: 0,
-                                                unit: 'cm',
-                                                min: 70,
-                                                max: 150,
-                                        },
-                                        {
-                                                key: 'bicep',
-                                                label: 'Bicep',
-                                                type: 'number',
-                                                value: 0,
-                                                unit: 'cm',
-                                                min: 15,
-                                                max: 50,
-                                        },
-                                        {
-                                                key: 'thigh',
-                                                label: 'Thigh',
-                                                type: 'number',
-                                                value: 0,
-                                                unit: 'cm',
-                                                min: 30,
-                                                max: 80,
-                                        },
-                                ];
-
+                                return <MeasurementsView formValues={formValues} setFormValues={setFormValues} />;
+                        case 'profile_info':
+                                return <ProfileInfoView formValues={formValues} setFormValues={setFormValues} />;
                         default:
-                                return [];
+                                return null;
                 }
         };
 
@@ -302,12 +168,12 @@ export const PhysicalProfileScreen: React.FC = () => {
                 switch (editModalType) {
                         case 'basic_info':
                                 return 'Change Personal Information';
-                        case 'weight_goal':
-                                return 'Change Weight Goal';
-                        case 'activity_level':
-                                return 'Change Activity Level';
+                        case 'fitness_goal':
+                                return 'Fitness Goals & Activity';
                         case 'measurements':
                                 return 'Change Your Measurements';
+                        case 'profile_info':
+                                return 'Edit Profile';
                         default:
                                 return 'Edit';
                 }
@@ -317,12 +183,12 @@ export const PhysicalProfileScreen: React.FC = () => {
                 switch (editModalType) {
                         case 'basic_info':
                                 return 'Update your personal information';
-                        case 'weight_goal':
-                                return 'Set your weight goal and target weight';
-                        case 'activity_level':
-                                return 'Select your activity level for accurate calorie calculations';
+                        case 'fitness_goal':
+                                return 'Set your activity level, weight goals, and target weight';
                         case 'measurements':
                                 return 'Enter your body measurements for detailed analysis';
+                        case 'profile_info':
+                                return 'Update your profile information';
                         default:
                                 return '';
                 }
@@ -330,7 +196,6 @@ export const PhysicalProfileScreen: React.FC = () => {
 
         React.useEffect(() => {
                 // Profile data is already loaded via useUserProfile hook
-                console.log('PhysicalProfileScreen mounted');
         }, []);
 
         if (!currentProfile) {
@@ -365,22 +230,52 @@ export const PhysicalProfileScreen: React.FC = () => {
                 (currentProfile.goal === 'lose' ? tdee - 550 : currentProfile.goal === 'gain' ? tdee + 550 : tdee);
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         {/* Header */}
                         <View className="flex-row items-center justify-between px-6 py-4">
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
                                         <ArrowLeft size={24} color="#FFFFFF" />
                                 </TouchableOpacity>
                                 <CText size="lg" weight="bold" className="text-text-light">
-                                        Physical Profile
+                                        Profile
                                 </CText>
                                 <View style={{ width: 24 }} />
                         </View>
 
                         <ScrollView className="flex-1 px-6" contentContainerStyle={{ paddingBottom: 100 }}>
+                                {/* Profile Information Section */}
+                                <TouchableOpacity
+                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        onPress={handleEditProfileInfo}
+                                >
+                                        <View className="flex-row items-center">
+                                                <View className="mr-4 h-16 w-16 items-center justify-center rounded-full bg-primary">
+                                                        {user?.avatar ? (
+                                                                <Image
+                                                                        source={{ uri: user.avatar }}
+                                                                        className="h-16 w-16 rounded-full"
+                                                                />
+                                                        ) : (
+                                                                <User size={32} color="#FFFFFF" />
+                                                        )}
+                                                </View>
+                                                <View className="flex-1">
+                                                        <CText size="lg" weight="bold" className="text-text-light mb-1">
+                                                                {user?.fullName || user?.name || 'User'}
+                                                        </CText>
+                                                        <CText className="text-text-muted">
+                                                                {user?.email || 'user@example.com'}
+                                                        </CText>
+                                                </View>
+                                                <View className="items-center">
+                                                        <PenBoxIcon size={20} color="#4CAF50" />
+                                                </View>
+                                        </View>
+                                </TouchableOpacity>
+
                                 {/* Basic Information Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-white/5 p-4"
+                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
                                         onPress={handleEditBasicInfo}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -405,7 +300,7 @@ export const PhysicalProfileScreen: React.FC = () => {
 
                                 {/* Body Measurements Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-white/5 p-4"
+                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
                                         onPress={handleEditMeasurements}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -430,61 +325,36 @@ export const PhysicalProfileScreen: React.FC = () => {
                                         </View>
                                 </TouchableOpacity>
 
-                                {/* Activity Level Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
-                                        <TouchableOpacity
-                                                className="flex-row items-center justify-between"
-                                                onPress={handleEditActivityLevel}
-                                        >
-                                                <View className="flex-row items-center">
-                                                        <CText className="text-text-muted mr-2">Activity Level</CText>
-                                                        <ChevronRightIcon size={16} color="#9CA3AF" />
-                                                </View>
+                                {/* Fitness Goals Section */}
+                                <TouchableOpacity
+                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        onPress={handleEditFitnessGoal}
+                                >
+                                        <View className="mb-2 flex-row justify-between">
+                                                <CText className="text-text-muted">Activity Level</CText>
                                                 <CText className="text-text-light">
                                                         {getActivityLevelText(currentProfile.activityLevel)}: {tdee}{' '}
                                                         kcal/day
                                                 </CText>
-                                        </TouchableOpacity>
-                                </View>
-
-                                {/* Goal Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
-                                        <TouchableOpacity
-                                                className="flex-row items-center justify-between"
-                                                onPress={handleEditWeightGoal}
-                                        >
-                                                <View className="flex-row items-center">
-                                                        <CText className="text-text-muted mr-2">Goal</CText>
-                                                        <ChevronRightIcon size={16} color="#9CA3AF" />
-                                                </View>
+                                        </View>
+                                        <View className="mb-2 flex-row justify-between">
+                                                <CText className="text-text-muted">Goal</CText>
                                                 <CText className="text-text-light">
                                                         {getGoalText(currentProfile.goal, currentProfile.targetWeight)}
                                                 </CText>
-                                        </TouchableOpacity>
-                                </View>
-
-                                {/* Reduction Level Section */}
-                                {currentProfile.goal === 'lose' && (
-                                        <View className="mb-4 rounded-xl bg-white/5 p-4">
-                                                <TouchableOpacity
-                                                        className="flex-row items-center justify-between"
-                                                        onPress={handleEditWeightGoal}
-                                                >
-                                                        <View className="flex-row items-center">
-                                                                <CText className="text-text-muted mr-2">
-                                                                        Reduction Level
-                                                                </CText>
-                                                                <ChevronRightIcon size={16} color="#9CA3AF" />
-                                                        </View>
+                                        </View>
+                                        {currentProfile.goal === 'lose' && (
+                                                <View className="flex-row justify-between">
+                                                        <CText className="text-text-muted">Reduction Level</CText>
                                                         <CText className="text-text-light">
                                                                 Reduce {currentProfile.weightChangeRate} kg/week
                                                         </CText>
-                                                </TouchableOpacity>
-                                        </View>
-                                )}
+                                                </View>
+                                        )}
+                                </TouchableOpacity>
 
                                 {/* Required Calorie Intake Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -501,7 +371,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* TDEE Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -519,7 +389,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMR Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">BMR Index (kcal)</CText>
@@ -534,7 +404,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMI Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">BMI Index</CText>
@@ -549,7 +419,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Body Fat Percentage Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -564,7 +434,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Body Fat Mass Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -579,7 +449,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* FFMI Section */}
-                                <View className="mb-4 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -594,7 +464,7 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Lean Body Mass Section */}
-                                <View className="mb-6 rounded-xl bg-white/5 p-4">
+                                <View className="bg-surfacePrimary mb-6 rounded-xl p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -614,13 +484,14 @@ export const PhysicalProfileScreen: React.FC = () => {
                                 visible={editModalVisible}
                                 title={getEditModalTitle()}
                                 description={getEditModalDescription()}
-                                fields={getEditModalFields()}
                                 onClose={() => {
                                         setEditModalVisible(false);
                                         setEditModalType(null);
                                 }}
                                 onSave={handleSaveEdit}
-                        />
+                        >
+                                {renderModalContent()}
+                        </EditModal>
                 </SafeAreaView>
         );
 };

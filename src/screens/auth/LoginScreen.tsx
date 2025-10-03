@@ -73,7 +73,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -149,7 +149,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                         <View
                                                                 className={`mr-2 h-5 w-5 items-center justify-center rounded border-2 ${
                                                                         rememberMe
-                                                                                ? 'border-tertiary bg-tertiary'
+                                                                                ? 'border-secondary bg-primary'
                                                                                 : 'border-gray-300'
                                                                 }`}
                                                         >
@@ -162,7 +162,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                                 {/* Forgot Password */}
                                                 <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                                                        <CText className="!text-tertiary" weight="medium">
+                                                        <CText className="!text-primary" weight="medium">
                                                                 Forgot password?
                                                         </CText>
                                                 </TouchableOpacity>
@@ -188,7 +188,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                         <View className="flex-row justify-center">
                                                 <CText className="text-text-muted">Don't have an account? </CText>
                                                 <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                                                        <CText className="!text-tertiary" weight="medium">
+                                                        <CText className="!text-primary" weight="medium">
                                                                 Sign up
                                                         </CText>
                                                 </TouchableOpacity>

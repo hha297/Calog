@@ -26,10 +26,10 @@ export const Button: React.FC<ButtonProps> = ({
                         style={{} as ViewStyle}
                         className={`items-center justify-center rounded-lg ${
                                 variant === 'primary'
-                                        ? 'bg-tertiary'
+                                        ? 'bg-primary'
                                         : variant === 'ghost'
-                                          ? 'border border-tertiary bg-transparent'
-                                          : 'bg-secondary'
+                                          ? 'border border-secondary bg-transparent'
+                                          : 'bg-primary'
                         } ${
                                 size === 'small'
                                         ? 'min-h-[36px] px-4 py-2'
@@ -50,7 +50,7 @@ export const Button: React.FC<ButtonProps> = ({
                                                 variant === 'primary'
                                                         ? 'text-white'
                                                         : variant === 'ghost'
-                                                          ? 'text-tertiary'
+                                                          ? 'text-primary'
                                                           : 'text-text-light'
                                         }`}
                                 >

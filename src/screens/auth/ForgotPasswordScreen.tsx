@@ -57,11 +57,11 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
 
         if (isEmailSent) {
                 return (
-                        <SafeAreaView className="flex-1 bg-primary">
+                        <SafeAreaView className="bg-background flex-1">
                                 <View className="flex-1 justify-center px-6">
                                         {/* Success State */}
                                         <View className="mb-8 items-center">
-                                                <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-tertiary">
+                                                <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-primary">
                                                         <CText className="text-2xl text-white">✓</CText>
                                                 </View>
                                                 <CText
@@ -73,7 +73,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                 <CText className="text-text-muted mb-2 text-center">
                                                         We've sent a password reset link to
                                                 </CText>
-                                                <CText className="text-center !text-tertiary">{email}</CText>
+                                                <CText className="text-center !text-primary">{email}</CText>
                                         </View>
 
                                         {/* Instructions */}
@@ -102,7 +102,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
         }
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -154,7 +154,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                                         onPress={() => navigation.navigate('Login')}
                                                         className="items-center"
                                                 >
-                                                        <CText className="!text-tertiary">Back to Sign In</CText>
+                                                        <CText className="!text-primary">Back to Sign In</CText>
                                                 </TouchableOpacity>
                                         </View>
                                 </ScrollView>

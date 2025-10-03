@@ -34,7 +34,7 @@ const features = [
 
 export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ onNext }) => {
         return (
-                <View className="flex-1 bg-primary px-8 pt-8">
+                <View className="bg-background flex-1 px-8 pt-8">
                         {/* Header */}
                         <View className="pb-6">
                                 <CText size="2xl" weight="bold" className="text-text-light mb-2 text-center">
@@ -54,9 +54,12 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                 {features.map((feature) => {
                                         const IconComponent = feature.icon;
                                         return (
-                                                <View key={feature.id} className="mb-4 rounded-xl bg-white/5 p-6">
+                                                <View
+                                                        key={feature.id}
+                                                        className="bg-surfacePrimary mb-4 rounded-xl p-6"
+                                                >
                                                         <View className="flex-row items-start">
-                                                                <View className="mr-4 rounded-lg bg-tertiary/20 p-3">
+                                                                <View className="mr-4 rounded-lg bg-primary/20 p-3">
                                                                         <IconComponent size={24} color="#10B981" />
                                                                 </View>
                                                                 <View className="flex-1">

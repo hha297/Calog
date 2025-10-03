@@ -207,7 +207,7 @@ export const Slider: React.FC<SliderProps> = ({
                                         <CText className="text-text-muted" weight="medium">
                                                 {config.minimumValue} kg/week
                                         </CText>
-                                        <CText className="text-text-muted !text-tertiary" weight="medium">
+                                        <CText className="text-text-muted !text-primary" weight="medium">
                                                 {getPaceLabel(localValue)}
                                         </CText>
                                         <CText className="text-text-muted" weight="medium">

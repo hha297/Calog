@@ -46,7 +46,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Welcome Header */}
@@ -64,10 +64,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* User Info Card */}
-                                        <View className="mb-6 rounded-lg bg-secondary p-6">
+                                        <View className="mb-6 rounded-lg bg-primary p-6">
                                                 <View className="items-center">
                                                         {/* Avatar */}
-                                                        <View className="mb-3 h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-tertiary">
+                                                        <View className="mb-3 h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary">
                                                                 {user?.avatar ? (
                                                                         <Image
                                                                                 source={{ uri: user.avatar }}
@@ -88,7 +88,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                         <CText className="text-text-muted">
                                                                 {user?.email || 'user@example.com'}
                                                         </CText>
-                                                        <CText className="mt-2 text-sm text-tertiary">
+                                                        <CText className="mt-2 text-sm text-primary">
                                                                 {user?.role?.toUpperCase() || 'FREE'} Plan
                                                         </CText>
                                                 </View>
@@ -96,15 +96,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                         {/* Daily Calorie Goal Card */}
                                         {profile && (
-                                                <View className="mb-6 rounded-lg bg-secondary p-6">
+                                                <View className="mb-6 rounded-lg bg-primary p-6">
                                                         <View className="items-center">
-                                                                <View className="mb-3 h-12 w-12 items-center justify-center rounded-full bg-tertiary/20">
+                                                                <View className="mb-3 h-12 w-12 items-center justify-center rounded-full bg-primary/20">
                                                                         <Target size={24} color="#10B981" />
                                                                 </View>
                                                                 <CText className="text-text-light mb-2 text-xl">
                                                                         Daily Calorie Goal
                                                                 </CText>
-                                                                <CText className="mb-2 text-3xl font-bold text-tertiary">
+                                                                <CText className="mb-2 text-3xl font-bold text-primary">
                                                                         {profile.dailyCalorieGoal || 0}
                                                                 </CText>
                                                                 <CText className="text-text-muted text-sm">

@@ -6,3 +6,4 @@ export { CText } from './CText';
 export { Logo } from './Logo';
 export { Slider } from './Slider';
 export { EditModal } from './EditModal';
+export { Dropdown } from './Dropdown';

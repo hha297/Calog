@@ -78,7 +78,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -161,7 +161,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                                 <View
                                                                         className={`h-5 w-5 items-center justify-center rounded border-2 ${
                                                                                 agreeToTerms
-                                                                                        ? 'border-tertiary bg-tertiary'
+                                                                                        ? 'border-secondary bg-primary'
                                                                                         : 'border-gray-300'
                                                                         }`}
                                                                 >
@@ -185,7 +185,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                                                 }}
                                                                         >
                                                                                 <CText
-                                                                                        className="!text-tertiary"
+                                                                                        className="!text-primary"
                                                                                         weight="medium"
                                                                                 >
                                                                                         Terms of Service
@@ -200,7 +200,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                                                 }}
                                                                         >
                                                                                 <CText
-                                                                                        className="!text-tertiary"
+                                                                                        className="!text-primary"
                                                                                         weight="medium"
                                                                                 >
                                                                                         Privacy Policy
@@ -252,7 +252,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         <View className="flex-row justify-center">
                                                 <CText className="text-text-muted">Already have an account? </CText>
                                                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                                                        <CText className="!text-tertiary" weight="medium">
+                                                        <CText className="!text-primary" weight="medium">
                                                                 Sign in
                                                         </CText>
                                                 </TouchableOpacity>

@@ -178,7 +178,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
         try {
                 return (
-                        <SafeAreaView className="flex-1 bg-primary">
+                        <SafeAreaView className="bg-background flex-1">
                                 <AppIntroSlider
                                         ref={sliderRef}
                                         renderItem={renderSlide}
@@ -276,7 +276,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
                 // Return fallback UI
                 return (
-                        <SafeAreaView className="flex-1 items-center justify-center bg-primary">
+                        <SafeAreaView className="bg-background flex-1 items-center justify-center">
                                 <CText className="text-center text-white">
                                         Something went wrong.{'\n'}Please restart the app.
                                 </CText>

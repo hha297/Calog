@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+
 import {
         ArrowLeft,
         User,
@@ -17,13 +18,25 @@ import {
         Trash2,
         LogOut,
         Lock,
+        FacebookIcon,
+        InstagramIcon,
+        LinkedinIcon,
+        ChevronRight,
+        MessageCircleQuestionIcon,
+        LockIcon,
+        ArrowRightIcon,
+        ArrowRightCircleIcon,
+        ExternalLinkIcon,
+        UploadIcon,
+        DownloadIcon,
 } from 'lucide-react-native';
-import { CText } from '../components/ui/CText';
-import { Button } from '../components/ui/Button';
-import { useUserProfile } from '../hooks/useUserProfile';
-import { useAuthStore } from '../store';
+import { CText } from '../../components/ui/CText';
+import { Button } from '../../components/ui/Button';
+import { useUserProfile } from '../../hooks/useUserProfile';
+import { useAuthStore } from '../../store';
+import { LinearGradient } from 'react-native-svg';
 
-export const ProfileScreen: React.FC = () => {
+export const AccountScreen: React.FC = () => {
         const navigation = useNavigation();
         const { profile } = useUserProfile();
         const { user, logout } = useAuthStore();
@@ -36,8 +49,8 @@ export const ProfileScreen: React.FC = () => {
                 }
         };
 
-        const handlePhysicalProfile = () => {
-                navigation.navigate('PhysicalProfile' as never);
+        const handleProfile = () => {
+                navigation.navigate('Profile' as never);
         };
 
         const handleSendRequest = () => {
@@ -86,16 +99,19 @@ export const ProfileScreen: React.FC = () => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-primary">
-                        <ScrollView className="flex-1 px-6 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
+                <SafeAreaView className="bg-background flex-1">
+                        <ScrollView className="flex-1 p-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* User Info Section */}
-                                <View className="mb-6">
-                                        <View className="mb-4 flex-row items-center">
-                                                <View className="mr-4 h-16 w-16 items-center justify-center rounded-full bg-tertiary">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl">
+                                        <TouchableOpacity
+                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                onPress={handleProfile}
+                                        >
+                                                <View className="mr-4 size-16 items-center justify-center rounded-full bg-primary">
                                                         {user?.avatar ? (
                                                                 <Image
                                                                         source={{ uri: user.avatar }}
-                                                                        className="h-16 w-16 rounded-full"
+                                                                        className="size-16 rounded-full"
                                                                 />
                                                         ) : (
                                                                 <User size={32} color="#FFFFFF" />
@@ -114,7 +130,7 @@ export const ProfileScreen: React.FC = () => {
                                                                         className={`rounded-full px-2 py-1 ${
                                                                                 user?.role === 'premium'
                                                                                         ? 'bg-yellow-500'
-                                                                                        : 'bg-gray-500'
+                                                                                        : 'bg-primary'
                                                                         }`}
                                                                 >
                                                                         <CText
@@ -135,42 +151,44 @@ export const ProfileScreen: React.FC = () => {
                                                                 {user?.email || 'user@example.com'}
                                                         </CText>
                                                 </View>
-                                        </View>
+                                                <ArrowRightCircleIcon size={20} color="#FFFFFF" />
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                onPress={handleLogout}
+                                        >
+                                                <LockIcon size={20} color="#4CAF50" />
+                                                <CText className="text-text-light ml-3 flex-1">Change Password</CText>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
+                                                <LogOut size={20} color="#4CAF50" />
+                                                <CText className="text-text-light ml-3 flex-1">Sign Out</CText>
+                                        </TouchableOpacity>
                                 </View>
 
                                 {/* Premium Feature Section */}
-                                <View className="mb-6 rounded-xl bg-tertiary/20 p-4">
+                                {/* <TouchableOpacity className="mb-6 rounded-xl bg-primary p-4">
                                         <View className="flex-row items-center">
-                                                <Lock size={20} color="#4CAF50" />
+                                                <Lock size={20} color="#FFFFFF" />
                                                 <View className="ml-3 flex-1">
-                                                        <CText weight="medium" className="text-tertiary">
+                                                        <CText weight="medium" className="text-white">
                                                                 Use Premium Package
                                                         </CText>
-                                                        <CText className="text-text-muted text-sm">
+                                                        <CText className="text-sm text-white/80">
                                                                 No ads with full features
                                                         </CText>
                                                 </View>
                                         </View>
-                                </View>
-
-                                {/* Physical Profile Section */}
-                                <View className="mb-4 rounded-xl bg-white/5">
-                                        <TouchableOpacity
-                                                className="flex-row items-center p-4"
-                                                onPress={handlePhysicalProfile}
-                                        >
-                                                <User size={20} color="#9CA3AF" />
-                                                <CText className="text-text-light ml-3 flex-1">Physical Profile</CText>
-                                        </TouchableOpacity>
-                                </View>
+                                </TouchableOpacity> */}
 
                                 {/* Community & Feedback Section */}
-                                <View className="mb-4 rounded-xl bg-white/5">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleSendRequest}
                                         >
-                                                <Send size={20} color="#9CA3AF" />
+                                                <Send size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Send Request</CText>
                                         </TouchableOpacity>
 
@@ -178,53 +196,37 @@ export const ProfileScreen: React.FC = () => {
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleRateApp}
                                         >
-                                                <Star size={20} color="#9CA3AF" />
+                                                <Star size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Rate Calog</CText>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
-                                                onPress={handleJoinCommunity}
-                                        >
-                                                <Users size={20} color="#9CA3AF" />
-                                                <CText className="text-text-light ml-3 flex-1">
-                                                        Join Calog Community
-                                                </CText>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
                                                 className="flex-row items-center p-4"
                                                 onPress={handleFollowSocial}
                                         >
-                                                <Share2 size={20} color="#9CA3AF" />
+                                                <Share2 size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Follow Calog</CText>
                                                 <View className="flex-row items-center space-x-2">
-                                                        <View className="h-6 w-6 items-center justify-center rounded bg-blue-600">
-                                                                <CText className="text-xs font-bold text-white">
-                                                                        f
-                                                                </CText>
+                                                        <View className="mr-2 rounded-full bg-primary p-2">
+                                                                <FacebookIcon size={16} color="#FFFFFF" />
                                                         </View>
-                                                        <View className="h-6 w-6 items-center justify-center rounded bg-black">
-                                                                <CText className="text-xs font-bold text-white">
-                                                                        T
-                                                                </CText>
+                                                        <View className="mr-2 rounded-full bg-primary p-2">
+                                                                <InstagramIcon size={16} color="#FFFFFF" />
                                                         </View>
-                                                        <View className="h-6 w-6 items-center justify-center rounded bg-red-600">
-                                                                <CText className="text-xs font-bold text-white">
-                                                                        ▶
-                                                                </CText>
+                                                        <View className="rounded-full bg-primary p-2">
+                                                                <LinkedinIcon size={16} color="#FFFFFF" />
                                                         </View>
                                                 </View>
                                         </TouchableOpacity>
                                 </View>
 
                                 {/* App Settings Section */}
-                                <View className="mb-4 rounded-xl bg-white/5">
+                                <View className="bg-surfacePrimary mb-4 rounded-xl">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleLanguage}
                                         >
-                                                <Globe size={20} color="#9CA3AF" />
+                                                <Globe size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Language</CText>
                                         </TouchableOpacity>
 
@@ -232,23 +234,23 @@ export const ProfileScreen: React.FC = () => {
                                                 className="flex-row items-center p-4"
                                                 onPress={handleDarkMode}
                                         >
-                                                <Sun size={20} color="#9CA3AF" />
+                                                <Sun size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">
                                                         Turn off Dark Mode
                                                 </CText>
-                                                <View className="h-6 w-12 items-center justify-center rounded-full bg-tertiary">
+                                                <View className="h-6 w-12 items-center justify-center rounded-full bg-primary">
                                                         <View className="ml-4 h-4 w-4 rounded-full bg-white" />
                                                 </View>
                                         </TouchableOpacity>
                                 </View>
 
                                 {/* Legal & Account Section */}
-                                <View className="mb-6 rounded-xl bg-white/5">
+                                <View className="bg-surfacePrimary mb-6 rounded-xl">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleTermsOfService}
                                         >
-                                                <HelpCircle size={20} color="#9CA3AF" />
+                                                <HelpCircle size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Terms of Use</CText>
                                         </TouchableOpacity>
 
@@ -256,7 +258,7 @@ export const ProfileScreen: React.FC = () => {
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handlePrivacyPolicy}
                                         >
-                                                <Shield size={20} color="#9CA3AF" />
+                                                <Shield size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Privacy Policy</CText>
                                         </TouchableOpacity>
 
@@ -264,13 +266,8 @@ export const ProfileScreen: React.FC = () => {
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleDeleteData}
                                         >
-                                                <Trash2 size={20} color="#9CA3AF" />
+                                                <Trash2 size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Delete Your Data</CText>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
-                                                <LogOut size={20} color="#9CA3AF" />
-                                                <CText className="text-text-light ml-3 flex-1">Sign Out</CText>
                                         </TouchableOpacity>
                                 </View>
                         </ScrollView>

@@ -9,7 +9,7 @@ interface ScanScreenProps {
 
 export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Header */}
@@ -27,7 +27,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* Camera Placeholder */}
-                                        <View className="mb-6 h-64 items-center justify-center rounded-lg bg-secondary">
+                                        <View className="bg-surfacePrimary mb-6 h-64 items-center justify-center rounded-lg">
                                                 <CText className="mb-4 text-6xl">📷</CText>
                                                 <CText className="text-text-light text-lg">Camera</CText>
                                                 <CText className="text-text-muted mt-2 text-sm">
@@ -41,7 +41,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
 
                                                 <View className="space-y-3">
                                                         <View className="flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-tertiary">
+                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
                                                                         <CText className="text-sm text-white">1</CText>
                                                                 </View>
                                                                 <CText className="text-text-muted">
@@ -50,7 +50,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                                         </View>
 
                                                         <View className="flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-tertiary">
+                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
                                                                         <CText className="text-sm text-white">2</CText>
                                                                 </View>
                                                                 <CText className="text-text-muted">
@@ -59,7 +59,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                                         </View>
 
                                                         <View className="flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-tertiary">
+                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
                                                                         <CText className="text-sm text-white">3</CText>
                                                                 </View>
                                                                 <CText className="text-text-muted">
@@ -70,7 +70,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* Manual Entry */}
-                                        <View className="mb-6 rounded-lg bg-secondary p-4">
+                                        <View className="mb-6 rounded-lg bg-primary p-4">
                                                 <CText className="text-text-light mb-2">Can't scan?</CText>
                                                 <CText className="text-text-muted text-sm">
                                                         You can manually add food items by searching our database.

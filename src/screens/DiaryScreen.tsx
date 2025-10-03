@@ -5,7 +5,7 @@ import { CText } from '../components/ui/CText';
 
 export const DiaryScreen: React.FC = () => {
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <ScrollView className="flex-1 px-4">
                                 {/* Summary Card */}
                                 <View className="my-4 rounded-2xl p-6">

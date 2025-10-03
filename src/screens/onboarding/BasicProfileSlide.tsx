@@ -3,6 +3,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { CText } from '../../components/ui/CText';
 import { TextField } from '../../components/ui/TextField';
 import { Button } from '../../components/ui/Button';
+import { Dropdown } from '../../components/ui/Dropdown';
 import { UserProfile } from '../../types';
 
 interface BasicProfileSlideProps {
@@ -70,7 +71,7 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
         }, [isFormValid, onValidationChange]);
 
         return (
-                <View className="flex-1 bg-primary px-8 pb-20 pt-8">
+                <View className="bg-background flex-1 px-8 pb-20 pt-8">
                         <ScrollView
                                 className="flex-1"
                                 showsVerticalScrollIndicator={false}
@@ -91,29 +92,12 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
                                         <CText size="base" weight="medium" className="text-text-light mb-3">
                                                 Gender
                                         </CText>
-                                        <View className="flex-row">
-                                                {genderOptions.map((option) => (
-                                                        <TouchableOpacity
-                                                                key={option.value}
-                                                                onPress={() => handleGenderSelect(option.value)}
-                                                                className={`mr-2 flex-1 rounded-lg border-2 p-3 ${
-                                                                        formData.gender === option.value
-                                                                                ? 'border-tertiary bg-tertiary/10'
-                                                                                : 'border-gray-300'
-                                                                }`}
-                                                        >
-                                                                <CText
-                                                                        className={`text-center ${
-                                                                                formData.gender === option.value
-                                                                                        ? 'text-tertiary'
-                                                                                        : 'text-text-muted'
-                                                                        }`}
-                                                                >
-                                                                        {option.label}
-                                                                </CText>
-                                                        </TouchableOpacity>
-                                                ))}
-                                        </View>
+                                        <Dropdown
+                                                options={genderOptions}
+                                                value={formData.gender}
+                                                onValueChange={(value) => handleGenderSelect(value as string)}
+                                                placeholder="Select Gender"
+                                        />
                                 </View>
 
                                 {/* Age */}
@@ -154,37 +138,12 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
                                         <CText size="base" weight="medium" className="text-text-light mb-3">
                                                 Activity Level
                                         </CText>
-                                        {activityLevels.map((level) => (
-                                                <TouchableOpacity
-                                                        key={level.value}
-                                                        onPress={() => handleActivitySelect(level.value)}
-                                                        className={`mb-2 rounded-lg border-2 p-3 ${
-                                                                formData.activityLevel === level.value
-                                                                        ? 'border-tertiary bg-tertiary/10'
-                                                                        : 'border-gray-300'
-                                                        }`}
-                                                >
-                                                        <CText
-                                                                className={`mb-1 ${
-                                                                        formData.activityLevel === level.value
-                                                                                ? 'text-tertiary'
-                                                                                : 'text-text-light'
-                                                                }`}
-                                                                weight="medium"
-                                                        >
-                                                                {level.label}
-                                                        </CText>
-                                                        <CText
-                                                                className={`text-sm ${
-                                                                        formData.activityLevel === level.value
-                                                                                ? 'text-tertiary/80'
-                                                                                : 'text-text-muted'
-                                                                }`}
-                                                        >
-                                                                {level.description}
-                                                        </CText>
-                                                </TouchableOpacity>
-                                        ))}
+                                        <Dropdown
+                                                options={activityLevels}
+                                                value={formData.activityLevel}
+                                                onValueChange={(value) => handleActivitySelect(value as string)}
+                                                placeholder="Select Activity Level"
+                                        />
                                 </View>
                         </ScrollView>
                 </View>
