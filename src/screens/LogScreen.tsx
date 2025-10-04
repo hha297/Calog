@@ -9,7 +9,7 @@ interface LogScreenProps {
 
 export const LogScreen: React.FC<LogScreenProps> = ({ navigation }) => {
         return (
-                <SafeAreaView className="flex-1 bg-primary">
+                <SafeAreaView className="bg-background flex-1">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Header */}
@@ -27,7 +27,7 @@ export const LogScreen: React.FC<LogScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* Placeholder Content */}
-                                        <View className="mb-6 rounded-lg bg-secondary p-6">
+                                        <View className="bg-surfacePrimary mb-6 rounded-lg p-6">
                                                 <CText className="text-text-light mb-4 text-lg">Today's Log</CText>
                                                 <CText className="text-text-muted">
                                                         No food entries yet. Start by scanning a food item or manually
@@ -40,21 +40,21 @@ export const LogScreen: React.FC<LogScreenProps> = ({ navigation }) => {
                                                 <CText className="text-text-light mb-4 text-lg">Quick Stats</CText>
 
                                                 <View className="space-y-3">
-                                                        <View className="rounded-lg bg-secondary p-4">
+                                                        <View className="rounded-lg bg-primary p-4">
                                                                 <CText className="text-text-light">🔥 Calories</CText>
                                                                 <CText className="text-text-muted mt-1 text-sm">
                                                                         0 / 2000 kcal
                                                                 </CText>
                                                         </View>
 
-                                                        <View className="rounded-lg bg-secondary p-4">
+                                                        <View className="rounded-lg bg-primary p-4">
                                                                 <CText className="text-text-light">🥗 Meals</CText>
                                                                 <CText className="text-text-muted mt-1 text-sm">
                                                                         0 meals logged
                                                                 </CText>
                                                         </View>
 
-                                                        <View className="rounded-lg bg-secondary p-4">
+                                                        <View className="rounded-lg bg-primary p-4">
                                                                 <CText className="text-text-light">💧 Water</CText>
                                                                 <CText className="text-text-muted mt-1 text-sm">
                                                                         0 / 8 glasses

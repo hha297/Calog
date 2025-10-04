@@ -28,6 +28,12 @@ export interface UserProfile {
         weightChangeRate?: number; // weight change rate in kg/week (for lose/gain goals)
         tdee?: number; // Total Daily Energy Expenditure
         dailyCalorieGoal?: number; // calculated based on profile
+        // Body measurements
+        neck?: number; // in cm
+        waist?: number; // in cm
+        hip?: number; // in cm
+        bicep?: number; // in cm
+        thigh?: number; // in cm
 }
 
 // Authentication interfaces
@@ -133,12 +139,17 @@ export type MainTabParamList = {
         Analytics: undefined;
         Scan: undefined;
         Help: undefined;
+        Account: undefined;
+};
+
+export type AccountStackParamList = {
+        Account: undefined;
         Profile: undefined;
 };
 
 export type MainStackParamList = {
         Home: undefined;
-        Profile: undefined;
+        Account: undefined;
         Log: undefined;
         Scan: undefined;
 };

@@ -145,19 +145,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                 }
         };
 
-        // Handle skipping onboarding
-        const handleSkip = () => {
-                const defaultProfile: UserProfile = {
-                        gender: 'other',
-                        age: 25,
-                        height: 170,
-                        weight: 70,
-                        activityLevel: 'moderate',
-                        goal: 'maintain',
-                };
-                onComplete(defaultProfile);
-        };
-
         // Go to the next slide (only if valid)
         const handleNext = () => {
                 if (currentSlideIndex === 2 && !isBasicProfileValid) {
@@ -178,7 +165,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
         try {
                 return (
-                        <SafeAreaView className="flex-1 bg-primary">
+                        <SafeAreaView className="bg-background flex-1">
                                 <AppIntroSlider
                                         ref={sliderRef}
                                         renderItem={renderSlide}
@@ -232,7 +219,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                                                                 backgroundColor:
                                                                                                         i ===
                                                                                                         currentSlideIndex
-                                                                                                                ? '#10B981' // active dot
+                                                                                                                ? '#4CAF50' // active dot
                                                                                                                 : 'rgba(255,255,255,0.3)', // inactive dot
                                                                                         }}
                                                                                 />
@@ -245,7 +232,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                                                 title="Finish"
                                                                                 onPress={handleDone}
                                                                                 disabled={isDoneDisabled}
-                                                                                variant="ghost"
                                                                                 size="small"
                                                                                 className="min-w-[80px]"
                                                                         />
@@ -254,7 +240,6 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                                                 title="Next"
                                                                                 onPress={handleNext}
                                                                                 disabled={isNextDisabled}
-                                                                                variant="ghost"
                                                                                 size="small"
                                                                                 className="min-w-[80px]"
                                                                         />
@@ -276,7 +261,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
                 // Return fallback UI
                 return (
-                        <SafeAreaView className="flex-1 items-center justify-center bg-primary">
+                        <SafeAreaView className="bg-background flex-1 items-center justify-center">
                                 <CText className="text-center text-white">
                                         Something went wrong.{'\n'}Please restart the app.
                                 </CText>

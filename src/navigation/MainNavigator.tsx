@@ -6,7 +6,7 @@ import { DiaryScreen } from '../screens/DiaryScreen';
 import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
+import { AccountNavigator } from './AccountNavigator';
 import { CText } from '../components/ui/CText';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
@@ -18,7 +18,7 @@ const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
         return (
                 <TouchableOpacity
                         onPress={onPress}
-                        className="absolute bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 border-secondary bg-tertiary shadow-xl shadow-tertiary/30"
+                        className="border-surfacePrimary absolute bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 bg-primary shadow-xl shadow-secondary/30"
                 >
                         <LottieView
                                 source={require('../assets/images/scan.json')}
@@ -42,11 +42,11 @@ export const MainNavigator: React.FC = () => {
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        height: 72,
-                                        paddingTop: 8,
-                                        backgroundColor: '#1e3738',
-                                        borderTopLeftRadius: 25,
-                                        borderTopRightRadius: 25,
+                                        height: 88,
+                                        paddingTop: 12,
+                                        backgroundColor: '#222630',
+                                        borderTopLeftRadius: 32,
+                                        borderTopRightRadius: 32,
                                         borderTopWidth: 0,
                                         elevation: 15, // Android
                                         shadowColor: '#000', // iOS
@@ -70,8 +70,9 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
                                                         weight="medium"
+                                                        size="base"
                                                 >
                                                         Diary
                                                 </CText>
@@ -93,7 +94,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Analytics
@@ -130,7 +131,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Help
@@ -140,12 +141,12 @@ export const MainNavigator: React.FC = () => {
                                 }}
                         />
 
-                        {/* Profile Tab */}
+                        {/* Account Tab */}
                         <Tab.Screen
-                                name="Profile"
-                                component={ProfileScreen}
+                                name="Account"
+                                component={AccountNavigator}
                                 options={{
-                                        title: 'Profile',
+                                        title: 'Account',
                                         tabBarIcon: ({ color, focused }) => (
                                                 <View className="items-center justify-center">
                                                         <UserRoundIcon className="size-4" color={color} />
@@ -153,10 +154,10 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={focused ? '!text-tertiary' : '!text-white'}
+                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
                                                         weight="medium"
                                                 >
-                                                        Profile
+                                                        Account
                                                 </CText>
                                         ),
                                         tabBarShowLabel: true,

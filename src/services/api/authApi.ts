@@ -15,12 +15,14 @@ import {
 export const authApi = {
         // Sign up a new user
         signup: async (data: SignupRequest): Promise<AuthResponse> => {
-                return apiClient.post<AuthResponse>('/auth/signup', data);
+                const response = await apiClient.post<AuthResponse>('/auth/signup', data);
+                return response;
         },
 
         // Login user
         login: async (data: LoginRequest): Promise<AuthResponse> => {
-                return apiClient.post<AuthResponse>('/auth/login', data);
+                const response = await apiClient.post<AuthResponse>('/auth/login', data);
+                return response;
         },
 
         // Refresh access token
@@ -35,7 +37,8 @@ export const authApi = {
 
         // Get current user info
         getCurrentUser: async (): Promise<{ user: User }> => {
-                return apiClient.get<{ user: User }>('/auth/me');
+                const response = await apiClient.get<{ user: User }>('/auth/me');
+                return response;
         },
 
         // Google OAuth - Sign in with Google

@@ -13,6 +13,7 @@ interface TextFieldProps {
         keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
         autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
         className?: string;
+        style?: ViewStyle;
 }
 
 export const TextField: React.FC<TextFieldProps> = ({
@@ -25,12 +26,13 @@ export const TextField: React.FC<TextFieldProps> = ({
         keyboardType = 'default',
         autoCapitalize = 'none',
         className = '',
+        style,
 }) => {
         const [isFocused, setIsFocused] = useState(false);
         const [isSecureVisible, setIsSecureVisible] = useState(!secureTextEntry);
 
         return (
-                <View style={{} as ViewStyle} className={`mb-4 ${className}`}>
+                <View style={style} className={`mb-4 ${className}`}>
                         <CText size="base" className="text-text-light mb-2">
                                 {label}
                         </CText>
@@ -38,8 +40,8 @@ export const TextField: React.FC<TextFieldProps> = ({
                         <View className="relative">
                                 <TextInput
                                         style={[{ fontFamily: 'SpaceGrotesk-Regular' } as TextStyle]}
-                                        className={`font-space-grotesk rounded-lg border bg-secondary px-4 py-3 text-white ${
-                                                isFocused ? 'border-tertiary' : 'border-gray-600'
+                                        className={`font-space-grotesk bg-surfacePrimary rounded-lg border px-4 py-3 text-white ${
+                                                isFocused ? 'border-secondary' : 'border-gray-600'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}
                                         placeholderTextColor="#9E9E9E"

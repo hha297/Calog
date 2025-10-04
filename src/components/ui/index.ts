@@ -4,4 +4,6 @@ export { TextField } from './TextField';
 export { OAuthButton } from './OAuthButton';
 export { CText } from './CText';
 export { Logo } from './Logo';
-export { WeightGoalSlider } from './WeightGoalSlider';
+export { Slider } from './Slider';
+export { EditModal } from './EditModal';
+export { Dropdown } from './Dropdown';

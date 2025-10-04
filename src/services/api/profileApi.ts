@@ -10,6 +10,14 @@ export interface ProfileResponse {
         profile: UserProfile;
 }
 
+export interface BodyMeasurements {
+        neck?: number; // cm
+        waist?: number; // cm
+        hip?: number; // cm
+        bicep?: number; // cm
+        thigh?: number; // cm
+}
+
 export const profileApi = {
         // Update user profile
         updateProfile: async (profile: UserProfile): Promise<ProfileResponse> => {
@@ -29,6 +37,14 @@ export const profileApi = {
                         '/api/profile/calculate-calories',
                         profile,
                 );
+                return response;
+        },
+
+        // Update body measurements
+        updateMeasurements: async (measurements: BodyMeasurements): Promise<ProfileResponse> => {
+                const response = await apiClient.put<ProfileResponse>('/api/profile/measurements', {
+                        measurements,
+                });
                 return response;
         },
 };

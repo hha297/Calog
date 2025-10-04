@@ -10,11 +10,17 @@ module.exports = {
         theme: {
                 extend: {
                         colors: {
-                                primary: '#142b30', // Dark blue/black
-                                secondary: '#1e3738', // Darker blue
-                                tertiary: '#4CAF50', // Green
-                                accent: '#FFC107', // Yellow/amber
+                                // Old colors
+                                // primary: '#142b30', // Dark blue/black
+                                // secondary: '#1e3738', // Darker blue
+                                // tertiary: '#4CAF50', // Green
 
+                                // New colors
+                                background: '#181818',
+                                surfacePrimary: '#222630',
+                                primary: '#4CAF50',
+                                secondary: '#1e3738',
+                                accent: '#FFC107',
                                 // Green palette
                                 green: {
                                         50: '#E8F5E8',
