@@ -144,7 +144,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                 </View>
 
                                 {/* Goal Options */}
-                                <View className="mb-4 w-full">
+                                <View className="w-full">
                                         {goalOptions.map((option) => {
                                                 const IconComponent = option.icon;
                                                 return (
@@ -153,15 +153,26 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                 onPress={() => handleGoalSelect(option.value)}
                                                                 className={`mb-4 rounded-xl border-2 p-6 ${
                                                                         selectedGoal === option.value
-                                                                                ? 'border-secondary bg-primary/10'
-                                                                                : 'border-gray-300'
+                                                                                ? 'border-primary/80 bg-primary'
+                                                                                : 'bg-surfacePrimary border-surfacePrimary'
                                                                 }`}
                                                         >
                                                                 <View className="flex-row items-center">
-                                                                        <View className="mr-4 rounded-lg bg-primary/20 p-2">
+                                                                        <View
+                                                                                className={`mr-4 rounded-lg p-2 ${
+                                                                                        selectedGoal === option.value
+                                                                                                ? 'bg-white/40'
+                                                                                                : 'bg-primary/50'
+                                                                                }`}
+                                                                        >
                                                                                 <IconComponent
                                                                                         size={24}
-                                                                                        color="#10B981"
+                                                                                        color={
+                                                                                                selectedGoal ===
+                                                                                                option.value
+                                                                                                        ? '#FFFFFF'
+                                                                                                        : '#10B981'
+                                                                                        }
                                                                                 />
                                                                         </View>
                                                                         <View className="flex-1">
@@ -171,7 +182,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                         className={`mb-1 ${
                                                                                                 selectedGoal ===
                                                                                                 option.value
-                                                                                                        ? 'text-primary'
+                                                                                                        ? 'text-white'
                                                                                                         : 'text-text-light'
                                                                                         }`}
                                                                                 >
@@ -181,7 +192,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                         className={`text-sm ${
                                                                                                 selectedGoal ===
                                                                                                 option.value
-                                                                                                        ? 'text-primary/80'
+                                                                                                        ? 'text-white/80'
                                                                                                         : 'text-text-muted'
                                                                                         }`}
                                                                                 >

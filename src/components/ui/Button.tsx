@@ -28,7 +28,7 @@ export const Button: React.FC<ButtonProps> = ({
                                 variant === 'primary'
                                         ? 'bg-primary'
                                         : variant === 'ghost'
-                                          ? 'border border-secondary bg-transparent'
+                                          ? 'border border-primary/80 bg-transparent'
                                           : 'bg-primary'
                         } ${
                                 size === 'small'

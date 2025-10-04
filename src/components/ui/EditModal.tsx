@@ -82,7 +82,7 @@ export const EditModal: React.FC<EditModalProps> = ({
 
                                         {/* Footer */}
                                         <View className="flex-row justify-between border-t border-white/10 p-6">
-                                                <Button title="Cancel" onPress={onClose} variant="secondary" />
+                                                <Button title="Cancel" onPress={onClose} variant="ghost" />
                                                 <Button title="Save" onPress={onSave} loading={loading} />
                                         </View>
                                 </TouchableOpacity>

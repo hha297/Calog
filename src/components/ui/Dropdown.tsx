@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, TouchableOpacity, Modal, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Modal, Dimensions, ScrollView } from 'react-native';
 import { CText } from './CText';
 import { ChevronDown } from 'lucide-react-native';
 
 export interface DropdownOption {
         label: string;
         value: string | number;
+        description?: string;
 }
 
 export interface DropdownProps {
@@ -49,7 +50,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return (
                 <>
                         <TouchableOpacity
-                                className={`flex-row items-center justify-between rounded-lg border border-white/20 bg-white/10 p-4 ${className} ${
+                                className={`bg-surfacePrimary flex-row items-center justify-between rounded-lg border border-white/20 p-4 ${className} ${
                                         disabled ? 'opacity-50' : ''
                                 }`}
                                 onPress={handlePress}
@@ -72,7 +73,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                         onPress={handleClose}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-primary"
+                                                className="bg-surfacePrimary w-full max-w-sm rounded-xl"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
@@ -88,13 +89,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                 </View>
 
                                                 {/* Options */}
-                                                <View className="max-h-80">
+                                                <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
                                                         {options.map((option, index) => (
                                                                 <TouchableOpacity
                                                                         key={option.value}
                                                                         className={`p-4 ${
                                                                                 value === option.value
-                                                                                        ? 'bg-green-500/20'
+                                                                                        ? 'bg-primary'
                                                                                         : 'bg-transparent'
                                                                         } ${
                                                                                 index !== options.length - 1
@@ -103,18 +104,33 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                                         }`}
                                                                         onPress={() => handleSelect(option.value)}
                                                                 >
-                                                                        <CText
-                                                                                className={`text-center ${
-                                                                                        value === option.value
-                                                                                                ? 'text-green-400'
-                                                                                                : 'text-text-light'
-                                                                                }`}
-                                                                        >
-                                                                                {option.label}
-                                                                        </CText>
+                                                                        <View>
+                                                                                <CText
+                                                                                        className={`text-center ${
+                                                                                                value === option.value
+                                                                                                        ? 'text-white'
+                                                                                                        : 'text-text-light'
+                                                                                        }`}
+                                                                                        weight="medium"
+                                                                                >
+                                                                                        {option.label}
+                                                                                </CText>
+                                                                                {option.description && (
+                                                                                        <CText
+                                                                                                className={`mt-1 text-center text-sm ${
+                                                                                                        value ===
+                                                                                                        option.value
+                                                                                                                ? 'text-white/80'
+                                                                                                                : 'text-text-muted'
+                                                                                                }`}
+                                                                                        >
+                                                                                                {option.description}
+                                                                                        </CText>
+                                                                                )}
+                                                                        </View>
                                                                 </TouchableOpacity>
                                                         ))}
-                                                </View>
+                                                </ScrollView>
 
                                                 {/* Footer */}
                                                 <View className="border-t border-white/10 p-4">

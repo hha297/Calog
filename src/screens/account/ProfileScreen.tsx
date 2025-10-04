@@ -101,11 +101,11 @@ export const ProfileScreen: React.FC = () => {
         const handleEditMeasurements = () => {
                 setEditModalType('measurements');
                 setFormValues({
-                        neck: currentProfile?.neck || 35,
-                        waist: currentProfile?.waist || 80,
-                        hip: currentProfile?.hip || 95,
-                        bicep: currentProfile?.bicep || 30,
-                        thigh: currentProfile?.thigh || 55,
+                        neck: currentProfile?.neck || null,
+                        waist: currentProfile?.waist || null,
+                        hip: currentProfile?.hip || null,
+                        bicep: currentProfile?.bicep || null,
+                        thigh: currentProfile?.thigh || null,
                 });
                 setEditModalVisible(true);
         };

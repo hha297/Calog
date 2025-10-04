@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { CText } from '../ui/CText';
+import { TextField } from '../ui/TextField';
 
 export interface MeasurementsViewProps {
         formValues: Record<string, any>;
@@ -19,58 +20,36 @@ export const MeasurementsView: React.FC<MeasurementsViewProps> = ({ formValues, 
         return (
                 <View>
                         {measurements.map((measurement) => (
-                                <View key={measurement.key} className="mb-6">
-                                        <CText className="text-text-light mb-3" weight="medium">
-                                                {measurement.label} ({measurement.unit})
-                                        </CText>
-                                        <View className="bg-surfacePrimary mb-4 rounded-lg p-4">
-                                                <View className="flex-row items-center justify-between">
-                                                        <TouchableOpacity
-                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
-                                                                onPress={() => {
-                                                                        const currentValue =
-                                                                                formValues[measurement.key] ||
-                                                                                measurement.min;
-                                                                        const newValue = Math.max(
-                                                                                measurement.min,
-                                                                                currentValue - 1,
-                                                                        );
-                                                                        setFormValues((prev) => ({
-                                                                                ...prev,
-                                                                                [measurement.key]: newValue,
-                                                                        }));
-                                                                }}
-                                                        >
-                                                                <CText className="text-text-light text-xl font-bold">
-                                                                        -
-                                                                </CText>
-                                                        </TouchableOpacity>
-                                                        <CText className="text-text-light text-lg font-medium">
-                                                                {formValues[measurement.key] || measurement.min}
-                                                        </CText>
-                                                        <TouchableOpacity
-                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
-                                                                onPress={() => {
-                                                                        const currentValue =
-                                                                                formValues[measurement.key] ||
-                                                                                measurement.min;
-                                                                        const newValue = Math.min(
-                                                                                measurement.max,
-                                                                                currentValue + 1,
-                                                                        );
-                                                                        setFormValues((prev) => ({
-                                                                                ...prev,
-                                                                                [measurement.key]: newValue,
-                                                                        }));
-                                                                }}
-                                                        >
-                                                                <CText className="text-text-light text-xl font-bold">
-                                                                        +
-                                                                </CText>
-                                                        </TouchableOpacity>
-                                                </View>
-                                        </View>
-                                </View>
+                                <TextField
+                                        key={measurement.key}
+                                        label={`${measurement.label} (${measurement.unit})`}
+                                        placeholder="Enter value"
+                                        value={
+                                                formValues[measurement.key]
+                                                        ? formValues[measurement.key].toString()
+                                                        : ''
+                                        }
+                                        onChangeText={(text) => {
+                                                const numericValue = parseFloat(text);
+                                                if (
+                                                        !isNaN(numericValue) &&
+                                                        numericValue >= measurement.min &&
+                                                        numericValue <= measurement.max
+                                                ) {
+                                                        setFormValues((prev) => ({
+                                                                ...prev,
+                                                                [measurement.key]: numericValue,
+                                                        }));
+                                                } else if (text === '') {
+                                                        setFormValues((prev) => ({
+                                                                ...prev,
+                                                                [measurement.key]: null,
+                                                        }));
+                                                }
+                                        }}
+                                        keyboardType="numeric"
+                                        className="mb-4"
+                                />
                         ))}
                 </View>
         );

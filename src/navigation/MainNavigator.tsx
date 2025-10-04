@@ -43,7 +43,7 @@ export const MainNavigator: React.FC = () => {
                                         left: 0,
                                         right: 0,
                                         height: 88,
-                                        paddingTop: 16,
+                                        paddingTop: 12,
                                         backgroundColor: '#222630',
                                         borderTopLeftRadius: 32,
                                         borderTopRightRadius: 32,
@@ -72,6 +72,7 @@ export const MainNavigator: React.FC = () => {
                                                 <CText
                                                         className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
                                                         weight="medium"
+                                                        size="base"
                                                 >
                                                         Diary
                                                 </CText>

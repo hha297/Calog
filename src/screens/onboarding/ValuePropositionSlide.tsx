@@ -60,7 +60,7 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                                 >
                                                         <View className="flex-row items-start">
                                                                 <View className="mr-4 rounded-lg bg-primary/20 p-3">
-                                                                        <IconComponent size={24} color="#10B981" />
+                                                                        <IconComponent size={24} color="#4CAF50" />
                                                                 </View>
                                                                 <View className="flex-1">
                                                                         <CText

@@ -10,11 +10,11 @@ export interface FitnessGoalViewProps {
 
 export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, setFormValues }) => {
         const activityLevels = [
-                { label: 'Sedentary (little/no exercise)', value: 'sedentary' },
-                { label: 'Light (light exercise 1-3 days/week)', value: 'light' },
-                { label: 'Moderate (moderate exercise 3-5 days/week)', value: 'moderate' },
-                { label: 'Active (heavy exercise 6-7 days/week)', value: 'active' },
-                { label: 'Very Active (very heavy exercise, physical job)', value: 'very_active' },
+                { label: 'Sedentary', value: 'sedentary', description: 'Little or no exercise' },
+                { label: 'Light', value: 'light', description: 'Light exercise 1-3 days/week' },
+                { label: 'Moderate', value: 'moderate', description: 'Moderate exercise 3-5 days/week' },
+                { label: 'Active', value: 'active', description: 'Heavy exercise 6-7 days/week' },
+                { label: 'Very Active', value: 'very_active', description: 'Very heavy exercise, physical job' },
         ];
 
         const goals = [
@@ -24,10 +24,10 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
         ];
 
         const reductionRates = [
-                { label: 'Slow (0.25 kg/week)', value: 0.25 },
-                { label: 'Moderate (0.5 kg/week)', value: 0.5 },
-                { label: 'Fast (0.75 kg/week)', value: 0.75 },
-                { label: 'Very Fast (1 kg/week)', value: 1.0 },
+                { label: 'Slow', value: 0.25, description: '0.25 kg/week - Gradual weight loss, easier to maintain' },
+                { label: 'Moderate', value: 0.5, description: '0.5 kg/week - Balanced approach, recommended for most' },
+                { label: 'Fast', value: 0.75, description: '0.75 kg/week - Aggressive loss, requires strict diet' },
+                { label: 'Very Fast', value: 1.0, description: '1 kg/week - Maximum loss, not recommended long-term' },
         ];
 
         return (
