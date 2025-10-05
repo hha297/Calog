@@ -28,7 +28,7 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone https://github.com/hha297/Calog.git
 cd calog
 
 # Install dependencies for React Native app
@@ -70,8 +70,8 @@ PORT=4000
 NODE_ENV=development
 
 # MongoDB Configuration
-MONGO_URI=mongodb://localhost:27017/calog
-# Or MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/calog
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/calog
+
 
 # JWT Configuration
 JWT_ACCESS_SECRET=your-super-secret-access-key-here-make-it-long-and-random
@@ -90,7 +90,7 @@ REACT_NATIVE_REDIRECT_URL=calog://auth/callback
 
 ### 5. Configure React Native OAuth
 
-Update `src/services/googleOAuth.ts`:
+Update `src/services/googleSigninService.ts`:
 
 ```typescript
 const googleConfig = {
