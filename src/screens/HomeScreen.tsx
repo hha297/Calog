@@ -46,7 +46,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Welcome Header */}
@@ -139,7 +139,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                                                         {
                                                                                                                 profile.weightChangeRate
                                                                                                         }
-                                                                                                        kg/week
+                                                                                                        kcal/day
                                                                                                 </CText>
                                                                                         </View>
                                                                                 )}

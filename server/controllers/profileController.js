@@ -30,29 +30,21 @@ class ProfileController {
                 let dailyCalorieGoal;
                 switch (goal) {
                         case 'lose':
-                                if (targetWeight && weightChangeRate) {
-                                        // Calculate calorie deficit based on weight change rate
-                                        // 1 kg = ~7700 calories, so weekly deficit = weightChangeRate * 7700
-                                        // Daily deficit = weekly deficit / 7
-                                        const weeklyDeficit = weightChangeRate * 7700;
-                                        const dailyDeficit = weeklyDeficit / 7;
-                                        dailyCalorieGoal = Math.round(tdee - dailyDeficit);
+                                if (weightChangeRate) {
+                                        // Use daily calorie deficit directly
+                                        dailyCalorieGoal = Math.round(tdee - weightChangeRate);
                                 } else {
-                                        // Fallback to default 500 calorie deficit
-                                        dailyCalorieGoal = Math.round(tdee - 500);
+                                        // Fallback to default 400 calorie deficit
+                                        dailyCalorieGoal = Math.round(tdee - 400);
                                 }
                                 break;
                         case 'gain':
-                                if (targetWeight && weightChangeRate) {
-                                        // Calculate calorie surplus based on weight change rate
-                                        // 1 kg = ~7700 calories, so weekly surplus = weightChangeRate * 7700
-                                        // Daily surplus = weekly surplus / 7
-                                        const weeklySurplus = weightChangeRate * 7700;
-                                        const dailySurplus = weeklySurplus / 7;
-                                        dailyCalorieGoal = Math.round(tdee + dailySurplus);
+                                if (weightChangeRate) {
+                                        // Use daily calorie surplus directly
+                                        dailyCalorieGoal = Math.round(tdee + weightChangeRate);
                                 } else {
-                                        // Fallback to default 500 calorie surplus
-                                        dailyCalorieGoal = Math.round(tdee + 500);
+                                        // Fallback to default 400 calorie surplus
+                                        dailyCalorieGoal = Math.round(tdee + 400);
                                 }
                                 break;
                         case 'maintain':
@@ -108,6 +100,14 @@ class ProfileController {
                         if (profileData.weightChangeRate !== undefined) {
                                 updateData['profile.weightChangeRate'] = profileData.weightChangeRate;
                         }
+
+                        // Add optional body measurements if they exist
+                        const bodyMeasurements = ['neck', 'waist', 'hip', 'bicep', 'thigh'];
+                        bodyMeasurements.forEach((measurement) => {
+                                if (profileData[measurement] !== undefined) {
+                                        updateData[`profile.${measurement}`] = profileData[measurement];
+                                }
+                        });
 
                         const updatedUser = await User.findByIdAndUpdate(
                                 userId,

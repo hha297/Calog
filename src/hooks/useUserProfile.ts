@@ -56,9 +56,8 @@ export const useUserProfile = () => {
 
         const updateProfile = async (newProfile: Partial<UserProfile>) => {
                 try {
-                        if (!profile) return;
-
-                        const updatedProfile = { ...profile, ...newProfile } as UserProfile;
+                        // Create updated profile by merging with current profile or using newProfile as base
+                        const updatedProfile = profile ? { ...profile, ...newProfile } : (newProfile as UserProfile);
 
                         // Update via API
                         await profileApi.updateProfile(updatedProfile);

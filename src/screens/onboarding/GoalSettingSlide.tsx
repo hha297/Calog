@@ -43,7 +43,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
 }) => {
         const [selectedGoal, setSelectedGoal] = useState(profileData?.goal || '');
         const [targetWeight, setTargetWeight] = useState(profileData?.targetWeight?.toString() || '');
-        const [weightChangeRate, setWeightChangeRate] = useState(profileData?.weightChangeRate || 0.5);
+        const [weightChangeRate, setWeightChangeRate] = useState(profileData?.weightChangeRate || 400);
 
         const handleGoalSelect = (goal: string) => {
                 setSelectedGoal(goal);
@@ -51,11 +51,11 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
 
                 // Set default values based on goal
                 if (goal === 'lose') {
-                        newData.weightChangeRate = 0.5; // default 0.5 kg/week
-                        setWeightChangeRate(0.5);
+                        newData.weightChangeRate = 400; // default 400 kcal/day deficit
+                        setWeightChangeRate(400);
                 } else if (goal === 'gain') {
-                        newData.weightChangeRate = 0.5; // default 0.5 kg/week
-                        setWeightChangeRate(0.5);
+                        newData.weightChangeRate = 400; // default 400 kcal/day surplus
+                        setWeightChangeRate(400);
                 } else {
                         // Clear weight goal fields for maintain
                         delete newData.weightChangeRate;
@@ -127,7 +127,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
         }, [selectedGoal, targetWeight, weightChangeRate, onValidationChange]);
 
         return (
-                <View className="bg-background flex-1 px-8 pt-8">
+                <View className="flex-1 bg-background px-8 pt-8">
                         <ScrollView
                                 className="flex-1"
                                 showsVerticalScrollIndicator={false}
@@ -154,7 +154,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                 className={`mb-4 rounded-xl border-2 p-6 ${
                                                                         selectedGoal === option.value
                                                                                 ? 'border-primary/80 bg-primary'
-                                                                                : 'bg-surfacePrimary border-surfacePrimary'
+                                                                                : 'border-surfacePrimary bg-surfacePrimary'
                                                                 }`}
                                                         >
                                                                 <View className="flex-row items-center">
@@ -238,6 +238,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                 type="weight_goal"
                                                                 value={weightChangeRate}
                                                                 onValueChange={handleWeightChangeRateChange}
+                                                                goal={selectedGoal as 'maintain' | 'lose' | 'gain'}
                                                         />
                                                 </View>
                                         </View>

@@ -6,7 +6,7 @@
 server/
 ├── controllers/          # Business logic controllers
 │   ├── authController.js # Authentication controller
-│   └── profileController.js # Profile and calorie calculation controller
+│   └── profileController.js # Profile, calorie calculation, and body composition controller
 ├── middleware/           # Express middleware
 │   └── auth.js          # JWT authentication middleware
 ├── models/              # Database models
@@ -14,7 +14,7 @@ server/
 │   └── Food.js          # Food model (placeholder)
 ├── routes/               # API routes
 │   ├── auth.js          # Authentication routes
-│   ├── profile.js       # Profile management routes
+│   ├── profile.js       # Profile management and body composition routes
 │   └── food.js          # Food management routes
 ├── utils/                # Utility functions
 │   └── index.js         # JWT, Response, Error utilities
@@ -201,9 +201,16 @@ server/
         activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
         goal: String,          // 'maintain', 'lose', 'gain'
         targetWeight: Number,   // Target weight in kg (for lose/gain goals)
-        weightChangeRate: Number, // Weight change rate in kg/week (0.1-1.0)
+        weightChangeRate: Number, // Weight change rate in kcal/day (100-1000)
         tdee: Number,          // Total Daily Energy Expenditure
-        dailyCalorieGoal: Number // Calculated based on profile (800-5000)
+        dailyCalorieGoal: Number, // Calculated based on profile (800-5000)
+
+        // Body Measurements for Composition Analysis
+        neck: Number,          // Neck circumference in cm (20-50)
+        waist: Number,         // Waist circumference in cm (50-150)
+        hip: Number,           // Hip circumference in cm (70-150)
+        bicep: Number,         // Bicep circumference in cm (15-60)
+        thigh: Number          // Thigh circumference in cm (30-100)
     },
 
     // Refresh token management
@@ -226,7 +233,7 @@ server/
 4. **Weight Goal Setting** → Advanced goal configuration:
       - Choose goal: Maintain, Lose, or Gain weight
       - Set target weight (for lose/gain goals)
-      - Select weight change rate (0.1-1.0 kg/week)
+      - Select daily calorie deficit/surplus (100-1000 kcal/day)
       - Real-time pace labels (Chill pace, Easy, Balanced, Hardcore, etc.)
 5. **Calorie Calculation** → Server calculates TDEE and daily calorie goal using Mifflin-St Jeor equation
 6. **Profile Sync** → Save to database and local storage
@@ -255,11 +262,64 @@ server/
 **Daily Calorie Goal:**
 
 - **Maintain**: TDEE
-- **Lose**: TDEE - (weightChangeRate × 7700 ÷ 7)
-- **Gain**: TDEE + (weightChangeRate × 7700 ÷ 7)
+- **Lose**: TDEE - weightChangeRate (kcal/day)
+- **Gain**: TDEE + weightChangeRate (kcal/day)
 
 ### Weight Goal Validation
 
 - **Lose Weight**: Target weight must be less than current weight
 - **Gain Weight**: Target weight must be greater than current weight
-- **Weight Change Rate**: 0.1-1.0 kg/week for safe progress
+- **Weight Change Rate**: 100-1000 kcal/day for safe progress
+
+## 🏃‍♂️ Body Composition Analysis System
+
+### Navy Method Body Fat Calculation
+
+The system uses the **U.S. Navy body fat estimation formula** to calculate body fat percentage with gender-specific formulas. While the original Navy Method uses inches, our implementation uses **centimeters directly** for convenience:
+
+**For Males:**
+
+```
+Body Fat % = 86.01 × log₁₀(waist - neck) - 70.041 × log₁₀(height) + 36.76
+```
+
+**For Females:**
+
+```
+Body Fat % = 163.205 × log₁₀(waist + hip - neck) - 97.684 × log₁₀(height) - 78.387
+```
+
+> **Reference**: [U.S. Navy body fat estimation formula](https://med.libretexts.org/Courses/Irvine_Valley_College/Physiology_Labs_at_Home/03%3A_Anthropometrics/3.02%3A_Part_B-_Circumference_Measures/3.2.04%3A_Part_B4-_The_U.S._Navy_body_fat_estimation_formula) - Medicine LibreTexts
+
+### Body Composition Metrics
+
+**Calculated Metrics:**
+
+- **Body Fat Percentage**: Primary metric using Navy Method
+- **Body Fat Mass**: Total fat mass in kg (Body Fat % × Weight)
+- **Lean Body Mass**: Muscle, bone, and organ mass (Weight - Body Fat Mass)
+- **FFMI (Fat-Free Mass Index)**: Muscle mass relative to height (Lean Body Mass / Height²)
+
+**Required Measurements:**
+
+- **Males**: Neck and Waist circumference
+- **Females**: Neck, Waist, and Hip circumference
+- **Optional**: Bicep and Thigh measurements for tracking
+
+### Measurement Validation
+
+- **Neck**: 20-50 cm
+- **Waist**: 50-150 cm
+- **Hip**: 70-150 cm
+- **Bicep**: 15-60 cm
+- **Thigh**: 30-100 cm
+
+### Real-time Updates
+
+Body composition metrics are calculated in real-time when:
+
+- Body measurements are updated
+- Weight changes
+- Profile information is modified
+
+The frontend uses helper functions in `src/utils/helpers.ts` for consistent calculations across the app.

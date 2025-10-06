@@ -13,6 +13,7 @@ export interface SliderProps {
         className?: string;
         label?: string;
         unit?: string;
+        goal?: 'maintain' | 'lose' | 'gain'; // Add goal prop for weight_goal slider
         customConfig?: {
                 minimumValue: number;
                 maximumValue: number;
@@ -45,6 +46,7 @@ export const Slider: React.FC<SliderProps> = ({
         className = '',
         label,
         unit,
+        goal,
         customConfig,
 }) => {
         const [showWarning, setShowWarning] = useState(false);
@@ -75,16 +77,17 @@ export const Slider: React.FC<SliderProps> = ({
                 switch (type) {
                         case 'weight_goal':
                                 return {
-                                        minimumValue: 0.1,
-                                        maximumValue: 1.0,
-                                        step: 0.1,
-                                        defaultValue: 0.5,
-                                        safeRange: { min: 0.1, max: 1.0 },
-                                        warningMessage: 'Safe weight change: 0.1 – 1.0 kg/week',
-                                        label: 'Weight Goal',
-                                        unit: 'kg/week',
-                                        formatValue: (val: number) => val.toFixed(1),
-                                        getDisplayText: (val: number) => `Your target pace: ${val.toFixed(1)} kg/week`,
+                                        minimumValue: 100,
+                                        maximumValue: 1000,
+                                        step: 50,
+                                        defaultValue: 400,
+                                        safeRange: { min: 200, max: 800 },
+                                        warningMessage: 'Safe calorie deficit/surplus: 200 – 800 kcal/day',
+                                        label: 'Daily Calorie Goal',
+                                        unit: 'kcal/day',
+                                        formatValue: (val: number) => Math.round(val).toString(),
+                                        getDisplayText: (val: number) =>
+                                                `Your daily calorie ${goal === 'lose' ? 'deficit' : goal === 'gain' ? 'surplus' : 'change'}: ${Math.round(val)} kcal/day`,
                                 };
 
                         case 'height':
@@ -142,17 +145,15 @@ export const Slider: React.FC<SliderProps> = ({
         const getPaceLabel = (value: number): string => {
                 if (type !== 'weight_goal') return '';
 
-                const roundedValue = Math.round(value * 10) / 10;
-                if (roundedValue <= 0.1) return 'Chill pace';
-                if (roundedValue <= 0.2) return 'Easy';
-                if (roundedValue <= 0.3) return 'Slow & steady';
-                if (roundedValue <= 0.4) return 'Gentle';
-                if (roundedValue <= 0.5) return 'Balanced';
-                if (roundedValue <= 0.6) return 'Moderate pace';
-                if (roundedValue <= 0.7) return 'Standard';
-                if (roundedValue <= 0.8) return 'Intense';
-                if (roundedValue <= 0.9) return 'Aggressive';
-                return 'Hardcore';
+                const roundedValue = Math.round(value / 50) * 50; // Round to nearest 50
+                if (roundedValue <= 150) return 'Very gentle';
+                if (roundedValue <= 250) return 'Gentle';
+                if (roundedValue <= 350) return 'Moderate';
+                if (roundedValue <= 450) return 'Balanced';
+                if (roundedValue <= 550) return 'Standard';
+                if (roundedValue <= 650) return 'Intense';
+                if (roundedValue <= 750) return 'Aggressive';
+                return 'Very aggressive';
         };
 
         const handleValueChange = (newValue: number) => {
@@ -185,7 +186,7 @@ export const Slider: React.FC<SliderProps> = ({
                                                 {config.getDisplayText(localValue)}
                                         </CText>
                                         <CText className="mt-1 text-sm text-slate-400">
-                                                The pace is limited to ensure safe, healthy progress each week.
+                                                The pace is limited to ensure safe, healthy progress each day.
                                         </CText>
                                 </View>
                         );
@@ -205,13 +206,13 @@ export const Slider: React.FC<SliderProps> = ({
                         return (
                                 <View className="mb-4 flex-row justify-between px-2">
                                         <CText className="text-text-muted" weight="medium">
-                                                {config.minimumValue} kg/week
+                                                {config.minimumValue} kcal/day
                                         </CText>
                                         <CText className="text-text-muted !text-primary" weight="medium">
                                                 {getPaceLabel(localValue)}
                                         </CText>
                                         <CText className="text-text-muted" weight="medium">
-                                                {config.maximumValue} kg/week
+                                                {config.maximumValue} kcal/day
                                         </CText>
                                 </View>
                         );

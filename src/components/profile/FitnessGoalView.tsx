@@ -24,10 +24,18 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
         ];
 
         const reductionRates = [
-                { label: 'Slow', value: 0.25, description: '0.25 kg/week - Gradual weight loss, easier to maintain' },
-                { label: 'Moderate', value: 0.5, description: '0.5 kg/week - Balanced approach, recommended for most' },
-                { label: 'Fast', value: 0.75, description: '0.75 kg/week - Aggressive loss, requires strict diet' },
-                { label: 'Very Fast', value: 1.0, description: '1 kg/week - Maximum loss, not recommended long-term' },
+                { label: 'Slow', value: 200, description: '200 kcal/day - Gradual weight loss, easier to maintain' },
+                {
+                        label: 'Moderate',
+                        value: 400,
+                        description: '400 kcal/day - Balanced approach, recommended for most',
+                },
+                { label: 'Fast', value: 600, description: '600 kcal/day - Aggressive loss, requires strict diet' },
+                {
+                        label: 'Very Fast',
+                        value: 800,
+                        description: '800 kcal/day - Maximum loss, not recommended long-term',
+                },
         ];
 
         return (
@@ -74,7 +82,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                         <CText className="text-text-light mb-3" weight="medium">
                                                 Target Weight (kg)
                                         </CText>
-                                        <View className="bg-surfacePrimary rounded-lg p-4">
+                                        <View className="rounded-lg bg-surfacePrimary p-4">
                                                 <View className="flex-row items-center justify-between">
                                                         <TouchableOpacity
                                                                 className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
@@ -123,7 +131,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                         {(formValues.goal === 'lose' || formValues.goal === 'gain') && (
                                 <View className="mb-6">
                                         <CText className="text-text-light mb-3" weight="medium">
-                                                Weight Change Rate
+                                                Daily Calorie Deficit/Surplus
                                         </CText>
                                         <Dropdown
                                                 options={reductionRates}
@@ -134,7 +142,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                                 weightChangeRate: value,
                                                         }))
                                                 }
-                                                placeholder="Select Reduction Rate"
+                                                placeholder="Select Daily Calorie Change"
                                         />
                                 </View>
                         )}

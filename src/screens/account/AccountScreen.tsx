@@ -24,7 +24,7 @@ import {
         ChevronRightIcon,
         LanguagesIcon,
 } from 'lucide-react-native';
-import { CText } from '../../components/ui/CText';
+import { CText, Switcher } from '../../components/ui';
 
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
@@ -36,6 +36,8 @@ export const AccountScreen: React.FC = () => {
 
         const [languageModalVisible, setLanguageModalVisible] = useState(false);
         const [selectedLanguage, setSelectedLanguage] = useState('EN');
+        const [darkModeEnabled, setDarkModeEnabled] = useState(true);
+        const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
         const handleLogout = async () => {
                 try {
@@ -81,8 +83,9 @@ export const AccountScreen: React.FC = () => {
         };
 
         const handleDarkMode = () => {
+                setDarkModeEnabled(!darkModeEnabled);
                 // TODO: Implement dark mode toggle
-                console.log('Toggle dark mode');
+                console.log('Toggle dark mode', !darkModeEnabled);
         };
 
         const handleTermsOfService = () => {
@@ -101,10 +104,10 @@ export const AccountScreen: React.FC = () => {
         };
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <ScrollView className="flex-1 p-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* User Info Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleProfile}
@@ -170,7 +173,7 @@ export const AccountScreen: React.FC = () => {
                                 </View>
 
                                 {/* App Settings Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleLanguage}
@@ -181,30 +184,23 @@ export const AccountScreen: React.FC = () => {
                                                 <ChevronRightIcon size={16} color="#9CA3AF" />
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
-                                                onPress={handleDarkMode}
-                                        >
+                                        <View className="flex-row items-center border-b border-white/10 p-4">
                                                 <Sun size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Dark Mode</CText>
-                                                <View className="h-6 w-12 items-center justify-center rounded-full bg-primary">
-                                                        <View className="ml-4 h-4 w-4 rounded-full bg-white" />
-                                                </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                                className="flex-row items-center p-4"
-                                                onPress={handleDarkMode}
-                                        >
+                                                <Switcher value={darkModeEnabled} onValueChange={setDarkModeEnabled} />
+                                        </View>
+                                        <View className="flex-row items-center p-4">
                                                 <BellIcon size={20} color="#4CAF50" />
                                                 <CText className="text-text-light ml-3 flex-1">Notifications</CText>
-                                                <View className="h-6 w-12 items-center justify-center rounded-full bg-primary">
-                                                        <View className="ml-4 h-4 w-4 rounded-full bg-white" />
-                                                </View>
-                                        </TouchableOpacity>
+                                                <Switcher
+                                                        value={notificationsEnabled}
+                                                        onValueChange={setNotificationsEnabled}
+                                                />
+                                        </View>
                                 </View>
 
                                 {/* Community & Feedback Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleSendRequest}
@@ -229,7 +225,7 @@ export const AccountScreen: React.FC = () => {
                                                 <CText className="text-text-light ml-3 flex-1">Follow Calog</CText>
                                         </TouchableOpacity>
                                 </View>
-                                <View className="bg-surfacePrimary mb-6 rounded-xl">
+                                <View className="mb-6 rounded-xl bg-surfacePrimary">
                                         <TouchableOpacity
                                                 className="flex-row items-center border-b border-white/10 p-4"
                                                 onPress={handleTermsOfService}
@@ -273,7 +269,7 @@ export const AccountScreen: React.FC = () => {
                                         onPress={() => setLanguageModalVisible(false)}
                                 >
                                         <TouchableOpacity
-                                                className="bg-surfacePrimary w-full max-w-sm rounded-xl"
+                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
