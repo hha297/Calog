@@ -9,6 +9,7 @@ import { EditModal } from '../../components/ui/EditModal';
 import { BasicInfoView, MeasurementsView, ProfileInfoView, FitnessGoalView } from '../../components/profile';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
+import { calculateBodyComposition, calculateTDEE, calculateBMI, getBMIStatus } from '../../utils/helpers';
 
 export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -23,18 +24,6 @@ export const ProfileScreen: React.FC = () => {
                 'fitness_goal' | 'measurements' | 'basic_info' | 'profile_info' | null
         >(null);
         const [formValues, setFormValues] = useState<Record<string, any>>({});
-
-        const calculateBMI = (weight: number, height: number) => {
-                const heightInMeters = height / 100;
-                return (weight / (heightInMeters * heightInMeters)).toFixed(1);
-        };
-
-        const getBMIStatus = (bmi: number) => {
-                if (bmi < 18.5) return 'Underweight';
-                if (bmi < 25) return 'Normal weight';
-                if (bmi < 30) return 'Overweight';
-                return 'Obesity';
-        };
 
         const getActivityLevelText = (level: string) => {
                 const levels = {
@@ -54,27 +43,18 @@ export const ProfileScreen: React.FC = () => {
                 return goal;
         };
 
-        const calculateTDEE = (weight: number, height: number, age: number, gender: string, activityLevel: string) => {
-                // BMR calculation using Mifflin-St Jeor Equation
-                let bmr;
-                if (gender === 'male') {
-                        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-                } else {
-                        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-                }
-
-                // Activity multipliers
-                const multipliers = {
-                        sedentary: 1.2,
-                        light: 1.375,
-                        moderate: 1.55,
-                        active: 1.725,
-                        very_active: 1.9,
-                };
-
-                const tdee = bmr * (multipliers[activityLevel as keyof typeof multipliers] || 1.2);
-                return { bmr: Math.round(bmr), tdee: Math.round(tdee) };
-        };
+        // Calculate body composition metrics
+        const bodyComposition = currentProfile
+                ? calculateBodyComposition(
+                          currentProfile.weight,
+                          currentProfile.height,
+                          currentProfile.age,
+                          currentProfile.gender,
+                          currentProfile.neck,
+                          currentProfile.waist,
+                          currentProfile.hip,
+                  )
+                : null;
 
         const handleEditFitnessGoal = () => {
                 setEditModalType('fitness_goal');
@@ -230,7 +210,7 @@ export const ProfileScreen: React.FC = () => {
                 (currentProfile.goal === 'lose' ? tdee - 550 : currentProfile.goal === 'gain' ? tdee + 550 : tdee);
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         {/* Header */}
                         <View className="flex-row items-center justify-between px-6 py-4">
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -245,7 +225,7 @@ export const ProfileScreen: React.FC = () => {
                         <ScrollView className="flex-1 px-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* Profile Information Section */}
                                 <TouchableOpacity
-                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
                                         onPress={handleEditProfileInfo}
                                 >
                                         <View className="flex-row items-center">
@@ -275,7 +255,7 @@ export const ProfileScreen: React.FC = () => {
 
                                 {/* Basic Information Section */}
                                 <TouchableOpacity
-                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
                                         onPress={handleEditBasicInfo}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -300,34 +280,44 @@ export const ProfileScreen: React.FC = () => {
 
                                 {/* Body Measurements Section */}
                                 <TouchableOpacity
-                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
                                         onPress={handleEditMeasurements}
                                 >
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText className="text-text-muted">Neck</CText>
-                                                <CText className="text-text-light">-- cm</CText>
+                                                <CText className="text-text-light">
+                                                        {currentProfile?.neck ? `${currentProfile.neck} cm` : '-- cm'}
+                                                </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText className="text-text-muted">Waist</CText>
-                                                <CText className="text-text-light">-- cm</CText>
+                                                <CText className="text-text-light">
+                                                        {currentProfile?.waist ? `${currentProfile.waist} cm` : '-- cm'}
+                                                </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText className="text-text-muted">Hip</CText>
-                                                <CText className="text-text-light">-- cm</CText>
+                                                <CText className="text-text-light">
+                                                        {currentProfile?.hip ? `${currentProfile.hip} cm` : '-- cm'}
+                                                </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText className="text-text-muted">Bicep</CText>
-                                                <CText className="text-text-light">-- cm</CText>
+                                                <CText className="text-text-light">
+                                                        {currentProfile?.bicep ? `${currentProfile.bicep} cm` : '-- cm'}
+                                                </CText>
                                         </View>
                                         <View className="flex-row justify-between">
                                                 <CText className="text-text-muted">Thigh</CText>
-                                                <CText className="text-text-light">-- cm</CText>
+                                                <CText className="text-text-light">
+                                                        {currentProfile?.thigh ? `${currentProfile.thigh} cm` : '-- cm'}
+                                                </CText>
                                         </View>
                                 </TouchableOpacity>
 
                                 {/* Fitness Goals Section */}
                                 <TouchableOpacity
-                                        className="bg-surfacePrimary mb-4 rounded-xl p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
                                         onPress={handleEditFitnessGoal}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -347,14 +337,14 @@ export const ProfileScreen: React.FC = () => {
                                                 <View className="flex-row justify-between">
                                                         <CText className="text-text-muted">Reduction Level</CText>
                                                         <CText className="text-text-light">
-                                                                Reduce {currentProfile.weightChangeRate} kg/week
+                                                                {currentProfile.weightChangeRate} kcal/day deficit
                                                         </CText>
                                                 </View>
                                         )}
                                 </TouchableOpacity>
 
                                 {/* Required Calorie Intake Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -371,7 +361,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* TDEE Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
@@ -389,7 +379,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMR Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">BMR Index (kcal)</CText>
@@ -404,7 +394,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMI Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">BMI Index</CText>
@@ -419,62 +409,84 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Body Fat Percentage Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
                                                                 Body Fat Percentage (%)
                                                         </CText>
-                                                        <CText className="text-text-light text-lg font-bold">--</CText>
+                                                        <CText className="text-text-light text-lg font-bold">
+                                                                {bodyComposition
+                                                                        ? `${bodyComposition.bodyFatPercentage}%`
+                                                                        : '--'}
+                                                        </CText>
                                                 </View>
                                         </View>
                                         <CText className="text-text-muted text-sm">
-                                                To view this index, you need to fill in neck, waist, hip measurements.
+                                                {bodyComposition
+                                                        ? 'Calculated using Navy Method'
+                                                        : 'To view this index, you need to fill in neck, waist, hip measurements.'}
                                         </CText>
                                 </View>
 
                                 {/* Body Fat Mass Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
                                                                 Body Fat Mass (kg)
                                                         </CText>
-                                                        <CText className="text-text-light text-lg font-bold">--</CText>
+                                                        <CText className="text-text-light text-lg font-bold">
+                                                                {bodyComposition
+                                                                        ? `${bodyComposition.bodyFatMass} kg`
+                                                                        : '--'}
+                                                        </CText>
                                                 </View>
                                         </View>
                                         <CText className="text-text-muted text-sm">
-                                                To view this index, you need to fill in neck, waist, hip measurements.
+                                                {bodyComposition
+                                                        ? 'Total fat mass in your body'
+                                                        : 'To view this index, you need to fill in neck, waist, hip measurements.'}
                                         </CText>
                                 </View>
 
                                 {/* FFMI Section */}
-                                <View className="bg-surfacePrimary mb-4 rounded-xl p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
-                                                                FFMI Index (m2/kg)
+                                                                FFMI Index (kg/m²)
                                                         </CText>
-                                                        <CText className="text-text-light text-lg font-bold">--</CText>
+                                                        <CText className="text-text-light text-lg font-bold">
+                                                                {bodyComposition ? bodyComposition.ffmi : '--'}
+                                                        </CText>
                                                 </View>
                                         </View>
                                         <CText className="text-text-muted text-sm">
-                                                To view this index, you need to fill in neck, waist, hip measurements.
+                                                {bodyComposition
+                                                        ? 'Fat-Free Mass Index - muscle mass relative to height'
+                                                        : 'To view this index, you need to fill in neck, waist, hip measurements.'}
                                         </CText>
                                 </View>
 
                                 {/* Lean Body Mass Section */}
-                                <View className="bg-surfacePrimary mb-6 rounded-xl p-4">
+                                <View className="mb-6 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="text-text-muted mb-1">
                                                                 Lean Body Mass (kg)
                                                         </CText>
-                                                        <CText className="text-text-light text-lg font-bold">--</CText>
+                                                        <CText className="text-text-light text-lg font-bold">
+                                                                {bodyComposition
+                                                                        ? `${bodyComposition.leanBodyMass} kg`
+                                                                        : '--'}
+                                                        </CText>
                                                 </View>
                                         </View>
                                         <CText className="text-text-muted text-sm">
-                                                To view this index, you need to fill in neck, waist, hip measurements.
+                                                {bodyComposition
+                                                        ? 'Total muscle, bone, and organ mass'
+                                                        : 'To view this index, you need to fill in neck, waist, hip measurements.'}
                                         </CText>
                                 </View>
                         </ScrollView>

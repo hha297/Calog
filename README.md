@@ -12,8 +12,10 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 - **Onboarding**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goals**: Lose/Gain weight with target weight and rate selection
 - **Calorie Calculation**: TDEE and daily calorie goal calculation based on Mifflin-St Jeor equation
+- **Body Composition Analysis**: Advanced body fat percentage calculation using U.S. Navy Method with cm measurements
+- **Body Measurements**: Track neck, waist, hip, bicep, and thigh measurements
+- **Fitness Metrics**: BMI, Body Fat Mass, Lean Body Mass, and FFMI calculations
 - **Persistent Login**: Users stay logged in using device keychain
-- **Port**: Backend runs on port 4000
 
 ## 📋 System Requirements
 
@@ -176,35 +178,6 @@ npm run dev
 npm run dev:ios
 ```
 
-## 📱 Usage
-
-### First Time Users
-
-1. Open React Native app
-2. Tap "Sign Up" to create account
-3. Complete onboarding process:
-      - Welcome screen with app introduction
-      - Value proposition and benefits
-      - Basic profile (gender, age, height, weight, activity level)
-      - Weight goal setting: - Choose goal: Maintain, Lose, or Gain weight - Set target weight (for lose/gain goals) - Select weight change rate (0.1-1.0 kg/week) - Real-time pace labels (Chill pace, Easy, Balanced, Hardcore, etc.)
-4. System automatically calculates TDEE and daily calorie goal
-5. App saves profile locally and syncs to database
-
-### Returning Users
-
-1. App automatically logs in using stored keychain tokens
-2. If tokens expired, app refreshes automatically
-3. Users stay logged in across app restarts
-4. Access all features without re-authentication
-
-### Google OAuth Users
-
-1. Tap "Login with Google"
-2. Select Google account
-3. App automatically creates/links account
-4. Same onboarding flow as traditional users
-5. Profile data synced to database
-
 ## 🔧 API Endpoints
 
 ### Authentication
@@ -215,33 +188,29 @@ npm run dev:ios
 - `POST /auth/refresh` - Refresh JWT token
 - `POST /auth/logout` - Logout
 
-### Health Check
-
-- `GET /health` - Check server status
-
 ## 🗄️ Database Schema
 
 ### User Model
 
 ```javascript
 {
-    googleId: String,        // Google OAuth ID
-    email: String,           // Email (required)
-    name: String,            // Google display name
-    avatar: String,          // Google profile picture
-    refreshToken: String,    // Google refresh token
-    role: String,            // 'free', 'premium', 'admin'
+    googleId: String,               // Google OAuth ID
+    email: String,                  // Email (required)
+    name: String,                   // Google display name
+    avatar: String,                 // Google profile picture
+    refreshToken: String,           // Google refresh token
+    role: String,                   // 'free', 'premium', 'admin'
     profile: {
-        gender: String,      // 'male', 'female', 'other'
-        age: Number,         // 13-120
-        height: Number,      // Height in cm (100-250)
-        weight: Number,      // Weight in kg (30-300)
-        activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
-        goal: String,        // 'maintain', 'lose', 'gain'
-        targetWeight: Number, // Target weight in kg (for lose/gain goals)
-        weightChangeRate: Number, // Weight change rate in kg/week (0.1-1.0)
-        tdee: Number,        // Total Daily Energy Expenditure
-        dailyCalorieGoal: Number // Calculated daily calorie goal
+        gender: String,             // 'male', 'female', 'other'
+        age: Number,                // 13-120
+        height: Number,             // Height in cm (100-250)
+        weight: Number,             // Weight in kg (30-300)
+        activityLevel: String,      // 'sedentary', 'light', 'moderate', 'active', 'very_active'
+        goal: String,               // 'maintain', 'lose', 'gain'
+        targetWeight: Number,       // Target weight in kg (for lose/gain goals)
+        weightChangeRate: Number,   // Weight change rate in kcal/day (100-1000)
+        tdee: Number,               // Total Daily Energy Expenditure
+        dailyCalorieGoal: Number    // Calculated daily calorie goal
     },
     createdAt: Date,
     updatedAt: Date
@@ -292,6 +261,13 @@ npm run dev:ios
 - **Onboarding Flow**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goal System**: Target weight and rate selection with real-time pace labels
 - **Calorie Calculation**: TDEE and daily calorie goal using Mifflin-St Jeor equation
+- **Body Composition Analysis**:
+     - U.S. Navy Method body fat percentage calculation (separate formulas for male/female)
+     - Uses centimeters directly for convenience (original method uses inches)
+     - Body measurements tracking (neck, waist, hip, bicep, thigh)
+     - Comprehensive fitness metrics (BMI, Body Fat Mass, Lean Body Mass, FFMI)
+     - Real-time calculation updates when measurements change
+     - Reference: [U.S. Navy body fat estimation formula](https://med.libretexts.org/Courses/Irvine_Valley_College/Physiology_Labs_at_Home/03%3A_Anthropometrics/3.02%3A_Part_B-_Circumference_Measures/3.2.04%3A_Part_B4-_The_U.S._Navy_body_fat_estimation_formula)
 - **Keychain Integration**: Secure storage using react-native-keychain
 - **Profile Management**: Local storage with database sync
 - **Auto-Login**: Persistent authentication across sessions

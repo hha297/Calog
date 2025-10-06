@@ -42,7 +42,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
         return (
                 <TouchableOpacity
                         style={{} as ViewStyle}
-                        className={`min-h-[48px] items-center justify-center rounded-lg border border-secondary bg-primary px-3 py-3 ${disabled ? 'opacity-50' : ''} ${className}`}
+                        className={`min-h-[48px] items-center justify-center rounded-lg border border-primary bg-secondary px-3 py-3 ${disabled ? 'opacity-50' : ''} ${className}`}
                         onPress={onPress}
                         disabled={disabled}
                         activeOpacity={0.8}
