@@ -9,27 +9,21 @@ interface LogScreenProps {
 
 export const LogScreen: React.FC<LogScreenProps> = ({ navigation }) => {
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Header */}
                                         <View className="mb-8">
-                                                <CText
-                                                        size="2xl"
-                                                        weight="bold"
-                                                        className="text-text-light mb-2 text-center"
-                                                >
+                                                <CText size="2xl" weight="bold" className="mb-2 text-center">
                                                         Food Log
                                                 </CText>
-                                                <CText className="text-text-muted text-center">
-                                                        Track your daily nutrition
-                                                </CText>
+                                                <CText className="text-center">Track your daily nutrition</CText>
                                         </View>
 
                                         {/* Placeholder Content */}
-                                        <View className="bg-surfacePrimary mb-6 rounded-lg p-6">
-                                                <CText className="text-text-light mb-4 text-lg">Today's Log</CText>
-                                                <CText className="text-text-muted">
+                                        <View className="mb-6 rounded-lg bg-surfacePrimary p-6">
+                                                <CText className="mb-4 text-lg">Today's Log</CText>
+                                                <CText className="">
                                                         No food entries yet. Start by scanning a food item or manually
                                                         adding one.
                                                 </CText>
@@ -37,37 +31,29 @@ export const LogScreen: React.FC<LogScreenProps> = ({ navigation }) => {
 
                                         {/* Quick Stats */}
                                         <View className="mb-6">
-                                                <CText className="text-text-light mb-4 text-lg">Quick Stats</CText>
+                                                <CText className="mb-4 text-lg">Quick Stats</CText>
 
                                                 <View className="space-y-3">
                                                         <View className="rounded-lg bg-primary p-4">
-                                                                <CText className="text-text-light">🔥 Calories</CText>
-                                                                <CText className="text-text-muted mt-1 text-sm">
-                                                                        0 / 2000 kcal
-                                                                </CText>
+                                                                <CText className="">🔥 Calories</CText>
+                                                                <CText className="mt-1 text-sm">0 / 2000 kcal</CText>
                                                         </View>
 
                                                         <View className="rounded-lg bg-primary p-4">
-                                                                <CText className="text-text-light">🥗 Meals</CText>
-                                                                <CText className="text-text-muted mt-1 text-sm">
-                                                                        0 meals logged
-                                                                </CText>
+                                                                <CText className="">🥗 Meals</CText>
+                                                                <CText className="mt-1 text-sm">0 meals logged</CText>
                                                         </View>
 
                                                         <View className="rounded-lg bg-primary p-4">
-                                                                <CText className="text-text-light">💧 Water</CText>
-                                                                <CText className="text-text-muted mt-1 text-sm">
-                                                                        0 / 8 glasses
-                                                                </CText>
+                                                                <CText className="">💧 Water</CText>
+                                                                <CText className="mt-1 text-sm">0 / 8 glasses</CText>
                                                         </View>
                                                 </View>
                                         </View>
 
                                         {/* Footer */}
                                         <View className="items-center">
-                                                <CText className="text-text-muted text-xs">
-                                                        Food logging features coming soon
-                                                </CText>
+                                                <CText className="text-xs">Food logging features coming soon</CText>
                                         </View>
                                 </View>
                         </ScrollView>

@@ -34,13 +34,13 @@ const features = [
 
 export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ onNext }) => {
         return (
-                <View className="bg-background flex-1 px-8 pt-8">
+                <View className="flex-1 bg-background px-8 pt-8">
                         {/* Header */}
                         <View className="pb-6">
-                                <CText size="2xl" weight="bold" className="text-text-light mb-2 text-center">
+                                <CText size="2xl" weight="bold" className="mb-2 text-center">
                                         What Calog Offers
                                 </CText>
-                                <CText size="lg" className="text-text-muted text-center">
+                                <CText size="lg" className="text-center">
                                         Everything you need to reach your nutrition goals
                                 </CText>
                         </View>
@@ -56,7 +56,7 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                         return (
                                                 <View
                                                         key={feature.id}
-                                                        className="bg-surfacePrimary mb-4 rounded-xl p-6"
+                                                        className="mb-4 rounded-xl bg-surfacePrimary p-6"
                                                 >
                                                         <View className="flex-row items-start">
                                                                 <View className="mr-4 rounded-lg bg-primary/20 p-3">
@@ -66,14 +66,11 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                                                         <CText
                                                                                 size="lg"
                                                                                 weight="medium"
-                                                                                className="text-text-light mb-2"
+                                                                                className="mb-2"
                                                                         >
                                                                                 {feature.title}
                                                                         </CText>
-                                                                        <CText
-                                                                                size="base"
-                                                                                className="text-text-muted leading-5"
-                                                                        >
+                                                                        <CText size="base" className="leading-5">
                                                                                 {feature.subtitle}
                                                                         </CText>
                                                                 </View>

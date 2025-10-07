@@ -78,7 +78,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -96,14 +96,10 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
 
                                         {/* Header */}
                                         <View className="mb-8">
-                                                <CText
-                                                        size="2xl"
-                                                        weight="bold"
-                                                        className="text-text-light mb-2 text-center"
-                                                >
+                                                <CText size="2xl" weight="bold" className="mb-2 text-center">
                                                         Start Your Journey
                                                 </CText>
-                                                <CText size="base" className="text-text-muted text-center">
+                                                <CText size="base" className="text-center">
                                                         Join Calog to track your nutrition, workouts, and progress – all
                                                         in one place.
                                                 </CText>
@@ -174,9 +170,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                         </TouchableOpacity>
                                                         <View className="flex-1">
                                                                 <View className="flex-row flex-wrap">
-                                                                        <CText className="text-text-muted">
-                                                                                I agree to{' '}
-                                                                        </CText>
+                                                                        <CText className="">I agree to </CText>
                                                                         <Pressable
                                                                                 onPress={() => {
                                                                                         navigation.navigate(
@@ -191,7 +185,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                                                         Terms of Service
                                                                                 </CText>
                                                                         </Pressable>
-                                                                        <CText className="text-text-muted"> and </CText>
+                                                                        <CText className=""> and </CText>
                                                                         <Pressable
                                                                                 onPress={() => {
                                                                                         navigation.navigate(
@@ -235,7 +229,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
                                                 <View className="h-px flex-1 bg-white" />
-                                                <CText className="text-text-muted mx-4">OR</CText>
+                                                <CText className="mx-4">OR</CText>
                                                 <View className="h-px flex-1 bg-white" />
                                         </View>
 
@@ -250,7 +244,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
 
                                         {/* Login Link */}
                                         <View className="flex-row justify-center">
-                                                <CText className="text-text-muted">Already have an account? </CText>
+                                                <CText className="">Already have an account? </CText>
                                                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                                                         <CText className="!text-primary" weight="medium">
                                                                 Sign in

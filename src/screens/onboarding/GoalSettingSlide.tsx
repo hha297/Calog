@@ -135,10 +135,10 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                         >
                                 {/* Header */}
                                 <View className="mb-12">
-                                        <CText size="2xl" weight="bold" className="text-text-light mb-2 text-center">
+                                        <CText size="2xl" weight="bold" className="mb-2 text-center">
                                                 Choose your goal
                                         </CText>
-                                        <CText size="lg" className="text-text-muted text-center">
+                                        <CText size="lg" className="text-center">
                                                 Pick the target that best matches your journey.
                                         </CText>
                                 </View>
@@ -183,7 +183,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                                 selectedGoal ===
                                                                                                 option.value
                                                                                                         ? 'text-white'
-                                                                                                        : 'text-text-light'
+                                                                                                        : ''
                                                                                         }`}
                                                                                 >
                                                                                         {option.label}
@@ -193,7 +193,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                                 selectedGoal ===
                                                                                                 option.value
                                                                                                         ? 'text-white/80'
-                                                                                                        : 'text-text-muted'
+                                                                                                        : ''
                                                                                         }`}
                                                                                 >
                                                                                         {option.description}
@@ -208,7 +208,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                 {/* Weight Goal Configuration */}
                                 {(selectedGoal === 'lose' || selectedGoal === 'gain') && (
                                         <View>
-                                                <CText size="xl" weight="medium" className="text-text-light mb-4">
+                                                <CText size="xl" weight="medium" className="mb-4">
                                                         Goal Overview
                                                 </CText>
 

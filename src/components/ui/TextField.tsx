@@ -33,7 +33,7 @@ export const TextField: React.FC<TextFieldProps> = ({
 
         return (
                 <View style={style} className={`mb-4 ${className}`}>
-                        <CText size="base" className="text-text-light mb-2">
+                        <CText size="base" className="mb-2">
                                 {label}
                         </CText>
 

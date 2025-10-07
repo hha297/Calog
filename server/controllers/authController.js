@@ -1,4 +1,5 @@
 const { User, UserRole } = require('../models/User');
+const MeasurementLog = require('../models/MeasurementLog');
 const { JWTUtils, ResponseUtils, ErrorUtils } = require('../utils');
 const { OAuth2Client } = require('google-auth-library');
 
@@ -270,6 +271,50 @@ class AuthController {
                         return ResponseUtils.error(res, 'Google authentication failed', 500);
                 }
         });
+
+        // Delete user account and all related data
+        static async deleteAccount(req, res) {
+                try {
+                        const userId = req.user.userId;
+
+                        // Start a transaction to ensure data consistency
+                        const session = await User.startSession();
+                        session.startTransaction();
+
+                        try {
+                                // 1. Delete all measurement logs for this user
+                                const deletedLogs = await MeasurementLog.deleteMany({ userId }).session(session);
+
+                                // 2. Delete the user
+                                const deletedUser = await User.findByIdAndDelete(userId).session(session);
+                                if (!deletedUser) {
+                                        await session.abortTransaction();
+                                        return ResponseUtils.notFound(res, 'User not found');
+                                }
+
+                                // 3. Commit the transaction
+                                await session.commitTransaction();
+
+                                return ResponseUtils.success(
+                                        res,
+                                        {
+                                                message: 'Account and all related data deleted successfully',
+                                                deletedLogs: deletedLogs.deletedCount,
+                                        },
+                                        'Account deleted successfully',
+                                );
+                        } catch (error) {
+                                // Rollback transaction on error
+                                await session.abortTransaction();
+                                throw error;
+                        } finally {
+                                session.endSession();
+                        }
+                } catch (error) {
+                        console.error('AuthController.deleteAccount - Error:', error);
+                        return ResponseUtils.serverError(res, 'Failed to delete account');
+                }
+        }
 }
 
 module.exports = AuthController;

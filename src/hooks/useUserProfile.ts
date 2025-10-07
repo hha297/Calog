@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store';
 import { profileApi } from '../services/api/profileApi';
 import { UserProfile } from '../types';
+import { measurementLogStorage } from '../services/measurementLogStorage';
 
 export const useUserProfile = () => {
         const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -12,42 +13,75 @@ export const useUserProfile = () => {
                 loadProfile();
         }, [user]);
 
+        const normalizeProfile = (p: any): UserProfile | null => {
+                if (!p) return null;
+                const merged: any = { ...p };
+                const m = (p as any).measurements || {};
+                const keys = ['neck', 'waist', 'hip', 'bicep', 'thigh'] as const;
+                keys.forEach((k) => {
+                        if (merged[k] === undefined && m[k] !== undefined && m[k] !== null) {
+                                merged[k] = m[k];
+                        }
+                });
+                return merged as UserProfile;
+        };
+
         const loadProfile = async () => {
                 try {
                         setIsLoading(true);
-                        console.log('useUserProfile - Loading profile for user:', user);
 
-                        // First try to get profile from user object (from auth store)
-                        if (user?.profile) {
-                                console.log('useUserProfile - Found profile in user object:', user.profile);
-                                setProfile(user.profile);
+                        // Check if profile in user object is complete
+                        const hasCompleteProfile =
+                                user?.profile &&
+                                user.profile.gender &&
+                                user.profile.age &&
+                                user.profile.height &&
+                                user.profile.weight;
+
+                        if (hasCompleteProfile) {
+                                setProfile(normalizeProfile(user.profile) as UserProfile);
                                 setIsLoading(false);
                                 return;
+                        } else if (user?.profile) {
                         }
 
-                        // Debug: Check user object structure
-                        console.log('useUserProfile - User object structure:', {
-                                name: user?.name,
-                                fullName: user?.fullName,
-                                email: user?.email,
-                                avatar: user?.avatar,
-
-                                profilePicture: (user as any)?.profilePicture,
-                                picture: (user as any)?.picture,
-                                photoURL: (user as any)?.photoURL,
-                        });
-
-                        // If no profile in user object, try to fetch from API
                         try {
                                 const response = await profileApi.getProfile();
-                                setProfile(response.profile);
+
+                                if (response.profile) {
+                                        let merged = normalizeProfile(response.profile);
+                                        // If no logs remain, clear measurement snapshot in client
+                                        try {
+                                                const logs = await measurementLogStorage.getLogs();
+                                                if (!logs || logs.length === 0) {
+                                                        if (merged) {
+                                                                const cleared: any = { ...merged };
+                                                                if (cleared.measurements) delete cleared.measurements;
+                                                                ['neck', 'waist', 'hip', 'bicep', 'thigh'].forEach(
+                                                                        (k) => {
+                                                                                if (k in cleared)
+                                                                                        delete cleared[
+                                                                                                k as keyof typeof cleared
+                                                                                        ];
+                                                                        },
+                                                                );
+                                                                merged = cleared as UserProfile;
+                                                        }
+                                                }
+                                        } catch {}
+
+                                        setProfile(merged as UserProfile);
+                                } else {
+                                        setProfile(null);
+                                }
                         } catch (apiError) {
-                                console.log('Failed to fetch profile from API:', apiError);
+                                console.error('Failed to fetch profile from API:', apiError);
+
                                 // If API fails, keep profile as null
                                 setProfile(null);
                         }
                 } catch (error) {
-                        console.log('Error loading profile:', error);
+                        console.error('Error loading profile:', error);
                         setProfile(null);
                 } finally {
                         setIsLoading(false);
@@ -64,10 +98,8 @@ export const useUserProfile = () => {
 
                         // Update local state
                         setProfile(updatedProfile);
-
-                        console.log('Profile updated successfully:', updatedProfile);
                 } catch (error) {
-                        console.log('Error updating profile:', error);
+                        console.error('Error updating profile:', error);
                         throw error;
                 }
         };
@@ -75,9 +107,8 @@ export const useUserProfile = () => {
         const clearProfile = async () => {
                 try {
                         setProfile(null);
-                        console.log('Profile cleared');
                 } catch (error) {
-                        console.log('Error clearing profile:', error);
+                        console.error('Error clearing profile:', error);
                 }
         };
 
@@ -87,5 +118,6 @@ export const useUserProfile = () => {
                 updateProfile,
                 clearProfile,
                 loadProfile,
+                setProfile,
         };
 };

@@ -42,7 +42,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                 <View>
                         {/* Activity Level */}
                         <View className="mb-6">
-                                <CText className="text-text-light mb-3" weight="medium">
+                                <CText className="mb-3" weight="medium">
                                         Activity Level
                                 </CText>
                                 <Dropdown
@@ -60,7 +60,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
 
                         {/* Goal */}
                         <View className="mb-6">
-                                <CText className="text-text-light mb-3" weight="medium">
+                                <CText className="mb-3" weight="medium">
                                         Weight Goal
                                 </CText>
                                 <Dropdown
@@ -79,7 +79,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                         {/* Target Weight (only show if goal is not maintain) */}
                         {formValues.goal !== 'maintain' && (
                                 <View className="mb-6">
-                                        <CText className="text-text-light mb-3" weight="medium">
+                                        <CText className="mb-3" weight="medium">
                                                 Target Weight (kg)
                                         </CText>
                                         <View className="rounded-lg bg-surfacePrimary p-4">
@@ -96,11 +96,11 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                                         }));
                                                                 }}
                                                         >
-                                                                <CText className="text-text-light text-xl font-bold">
+                                                                <CText className="text-xl" weight="bold">
                                                                         -
                                                                 </CText>
                                                         </TouchableOpacity>
-                                                        <CText className="text-text-light text-lg font-medium">
+                                                        <CText className="text-lg" weight="medium">
                                                                 {formValues.targetWeight || 70}
                                                         </CText>
                                                         <TouchableOpacity
@@ -118,7 +118,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                                         }));
                                                                 }}
                                                         >
-                                                                <CText className="text-text-light text-xl font-bold">
+                                                                <CText className="text-xl" weight="bold">
                                                                         +
                                                                 </CText>
                                                         </TouchableOpacity>
@@ -130,7 +130,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                         {/* Weight Change Rate (only show if goal is lose or gain) */}
                         {(formValues.goal === 'lose' || formValues.goal === 'gain') && (
                                 <View className="mb-6">
-                                        <CText className="text-text-light mb-3" weight="medium">
+                                        <CText className="mb-3" weight="medium">
                                                 Daily Calorie Deficit/Surplus
                                         </CText>
                                         <Dropdown

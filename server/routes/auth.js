@@ -59,4 +59,7 @@ router.get('/google/callback', AuthController.googleCallback);
 // GET /auth/me - Get current user info
 router.get('/me', authMiddleware, AuthController.getCurrentUser);
 
+// DELETE /auth/account - Delete user account and all related data
+router.delete('/account', authMiddleware, AuthController.deleteAccount);
+
 module.exports = router;
