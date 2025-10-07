@@ -45,6 +45,19 @@ router.put('/', authMiddleware, profileValidation, handleValidationErrors, Profi
 // GET /api/profile - Get user profile
 router.get('/', authMiddleware, ProfileController.getProfile);
 
+// GET /api/profile/debug - Debug endpoint
+router.get('/debug', authMiddleware, (req, res) => {
+        res.json({
+                success: true,
+                message: 'Debug endpoint working',
+                data: {
+                        userId: req.user.userId,
+                        userRole: req.user.userRole,
+                        timestamp: new Date().toISOString(),
+                },
+        });
+});
+
 // POST /api/profile/calculate-calories - Calculate daily calorie goal
 router.post(
         '/calculate-calories',

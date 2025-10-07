@@ -40,11 +40,15 @@ export const profileApi = {
                 return response;
         },
 
-        // Update body measurements
-        updateMeasurements: async (measurements: BodyMeasurements): Promise<ProfileResponse> => {
-                const response = await apiClient.put<ProfileResponse>('/api/profile/measurements', {
-                        measurements,
-                });
+        // Debug endpoint to test authentication
+        debugProfile: async (): Promise<any> => {
+                const response = await apiClient.get<any>('/api/profile/debug');
+                return response;
+        },
+
+        // Delete user account and all related data
+        deleteAccount: async (): Promise<{ message: string; deletedLogs: number }> => {
+                const response = await apiClient.delete<{ message: string; deletedLogs: number }>('/auth/account');
                 return response;
         },
 };

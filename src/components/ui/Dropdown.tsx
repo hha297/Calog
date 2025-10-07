@@ -50,13 +50,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return (
                 <>
                         <TouchableOpacity
-                                className={`bg-surfacePrimary flex-row items-center justify-between rounded-lg border border-white/20 p-4 ${className} ${
+                                className={`flex-row items-center justify-between rounded-lg border border-white/20 bg-surfacePrimary p-4 ${className} ${
                                         disabled ? 'opacity-50' : ''
                                 }`}
                                 onPress={handlePress}
                                 disabled={disabled}
                         >
-                                <CText className="text-text-light flex-1">{getSelectedLabel()}</CText>
+                                <CText className="flex-1">{getSelectedLabel()}</CText>
                                 <ChevronDown
                                         size={20}
                                         color="#9CA3AF"
@@ -73,17 +73,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                         onPress={handleClose}
                                 >
                                         <TouchableOpacity
-                                                className="bg-surfacePrimary w-full max-w-sm rounded-xl"
+                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
                                                 {/* Header */}
                                                 <View className="border-b border-white/10 px-6 py-4">
-                                                        <CText
-                                                                size="lg"
-                                                                weight="bold"
-                                                                className="text-text-light text-center"
-                                                        >
+                                                        <CText size="lg" weight="bold" className="text-center">
                                                                 Select Option
                                                         </CText>
                                                 </View>
@@ -109,7 +105,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                                                         className={`text-center ${
                                                                                                 value === option.value
                                                                                                         ? 'text-white'
-                                                                                                        : 'text-text-light'
+                                                                                                        : ''
                                                                                         }`}
                                                                                         weight="medium"
                                                                                 >
@@ -121,7 +117,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                                                                         value ===
                                                                                                         option.value
                                                                                                                 ? 'text-white/80'
-                                                                                                                : 'text-text-muted'
+                                                                                                                : ''
                                                                                                 }`}
                                                                                         >
                                                                                                 {option.description}
@@ -138,10 +134,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                                 className="rounded-lg bg-white/10 p-3"
                                                                 onPress={handleClose}
                                                         >
-                                                                <CText
-                                                                        className="text-text-light text-center"
-                                                                        weight="medium"
-                                                                >
+                                                                <CText className="text-center" weight="medium">
                                                                         Cancel
                                                                 </CText>
                                                         </TouchableOpacity>

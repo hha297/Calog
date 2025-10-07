@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, ChevronRightIcon, User, Camera, PenBoxIcon } from 'lucide-react-native';
+import { ArrowLeft, User, PenBoxIcon, Trash2Icon } from 'lucide-react-native';
 import { CText } from '../../components/ui/CText';
+import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { Button } from '../../components/ui/Button';
 import { EditModal } from '../../components/ui/EditModal';
+import { measurementLogStorage, MeasurementLogEntry } from '../../services/measurementLogStorage';
 import { BasicInfoView, MeasurementsView, ProfileInfoView, FitnessGoalView } from '../../components/profile';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
@@ -13,10 +15,8 @@ import { calculateBodyComposition, calculateTDEE, calculateBMI, getBMIStatus } f
 
 export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
-        const { profile, updateProfile } = useUserProfile();
+        const { profile, updateProfile, loadProfile, setProfile } = useUserProfile();
         const { user } = useAuthStore();
-
-        // Use profile from hook, or fallback to user.profile from auth store
         const currentProfile = profile || user?.profile;
 
         const [editModalVisible, setEditModalVisible] = useState(false);
@@ -24,6 +24,64 @@ export const ProfileScreen: React.FC = () => {
                 'fitness_goal' | 'measurements' | 'basic_info' | 'profile_info' | null
         >(null);
         const [formValues, setFormValues] = useState<Record<string, any>>({});
+        const [initialValues, setInitialValues] = useState<Record<string, any>>({});
+        const [logModalVisible, setLogModalVisible] = useState(false);
+        const [logs, setLogs] = useState<MeasurementLogEntry[]>([]);
+        const [confirmVisible, setConfirmVisible] = useState(false);
+        const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+        // Handlers
+        const handleReviewMeasurementLog = async () => {
+                const data = await measurementLogStorage.getLogs();
+                const sortedLogs = data.sort(
+                        (a: any, b: any) =>
+                                new Date(b.createdAt || b.recordedAt).getTime() -
+                                new Date(a.createdAt || a.recordedAt).getTime(),
+                );
+                setLogs(sortedLogs as any);
+                setLogModalVisible(true);
+        };
+
+        const handleDeleteMeasurementLog = async (logId: string) => {
+                setPendingDeleteId(logId);
+                setConfirmVisible(true);
+        };
+
+        const confirmDelete = async () => {
+                if (!pendingDeleteId) return;
+                try {
+                        await measurementLogStorage.deleteLog(pendingDeleteId);
+                        await loadProfile();
+                        setProfile(null);
+                        setTimeout(async () => {
+                                await loadProfile();
+                        }, 100);
+                        setFormValues({ neck: null, waist: null, hip: null, bicep: null, thigh: null });
+                        const data = await measurementLogStorage.getLogs();
+                        const sortedLogs = data.sort(
+                                (a: any, b: any) =>
+                                        new Date(b.createdAt || b.recordedAt).getTime() -
+                                        new Date(a.createdAt || a.recordedAt).getTime(),
+                        );
+                        setLogs(sortedLogs as any);
+                        setConfirmVisible(false);
+                        setPendingDeleteId(null);
+                } catch (error) {
+                        console.error('Failed to delete measurement log:', error);
+                }
+        };
+
+        const isSaveDisabled = useMemo(() => {
+                if (!editModalType) return true;
+                const keysByType: Record<string, string[]> = {
+                        basic_info: ['gender', 'height', 'weight', 'age'],
+                        fitness_goal: ['activityLevel', 'goal', 'targetWeight', 'weightChangeRate'],
+                        measurements: ['neck', 'waist', 'hip', 'bicep', 'thigh'],
+                        profile_info: ['name', 'email', 'avatar'],
+                };
+                const keys = keysByType[editModalType] || [];
+                return keys.every((k) => initialValues[k] === formValues[k]);
+        }, [editModalType, formValues, initialValues]);
 
         const getActivityLevelText = (level: string) => {
                 const levels = {
@@ -64,6 +122,12 @@ export const ProfileScreen: React.FC = () => {
                         targetWeight: currentProfile?.targetWeight || 70,
                         weightChangeRate: currentProfile?.weightChangeRate || 0.5,
                 });
+                setInitialValues({
+                        activityLevel: currentProfile?.activityLevel || 'moderate',
+                        goal: currentProfile?.goal || 'maintain',
+                        targetWeight: currentProfile?.targetWeight || 70,
+                        weightChangeRate: currentProfile?.weightChangeRate || 0.5,
+                });
                 setEditModalVisible(true);
         };
 
@@ -75,12 +139,25 @@ export const ProfileScreen: React.FC = () => {
                         weight: currentProfile?.weight || 70,
                         age: currentProfile?.age || 25,
                 });
+                setInitialValues({
+                        gender: currentProfile?.gender || 'male',
+                        height: currentProfile?.height || 170,
+                        weight: currentProfile?.weight || 70,
+                        age: currentProfile?.age || 25,
+                });
                 setEditModalVisible(true);
         };
 
         const handleEditMeasurements = () => {
                 setEditModalType('measurements');
                 setFormValues({
+                        neck: currentProfile?.neck || null,
+                        waist: currentProfile?.waist || null,
+                        hip: currentProfile?.hip || null,
+                        bicep: currentProfile?.bicep || null,
+                        thigh: currentProfile?.thigh || null,
+                });
+                setInitialValues({
                         neck: currentProfile?.neck || null,
                         waist: currentProfile?.waist || null,
                         hip: currentProfile?.hip || null,
@@ -119,13 +196,40 @@ export const ProfileScreen: React.FC = () => {
                                         bicep: formValues.bicep,
                                         thigh: formValues.thigh,
                                 });
+                                // Append measurement log
+                                const measurements = {
+                                        neck: formValues.neck
+                                                ? { value: formValues.neck, unit: 'cm' as const }
+                                                : undefined,
+                                        waist: formValues.waist
+                                                ? { value: formValues.waist, unit: 'cm' as const }
+                                                : undefined,
+                                        hip: formValues.hip
+                                                ? { value: formValues.hip, unit: 'cm' as const }
+                                                : undefined,
+                                        bicep: formValues.bicep
+                                                ? { value: formValues.bicep, unit: 'cm' as const }
+                                                : undefined,
+                                        thigh: formValues.thigh
+                                                ? { value: formValues.thigh, unit: 'cm' as const }
+                                                : undefined,
+                                };
+
+                                // Remove undefined values
+                                const filteredMeasurements = Object.fromEntries(
+                                        Object.entries(measurements).filter(([_, value]) => value !== undefined),
+                                );
+
+                                if (Object.keys(filteredMeasurements).length > 0) {
+                                        await measurementLogStorage.appendLogs(filteredMeasurements);
+                                }
                         } else if (editModalType === 'profile_info') {
                                 // TODO: Update user profile info (name, email, avatar)
                         }
                         setEditModalVisible(false);
                         setEditModalType(null);
                 } catch (error) {
-                        console.log('Error saving profile:', error);
+                        console.error('Error saving profile:', error);
                 }
         };
 
@@ -136,7 +240,13 @@ export const ProfileScreen: React.FC = () => {
                         case 'fitness_goal':
                                 return <FitnessGoalView formValues={formValues} setFormValues={setFormValues} />;
                         case 'measurements':
-                                return <MeasurementsView formValues={formValues} setFormValues={setFormValues} />;
+                                return (
+                                        <MeasurementsView
+                                                formValues={formValues}
+                                                setFormValues={setFormValues}
+                                                onReviewLog={handleReviewMeasurementLog}
+                                        />
+                                );
                         case 'profile_info':
                                 return <ProfileInfoView formValues={formValues} setFormValues={setFormValues} />;
                         default:
@@ -182,13 +292,13 @@ export const ProfileScreen: React.FC = () => {
                 return (
                         <SafeAreaView className="flex-1 bg-primary">
                                 <View className="flex-1 items-center justify-center px-6">
-                                        <CText className="text-text-muted mb-4">No profile data available</CText>
-                                        <CText className="text-text-muted text-center text-sm">
+                                        <CText className="mb-4">No profile data available</CText>
+                                        <CText className="text-center text-sm">
                                                 User: {user ? '✅' : '❌'} | Profile: {profile ? '✅' : '❌'} |
                                                 User.Profile: {user?.profile ? '✅' : '❌'}
                                         </CText>
                                         {user && (
-                                                <CText className="text-text-muted mt-2 text-sm">
+                                                <CText className="mt-2 text-sm">
                                                         User name: {user.name || user.fullName || 'N/A'}
                                                 </CText>
                                         )}
@@ -216,7 +326,7 @@ export const ProfileScreen: React.FC = () => {
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
                                         <ArrowLeft size={24} color="#FFFFFF" />
                                 </TouchableOpacity>
-                                <CText size="lg" weight="bold" className="text-text-light">
+                                <CText size="lg" weight="bold">
                                         Profile
                                 </CText>
                                 <View style={{ width: 24 }} />
@@ -240,12 +350,10 @@ export const ProfileScreen: React.FC = () => {
                                                         )}
                                                 </View>
                                                 <View className="flex-1">
-                                                        <CText size="lg" weight="bold" className="text-text-light mb-1">
+                                                        <CText size="lg" weight="bold" className="mb-1">
                                                                 {user?.fullName || user?.name || 'User'}
                                                         </CText>
-                                                        <CText className="text-text-muted">
-                                                                {user?.email || 'user@example.com'}
-                                                        </CText>
+                                                        <CText>{user?.email || 'user@example.com'}</CText>
                                                 </View>
                                                 <View className="items-center">
                                                         <PenBoxIcon size={20} color="#4CAF50" />
@@ -259,22 +367,20 @@ export const ProfileScreen: React.FC = () => {
                                         onPress={handleEditBasicInfo}
                                 >
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Gender</CText>
-                                                <CText className="text-text-light capitalize">
-                                                        {currentProfile.gender}
-                                                </CText>
+                                                <CText>Gender</CText>
+                                                <CText className="capitalize">{currentProfile.gender}</CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Weight</CText>
-                                                <CText className="text-text-light">{currentProfile.weight} kg</CText>
+                                                <CText>Weight</CText>
+                                                <CText>{currentProfile.weight} kg</CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Height</CText>
-                                                <CText className="text-text-light">{currentProfile.height} cm</CText>
+                                                <CText>Height</CText>
+                                                <CText>{currentProfile.height} cm</CText>
                                         </View>
                                         <View className="flex-row justify-between">
-                                                <CText className="text-text-muted">Age</CText>
-                                                <CText className="text-text-light">{currentProfile.age} years</CText>
+                                                <CText>Age</CText>
+                                                <CText>{currentProfile.age} years</CText>
                                         </View>
                                 </TouchableOpacity>
 
@@ -284,32 +390,32 @@ export const ProfileScreen: React.FC = () => {
                                         onPress={handleEditMeasurements}
                                 >
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Neck</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Neck</CText>
+                                                <CText>
                                                         {currentProfile?.neck ? `${currentProfile.neck} cm` : '-- cm'}
                                                 </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Waist</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Waist</CText>
+                                                <CText>
                                                         {currentProfile?.waist ? `${currentProfile.waist} cm` : '-- cm'}
                                                 </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Hip</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Hip</CText>
+                                                <CText>
                                                         {currentProfile?.hip ? `${currentProfile.hip} cm` : '-- cm'}
                                                 </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Bicep</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Bicep</CText>
+                                                <CText>
                                                         {currentProfile?.bicep ? `${currentProfile.bicep} cm` : '-- cm'}
                                                 </CText>
                                         </View>
                                         <View className="flex-row justify-between">
-                                                <CText className="text-text-muted">Thigh</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Thigh</CText>
+                                                <CText>
                                                         {currentProfile?.thigh ? `${currentProfile.thigh} cm` : '-- cm'}
                                                 </CText>
                                         </View>
@@ -321,22 +427,22 @@ export const ProfileScreen: React.FC = () => {
                                         onPress={handleEditFitnessGoal}
                                 >
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Activity Level</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Activity Level</CText>
+                                                <CText>
                                                         {getActivityLevelText(currentProfile.activityLevel)}: {tdee}{' '}
                                                         kcal/day
                                                 </CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
-                                                <CText className="text-text-muted">Goal</CText>
-                                                <CText className="text-text-light">
+                                                <CText>Goal</CText>
+                                                <CText>
                                                         {getGoalText(currentProfile.goal, currentProfile.targetWeight)}
                                                 </CText>
                                         </View>
                                         {currentProfile.goal === 'lose' && (
                                                 <View className="flex-row justify-between">
-                                                        <CText className="text-text-muted">Reduction Level</CText>
-                                                        <CText className="text-text-light">
+                                                        <CText>Reduction Level</CText>
+                                                        <CText>
                                                                 {currentProfile.weightChangeRate} kcal/day deficit
                                                         </CText>
                                                 </View>
@@ -347,15 +453,13 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                Required Calorie Intake (kcal)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">Required Calorie Intake (kcal)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {Math.round(dailyCalorieGoal)}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 The amount of calories needed to achieve your weight goal.
                                         </CText>
                                 </View>
@@ -364,15 +468,13 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                TDEE Index (kcal)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">TDEE Index (kcal)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {tdee}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 The amount of calories consumed in a day to maintain your current
                                                 weight.
                                         </CText>
@@ -382,47 +484,41 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">BMR Index (kcal)</CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">BMR Index (kcal)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bmr}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
-                                                Minimum energy level your body needs at rest.
-                                        </CText>
+                                        <CText className="text-sm">Minimum energy level your body needs at rest.</CText>
                                 </View>
 
                                 {/* BMI Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">BMI Index</CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">BMI Index</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bmi}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
-                                                Weight status: {getBMIStatus(bmi)}
-                                        </CText>
+                                        <CText className="text-sm">Weight status: {getBMIStatus(bmi)}</CText>
                                 </View>
 
                                 {/* Body Fat Percentage Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                Body Fat Percentage (%)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">Body Fat Percentage (%)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bodyComposition
                                                                         ? `${bodyComposition.bodyFatPercentage}%`
                                                                         : '--'}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 {bodyComposition
                                                         ? 'Calculated using Navy Method'
                                                         : 'To view this index, you need to fill in neck, waist, hip measurements.'}
@@ -433,17 +529,15 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                Body Fat Mass (kg)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">Body Fat Mass (kg)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bodyComposition
                                                                         ? `${bodyComposition.bodyFatMass} kg`
                                                                         : '--'}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 {bodyComposition
                                                         ? 'Total fat mass in your body'
                                                         : 'To view this index, you need to fill in neck, waist, hip measurements.'}
@@ -454,15 +548,13 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                FFMI Index (kg/m²)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">FFMI Index (kg/m²)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bodyComposition ? bodyComposition.ffmi : '--'}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 {bodyComposition
                                                         ? 'Fat-Free Mass Index - muscle mass relative to height'
                                                         : 'To view this index, you need to fill in neck, waist, hip measurements.'}
@@ -473,17 +565,15 @@ export const ProfileScreen: React.FC = () => {
                                 <View className="mb-6 rounded-xl bg-surfacePrimary p-4">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
-                                                        <CText className="text-text-muted mb-1">
-                                                                Lean Body Mass (kg)
-                                                        </CText>
-                                                        <CText className="text-text-light text-lg font-bold">
+                                                        <CText className="mb-1">Lean Body Mass (kg)</CText>
+                                                        <CText className="text-lg" weight="bold">
                                                                 {bodyComposition
                                                                         ? `${bodyComposition.leanBodyMass} kg`
                                                                         : '--'}
                                                         </CText>
                                                 </View>
                                         </View>
-                                        <CText className="text-text-muted text-sm">
+                                        <CText className="text-sm">
                                                 {bodyComposition
                                                         ? 'Total muscle, bone, and organ mass'
                                                         : 'To view this index, you need to fill in neck, waist, hip measurements.'}
@@ -501,9 +591,80 @@ export const ProfileScreen: React.FC = () => {
                                         setEditModalType(null);
                                 }}
                                 onSave={handleSaveEdit}
+                                disableSave={isSaveDisabled}
                         >
                                 {renderModalContent()}
                         </EditModal>
+
+                        {/* Measurement Log Modal */}
+                        <EditModal
+                                visible={logModalVisible}
+                                title={'Measurement Log'}
+                                onClose={() => setLogModalVisible(false)}
+                                onSave={() => setLogModalVisible(false)}
+                                disableSave={true}
+                        >
+                                <View>
+                                        {logs.length === 0 ? (
+                                                <CText>No logs yet</CText>
+                                        ) : (
+                                                logs.map((log: any) => (
+                                                        <View key={log._id} className="mb-4 rounded-lg bg-white/5 p-3">
+                                                                <View className="mb-3 flex-row items-center justify-between">
+                                                                        <CText className="font-semibold">
+                                                                                {new Date(
+                                                                                        log.createdAt || log.recordedAt,
+                                                                                ).toLocaleString()}
+                                                                        </CText>
+                                                                        <TouchableOpacity
+                                                                                onPress={() =>
+                                                                                        handleDeleteMeasurementLog(
+                                                                                                log._id,
+                                                                                        )
+                                                                                }
+                                                                                className="rounded-full bg-status-error p-2"
+                                                                        >
+                                                                                <Trash2Icon size={16} color="#FFFFFF" />
+                                                                        </TouchableOpacity>
+                                                                </View>
+                                                                {Object.entries(log.measurements || {}).map(
+                                                                        ([type, data]: [string, any]) =>
+                                                                                data &&
+                                                                                data.value !== undefined &&
+                                                                                data.value !== null ? (
+                                                                                        <View
+                                                                                                key={type}
+                                                                                                className="mb-1 flex-row justify-between"
+                                                                                        >
+                                                                                                <CText className="capitalize">
+                                                                                                        {type}
+                                                                                                </CText>
+                                                                                                <CText>
+                                                                                                        {data.value}{' '}
+                                                                                                        {data.unit}
+                                                                                                </CText>
+                                                                                        </View>
+                                                                                ) : null,
+                                                                )}
+                                                        </View>
+                                                ))
+                                        )}
+                                </View>
+                        </EditModal>
+
+                        <ConfirmationModal
+                                visible={confirmVisible}
+                                title="Delete measurement log?"
+                                message="Are you sure you want to delete this measurement log? This action cannot be undone."
+                                confirmText="Delete"
+                                cancelText="Cancel"
+                                danger
+                                onCancel={() => {
+                                        setConfirmVisible(false);
+                                        setPendingDeleteId(null);
+                                }}
+                                onConfirm={confirmDelete}
+                        />
                 </SafeAreaView>
         );
 };

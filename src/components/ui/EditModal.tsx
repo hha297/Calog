@@ -29,6 +29,7 @@ export interface EditModalProps {
         onClose: () => void;
         onSave: () => void;
         loading?: boolean;
+        disableSave?: boolean;
         children?: React.ReactNode;
 }
 
@@ -39,6 +40,7 @@ export const EditModal: React.FC<EditModalProps> = ({
         onClose,
         onSave,
         loading = false,
+        disableSave = false,
         children,
 }) => {
         return (
@@ -55,7 +57,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onPress={onClose}
                         >
                                 <TouchableOpacity
-                                        className="bg-surfacePrimary w-full max-w-md rounded-xl"
+                                        className="w-full max-w-md rounded-xl bg-background"
                                         activeOpacity={1}
                                         onPress={(e) => e.stopPropagation()}
                                         style={{ maxHeight: '80%' }}
@@ -65,7 +67,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                                 <TouchableOpacity onPress={onClose}>
                                                         <X size={24} color="#FFFFFF" />
                                                 </TouchableOpacity>
-                                                <CText size="lg" weight="bold" className="text-text-light">
+                                                <CText size="lg" weight="bold" className="">
                                                         {title}
                                                 </CText>
                                                 <View style={{ width: 24 }} />
@@ -83,7 +85,12 @@ export const EditModal: React.FC<EditModalProps> = ({
                                         {/* Footer */}
                                         <View className="flex-row justify-between border-t border-white/10 p-6">
                                                 <Button title="Cancel" onPress={onClose} variant="ghost" />
-                                                <Button title="Save" onPress={onSave} loading={loading} />
+                                                <Button
+                                                        title="Save"
+                                                        onPress={onSave}
+                                                        loading={loading}
+                                                        disabled={disableSave}
+                                                />
                                         </View>
                                 </TouchableOpacity>
                         </TouchableOpacity>

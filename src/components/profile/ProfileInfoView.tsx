@@ -18,7 +18,7 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                 <View>
                         {/* Avatar Section */}
                         <View className="mb-6">
-                                <CText className="text-text-light mb-3" weight="medium">
+                                <CText className="mb-3" weight="medium">
                                         Profile Picture
                                 </CText>
                                 <View className="items-center">
@@ -38,7 +38,7 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                                         <Camera size={16} color="#FFFFFF" />
                                                 </View>
                                         </TouchableOpacity>
-                                        <CText className="text-text-muted mt-2 text-center text-sm">
+                                        <CText className="mt-2 text-center text-sm">
                                                 Tap to change profile picture
                                         </CText>
                                 </View>

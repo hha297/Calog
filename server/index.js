@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const measurementLogRoutes = require('./routes/measurementLogs');
 const { ErrorUtils } = require('./utils');
 
 const app = express();
@@ -62,6 +63,7 @@ mongoose.connect(MONGO_URI, {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/measurement-logs', measurementLogRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

@@ -71,7 +71,7 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
         }, [isFormValid, onValidationChange]);
 
         return (
-                <View className="bg-background flex-1 px-8 pb-20 pt-8">
+                <View className="flex-1 bg-background px-8 pb-20 pt-8">
                         <ScrollView
                                 className="flex-1"
                                 showsVerticalScrollIndicator={false}
@@ -79,17 +79,17 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
                         >
                                 {/* Header */}
                                 <View className="mb-8">
-                                        <CText size="2xl" weight="bold" className="text-text-light mb-2 text-center">
+                                        <CText size="2xl" weight="bold" className="mb-2 text-center">
                                                 Tell us about you
                                         </CText>
-                                        <CText size="lg" className="text-text-muted text-center">
+                                        <CText size="lg" className="text-center">
                                                 We'll calculate your daily calorie needs based on this info.
                                         </CText>
                                 </View>
 
                                 {/* Gender Selection */}
                                 <View className="mb-6">
-                                        <CText size="base" weight="medium" className="text-text-light mb-3">
+                                        <CText size="base" weight="medium" className="mb-3">
                                                 Gender
                                         </CText>
                                         <Dropdown
@@ -135,7 +135,7 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
 
                                 {/* Activity Level */}
                                 <View className="mb-8">
-                                        <CText size="base" weight="medium" className="text-text-light mb-3">
+                                        <CText size="base" weight="medium" className="mb-3">
                                                 Activity Level
                                         </CText>
                                         <Dropdown

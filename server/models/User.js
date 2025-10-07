@@ -60,15 +60,15 @@ const userSchema = new mongoose.Schema(
                                 type: String,
                                 enum: ['male', 'female', 'other'],
                         },
-                        age: {
-                                type: Number,
-                                min: [13, 'Age must be at least 13'],
-                                max: [120, 'Age cannot exceed 120'],
-                        },
                         height: {
                                 type: Number, // in cm
                                 min: [100, 'Height must be at least 100cm'],
                                 max: [250, 'Height cannot exceed 250cm'],
+                        },
+                        age: {
+                                type: Number,
+                                min: [13, 'Age must be at least 13'],
+                                max: [120, 'Age cannot exceed 120'],
                         },
                         weight: {
                                 type: Number, // in kg
@@ -103,31 +103,37 @@ const userSchema = new mongoose.Schema(
                                 min: [800, 'Daily calorie goal must be at least 800'],
                                 max: [5000, 'Daily calorie goal cannot exceed 5000'],
                         },
-                        // Body measurements
-                        neck: {
-                                type: Number, // in cm
-                                min: [20, 'Neck measurement must be at least 20cm'],
-                                max: [50, 'Neck measurement cannot exceed 50cm'],
+                        // Latest measurements snapshot
+                        measurements: {
+                                waist: {
+                                        type: Number, // in cm
+                                        min: [50, 'Waist measurement must be at least 50cm'],
+                                        max: [150, 'Waist measurement cannot exceed 150cm'],
+                                },
+                                hip: {
+                                        type: Number, // in cm
+                                        min: [70, 'Hip measurement must be at least 70cm'],
+                                        max: [150, 'Hip measurement cannot exceed 150cm'],
+                                },
+                                neck: {
+                                        type: Number, // in cm
+                                        min: [20, 'Neck measurement must be at least 20cm'],
+                                        max: [50, 'Neck measurement cannot exceed 50cm'],
+                                },
+                                thigh: {
+                                        type: Number, // in cm
+                                        min: [30, 'Thigh measurement must be at least 30cm'],
+                                        max: [100, 'Thigh measurement cannot exceed 100cm'],
+                                },
+                                bicep: {
+                                        type: Number, // in cm
+                                        min: [15, 'Bicep measurement must be at least 15cm'],
+                                        max: [60, 'Bicep measurement cannot exceed 60cm'],
+                                },
                         },
-                        waist: {
-                                type: Number, // in cm
-                                min: [50, 'Waist measurement must be at least 50cm'],
-                                max: [150, 'Waist measurement cannot exceed 150cm'],
-                        },
-                        hip: {
-                                type: Number, // in cm
-                                min: [70, 'Hip measurement must be at least 70cm'],
-                                max: [150, 'Hip measurement cannot exceed 150cm'],
-                        },
-                        bicep: {
-                                type: Number, // in cm
-                                min: [15, 'Bicep measurement must be at least 15cm'],
-                                max: [60, 'Bicep measurement cannot exceed 60cm'],
-                        },
-                        thigh: {
-                                type: Number, // in cm
-                                min: [30, 'Thigh measurement must be at least 30cm'],
-                                max: [100, 'Thigh measurement cannot exceed 100cm'],
+                        updatedAt: {
+                                type: Date,
+                                default: Date.now,
                         },
                 },
                 refreshTokens: [

@@ -73,7 +73,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -92,14 +92,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Header */}
                                         <View className="mb-8">
-                                                <CText
-                                                        size="2xl"
-                                                        weight="bold"
-                                                        className="text-text-light mb-2 text-center"
-                                                >
+                                                <CText size="2xl" weight="bold" className="mb-2 text-center">
                                                         Welcome Back
                                                 </CText>
-                                                <CText size="base" className="text-text-muted text-center">
+                                                <CText size="base" className="text-center">
                                                         Consistency builds strength – log in and keep pushing forward.
                                                 </CText>
                                         </View>
@@ -157,7 +153,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                                         <CText className="text-xs text-white">✓</CText>
                                                                 )}
                                                         </View>
-                                                        <CText className="text-text-muted">Remember me</CText>
+                                                        <CText className="">Remember me</CText>
                                                 </TouchableOpacity>
 
                                                 {/* Forgot Password */}
@@ -171,7 +167,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
                                                 <View className="h-px flex-1 bg-white" />
-                                                <CText className="text-text-muted mx-4">OR</CText>
+                                                <CText className="mx-4">OR</CText>
                                                 <View className="h-px flex-1 bg-white" />
                                         </View>
 
@@ -186,7 +182,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Sign Up Link */}
                                         <View className="flex-row justify-center">
-                                                <CText className="text-text-muted">Don't have an account? </CText>
+                                                <CText className="">Don't have an account? </CText>
                                                 <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                                                         <CText className="!text-primary" weight="medium">
                                                                 Sign up

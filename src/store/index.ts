@@ -147,13 +147,10 @@ export const initializeAuth = async () => {
                 if (ok) {
                         const userData = await secureStorage.getUserData();
                         if (userData) {
-                                console.log('initializeAuth - Loading user from secureStorage:', userData);
                                 setUser(userData);
                         } else {
-                                console.log('initializeAuth - No user in secureStorage, fetching from API');
                                 const { getCurrentUser } = await import('../services/api/authApi');
                                 const res = await getCurrentUser();
-                                console.log('initializeAuth - User from API:', res.user);
                                 setUser(res.user);
                                 await secureStorage.storeUserData(res.user);
                         }

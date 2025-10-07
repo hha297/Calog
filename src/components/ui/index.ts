@@ -6,5 +6,6 @@ export { CText } from './CText';
 export { Logo } from './Logo';
 export { Slider } from './Slider';
 export { EditModal } from './EditModal';
+export { ConfirmationModal } from './ConfirmationModal';
 export { Dropdown } from './Dropdown';
 export { Switcher } from './Switcher';

@@ -132,16 +132,35 @@ class ProfileController {
                 try {
                         const userId = req.user.userId;
 
-                        const user = await User.findById(userId).select('profile');
+                        const user = await User.findById(userId);
+
                         if (!user) {
                                 return ResponseUtils.notFound(res, 'User not found');
                         }
 
-                        return ResponseUtils.success(res, {
-                                message: 'Profile retrieved successfully',
-                                profile: user.profile || {},
-                        });
+                        // Manual profile construction to ensure all fields are included
+                        const profileData = {
+                                gender: user.profile?.gender || null,
+                                age: user.profile?.age || null,
+                                height: user.profile?.height || null,
+                                weight: user.profile?.weight || null,
+                                activityLevel: user.profile?.activityLevel || null,
+                                goal: user.profile?.goal || null,
+                                targetWeight: user.profile?.targetWeight || null,
+                                weightChangeRate: user.profile?.weightChangeRate || null,
+                                tdee: user.profile?.tdee || null,
+                                dailyCalorieGoal: user.profile?.dailyCalorieGoal || null,
+                                measurements: user.profile?.measurements || {},
+                                updatedAt: user.profile?.updatedAt || null,
+                        };
+
+                        const responseData = {
+                                profile: profileData,
+                        };
+
+                        return ResponseUtils.success(res, responseData, 'Profile retrieved successfully');
                 } catch (error) {
+                        console.error('ProfileController.getProfile - Error:', error);
                         return ResponseUtils.serverError(res, 'Failed to get profile');
                 }
         }

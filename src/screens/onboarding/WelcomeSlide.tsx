@@ -18,12 +18,12 @@ export const WelcomeSlide: React.FC<WelcomeSlideProps> = ({ onNext }) => {
                         </View>
 
                         {/* Title */}
-                        <CText size="3xl" weight="bold" className="text-text-light mb-6 text-center">
+                        <CText size="3xl" weight="bold" className="mb-6 text-center">
                                 Welcome to Calog
                         </CText>
 
                         {/* Subtitle */}
-                        <CText size="lg" className="text-text-muted text-center leading-6">
+                        <CText size="lg" className="text-center leading-6">
                                 Your smart companion for tracking calories and staying on goal.
                         </CText>
                 </View>

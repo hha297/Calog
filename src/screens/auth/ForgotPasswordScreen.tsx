@@ -57,20 +57,17 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
 
         if (isEmailSent) {
                 return (
-                        <SafeAreaView className="bg-background flex-1">
+                        <SafeAreaView className="flex-1 bg-background">
                                 <View className="flex-1 justify-center px-6">
                                         {/* Success State */}
                                         <View className="mb-8 items-center">
                                                 <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-primary">
                                                         <CText className="text-2xl text-white">✓</CText>
                                                 </View>
-                                                <CText
-                                                        weight="bold"
-                                                        className="text-text-light mb-2 text-center text-2xl"
-                                                >
+                                                <CText weight="bold" className="mb-2 text-center text-2xl">
                                                         Check Your Email
                                                 </CText>
-                                                <CText className="text-text-muted mb-2 text-center">
+                                                <CText className="mb-2 text-center">
                                                         We've sent a password reset link to
                                                 </CText>
                                                 <CText className="text-center !text-primary">{email}</CText>
@@ -78,7 +75,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
 
                                         {/* Instructions */}
                                         <View className="mb-8">
-                                                <CText className="text-text-muted mb-4 text-center text-sm">
+                                                <CText className="mb-4 text-center text-sm">
                                                         Didn't receive the email? Check your spam folder or try again.
                                                 </CText>
                                         </View>
@@ -102,7 +99,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
         }
 
         return (
-                <SafeAreaView className="bg-background flex-1">
+                <SafeAreaView className="flex-1 bg-background">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -115,14 +112,10 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
                                         <View className="flex-1 justify-center py-8">
                                                 {/* Header */}
                                                 <View className="mb-8">
-                                                        <CText
-                                                                weight="bold"
-                                                                className="text-text-light mb-2 text-center"
-                                                                size="3xl"
-                                                        >
+                                                        <CText weight="bold" className="mb-2 text-center" size="3xl">
                                                                 Forgot Password?
                                                         </CText>
-                                                        <CText className="text-text-muted text-center">
+                                                        <CText className="text-center">
                                                                 We'll send you reset instructions to your email.
                                                         </CText>
                                                 </View>

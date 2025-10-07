@@ -182,7 +182,7 @@ export const Slider: React.FC<SliderProps> = ({
                 if (type === 'weight_goal') {
                         return (
                                 <View className="mb-2">
-                                        <CText className="text-text-light text-lg font-medium">
+                                        <CText className="text-lg" weight="medium">
                                                 {config.getDisplayText(localValue)}
                                         </CText>
                                         <CText className="mt-1 text-sm text-slate-400">
@@ -194,9 +194,7 @@ export const Slider: React.FC<SliderProps> = ({
 
                 return (
                         <View className="mb-2">
-                                <CText className="text-text-light text-center text-2xl font-bold">
-                                        {config.getDisplayText(localValue)}
-                                </CText>
+                                <CText className="text-center text-2xl">{config.getDisplayText(localValue)}</CText>
                         </View>
                 );
         };
@@ -205,13 +203,13 @@ export const Slider: React.FC<SliderProps> = ({
                 if (type === 'weight_goal') {
                         return (
                                 <View className="mb-4 flex-row justify-between px-2">
-                                        <CText className="text-text-muted" weight="medium">
+                                        <CText className="" weight="medium">
                                                 {config.minimumValue} kcal/day
                                         </CText>
-                                        <CText className="text-text-muted !text-primary" weight="medium">
+                                        <CText className="!text-primary" weight="medium">
                                                 {getPaceLabel(localValue)}
                                         </CText>
-                                        <CText className="text-text-muted" weight="medium">
+                                        <CText className="" weight="medium">
                                                 {config.maximumValue} kcal/day
                                         </CText>
                                 </View>
@@ -220,11 +218,11 @@ export const Slider: React.FC<SliderProps> = ({
 
                 return (
                         <View className="mb-4 flex-row justify-between px-2">
-                                <CText className="text-text-muted" weight="medium">
+                                <CText className="" weight="medium">
                                         {config.minimumValue}
                                         {config.unit}
                                 </CText>
-                                <CText className="text-text-muted" weight="medium">
+                                <CText className="" weight="medium">
                                         {config.maximumValue}
                                         {config.unit}
                                 </CText>
