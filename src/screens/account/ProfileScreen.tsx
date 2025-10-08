@@ -12,6 +12,7 @@ import { BasicInfoView, MeasurementsView, ProfileInfoView, FitnessGoalView } fro
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
 import { calculateBodyComposition, calculateTDEE, calculateBMI, getBMIStatus } from '../../utils/helpers';
+import { useTheme } from '../../contexts';
 
 export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -318,13 +319,14 @@ export const ProfileScreen: React.FC = () => {
         const dailyCalorieGoal =
                 currentProfile.dailyCalorieGoal ||
                 (currentProfile.goal === 'lose' ? tdee - 550 : currentProfile.goal === 'gain' ? tdee + 550 : tdee);
+        const { isDark } = useTheme();
 
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
                         {/* Header */}
                         <View className="flex-row items-center justify-between px-6 py-4">
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                                        <ArrowLeft size={24} color="#FFFFFF" />
+                                        <ArrowLeft size={24} color={isDark ? '#FFFFFF' : '#000000'} />
                                 </TouchableOpacity>
                                 <CText size="lg" weight="bold">
                                         Profile
@@ -335,7 +337,7 @@ export const ProfileScreen: React.FC = () => {
                         <ScrollView className="flex-1 px-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* Profile Information Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark"
                                         onPress={handleEditProfileInfo}
                                 >
                                         <View className="flex-row items-center">
@@ -363,7 +365,7 @@ export const ProfileScreen: React.FC = () => {
 
                                 {/* Basic Information Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark"
                                         onPress={handleEditBasicInfo}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -386,7 +388,7 @@ export const ProfileScreen: React.FC = () => {
 
                                 {/* Body Measurements Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark"
                                         onPress={handleEditMeasurements}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -423,7 +425,7 @@ export const ProfileScreen: React.FC = () => {
 
                                 {/* Fitness Goals Section */}
                                 <TouchableOpacity
-                                        className="mb-4 rounded-xl bg-surfacePrimary p-4"
+                                        className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark"
                                         onPress={handleEditFitnessGoal}
                                 >
                                         <View className="mb-2 flex-row justify-between">
@@ -450,7 +452,7 @@ export const ProfileScreen: React.FC = () => {
                                 </TouchableOpacity>
 
                                 {/* Required Calorie Intake Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">Required Calorie Intake (kcal)</CText>
@@ -465,7 +467,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* TDEE Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">TDEE Index (kcal)</CText>
@@ -481,7 +483,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMR Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">BMR Index (kcal)</CText>
@@ -494,7 +496,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* BMI Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">BMI Index</CText>
@@ -507,7 +509,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Body Fat Percentage Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">Body Fat Percentage (%)</CText>
@@ -526,7 +528,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Body Fat Mass Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">Body Fat Mass (kg)</CText>
@@ -545,7 +547,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* FFMI Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">FFMI Index (kg/m²)</CText>
@@ -562,7 +564,7 @@ export const ProfileScreen: React.FC = () => {
                                 </View>
 
                                 {/* Lean Body Mass Section */}
-                                <View className="mb-6 rounded-xl bg-surfacePrimary p-4">
+                                <View className="mb-6 rounded-xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
                                         <View className="mb-2 flex-row items-start justify-between">
                                                 <View className="flex-1">
                                                         <CText className="mb-1">Lean Body Mass (kg)</CText>

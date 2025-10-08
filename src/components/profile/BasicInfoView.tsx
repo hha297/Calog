@@ -4,6 +4,7 @@ import { CText } from '../ui/CText';
 import { Slider } from '../ui/Slider';
 import { TextField } from '../ui/TextField';
 import { Button } from '../ui/Button';
+import { useTheme } from '../../contexts';
 
 export interface BasicInfoViewProps {
         currentProfile: any;
@@ -11,6 +12,7 @@ export interface BasicInfoViewProps {
 }
 
 export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, onValuesChange }) => {
+        const { isDark } = useTheme();
         const [values, setValues] = useState<Record<string, any>>({});
         const [editField, setEditField] = useState<null | { key: 'weight' | 'age'; title: string }>(null);
         const [tempValue, setTempValue] = useState<string>('');
@@ -69,7 +71,7 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                         className={`mx-1 flex-1 rounded-lg border px-4 py-3 ${
                                                                 values.gender === option.value
                                                                         ? 'border-green-500 bg-green-500/20'
-                                                                        : 'border-white/50 bg-surfacePrimary'
+                                                                        : `${isDark ? 'border-transparent bg-surfacePrimary-dark' : 'border-transparent bg-background'}`
                                                         }`}
                                                         onPress={() => handleValueChange('gender', option.value)}
                                                 >
@@ -107,12 +109,14 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                         <TouchableOpacity
                                                 activeOpacity={0.9}
                                                 onPress={() => openEditModal('weight')}
-                                                className="mb-4 w-full rounded-xl bg-surfacePrimary"
+                                                className="mb-4 w-full rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark"
                                         >
                                                 <CText className="mx-auto mb-3 pt-4" weight="medium">
                                                         Weight (kg)
                                                 </CText>
-                                                <View className="mb-2 rounded-lg bg-surfacePrimary p-4">
+                                                <View
+                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                                >
                                                         <View className="flex-row items-center justify-between">
                                                                 <TouchableOpacity
                                                                         className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
@@ -130,7 +134,10 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                                                 -
                                                                         </CText>
                                                                 </TouchableOpacity>
-                                                                <CText className="text-lg" weight="medium">
+                                                                <CText
+                                                                        className={`text-lg ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}
+                                                                        weight="medium"
+                                                                >
                                                                         {values.weight || 70}
                                                                 </CText>
                                                                 <TouchableOpacity
@@ -159,12 +166,14 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                         <TouchableOpacity
                                                 activeOpacity={0.9}
                                                 onPress={() => openEditModal('age')}
-                                                className="w-full rounded-xl bg-surfacePrimary"
+                                                className="w-full rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark"
                                         >
                                                 <CText className="mx-auto mb-3 pt-4" weight="medium">
                                                         Age
                                                 </CText>
-                                                <View className="mb-2 rounded-lg bg-surfacePrimary p-4">
+                                                <View
+                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                                >
                                                         <View className="flex-row items-center justify-between">
                                                                 <TouchableOpacity
                                                                         className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
@@ -181,7 +190,10 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                                                 -
                                                                         </CText>
                                                                 </TouchableOpacity>
-                                                                <CText className="text-lg" weight="medium">
+                                                                <CText
+                                                                        className={`text-lg ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}
+                                                                        weight="medium"
+                                                                >
                                                                         {values.age || 25}
                                                                 </CText>
                                                                 <TouchableOpacity
@@ -218,12 +230,14 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                         onPress={() => setEditField(null)}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-md rounded-xl bg-surfacePrimary"
+                                                className="w-full max-w-md rounded-xl bg-white dark:bg-surfacePrimary-dark"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                                 style={{ maxHeight: '80%' }}
                                         >
-                                                <View className="flex-row items-center justify-between border-b border-white/10 px-6 py-4">
+                                                <View
+                                                        className={`flex-row items-center justify-between border-b ${isDark ? 'border-white/10' : 'border-gray-200'} px-6 py-4`}
+                                                >
                                                         <CText size="lg" weight="bold" className="">
                                                                 {editField?.title}
                                                         </CText>
@@ -237,7 +251,9 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                                 onChangeText={setTempValue}
                                                         />
                                                 </View>
-                                                <View className="flex-row justify-between border-t border-white/10 p-6">
+                                                <View
+                                                        className={`flex-row justify-between border-t ${isDark ? 'border-white/10' : 'border-gray-200'} p-6`}
+                                                >
                                                         <Button
                                                                 title="Cancel"
                                                                 onPress={() => setEditField(null)}

@@ -11,14 +11,19 @@ import { CText } from '../components/ui/CText';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
 import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon } from 'lucide-react-native';
+import { useTheme } from '../contexts';
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Custom floating action button with NativeWind
 const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
+        const { isDark } = useTheme();
+
         return (
                 <TouchableOpacity
                         onPress={onPress}
-                        className="border-surfacePrimary absolute bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 bg-primary shadow-xl shadow-secondary/30"
+                        className={`absolute bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 bg-primary ${
+                                isDark ? 'border-surfacePrimary-dark' : 'border-surfacePrimary'
+                        }`}
                 >
                         <LottieView
                                 source={require('../assets/images/scan.json')}
@@ -31,12 +36,14 @@ const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
 };
 
 export const MainNavigator: React.FC = () => {
+        const { isDark } = useTheme();
+
         return (
                 <Tab.Navigator
                         screenOptions={{
                                 headerShown: false, // Hide all headers
                                 tabBarActiveTintColor: '#4CAF50',
-                                tabBarInactiveTintColor: '#FFFFFF',
+                                tabBarInactiveTintColor: isDark ? '#FFFFFF' : '#666666',
                                 tabBarStyle: {
                                         position: 'absolute',
                                         bottom: 0,
@@ -44,7 +51,7 @@ export const MainNavigator: React.FC = () => {
                                         right: 0,
                                         height: 88,
                                         paddingTop: 12,
-                                        backgroundColor: '#222630',
+                                        backgroundColor: isDark ? '#222630' : '#FFFFFF',
                                         borderTopLeftRadius: 32,
                                         borderTopRightRadius: 32,
                                         borderTopWidth: 0,
@@ -70,7 +77,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
+                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                         size="base"
                                                 >
@@ -94,7 +101,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
+                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Analytics
@@ -131,7 +138,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
+                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Help
@@ -154,7 +161,7 @@ export const MainNavigator: React.FC = () => {
                                         ),
                                         tabBarLabel: ({ focused }) => (
                                                 <CText
-                                                        className={`${focused ? '!text-primary' : '!text-white'} mt-1`}
+                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                 >
                                                         Account

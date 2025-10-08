@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, ViewStyle, TextStyle } from 'react-native';
 import AntDesign from '@react-native-vector-icons/ant-design';
 import { CText } from './CText';
+import { useTheme } from '../../contexts';
 
 interface TextFieldProps {
         label: string;
@@ -28,23 +29,24 @@ export const TextField: React.FC<TextFieldProps> = ({
         className = '',
         style,
 }) => {
+        const { isDark } = useTheme();
         const [isFocused, setIsFocused] = useState(false);
         const [isSecureVisible, setIsSecureVisible] = useState(!secureTextEntry);
 
         return (
                 <View style={style} className={`mb-4 ${className}`}>
-                        <CText size="base" className="mb-2">
+                        <CText size="base" className="mb-2 text-textPrimary dark:text-textPrimary-dark">
                                 {label}
                         </CText>
 
                         <View className="relative">
                                 <TextInput
                                         style={[{ fontFamily: 'SpaceGrotesk-Regular' } as TextStyle]}
-                                        className={`font-space-grotesk rounded-lg border bg-surfacePrimary px-4 py-3 text-white ${
-                                                isFocused ? 'border-primary' : 'border-gray-600'
+                                        className={`font-space-grotesk rounded-lg border ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} px-4 py-3 ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'} ${
+                                                isFocused ? 'border-primary' : 'border-transparent'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}
-                                        placeholderTextColor="#9E9E9E"
+                                        placeholderTextColor={isDark ? '#666666' : '#999999'}
                                         value={value}
                                         onChangeText={onChangeText}
                                         secureTextEntry={secureTextEntry && !isSecureVisible}

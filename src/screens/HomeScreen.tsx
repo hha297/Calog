@@ -46,21 +46,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Welcome Header */}
                                         <View className="mb-8">
-                                                <CText size="3xl" weight="bold" className="mb-2 text-center">
+                                                <CText
+                                                        size="3xl"
+                                                        weight="bold"
+                                                        className="mb-2 text-center text-textPrimary dark:text-textPrimary-dark"
+                                                >
                                                         Welcome to Calog!
                                                 </CText>
-                                                <CText className="text-center">
+                                                <CText className="text-center text-textSecondary dark:text-textSecondary-dark">
                                                         Track your nutrition and fitness journey
                                                 </CText>
                                         </View>
 
                                         {/* User Info Card */}
-                                        <View className="mb-6 rounded-lg bg-primary p-6">
+                                        <View className="mb-6 rounded-lg bg-surfacePrimary p-6 dark:bg-surfacePrimary-dark">
                                                 <View className="items-center">
                                                         {/* Avatar */}
                                                         <View className="mb-3 h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary">
@@ -71,17 +75,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                                 resizeMode="cover"
                                                                         />
                                                                 ) : (
-                                                                        <CText className="text-xl text-white">
+                                                                        <CText className="text-xl text-primary">
                                                                                 {(user?.name || user?.fullName)
                                                                                         ?.charAt(0)
                                                                                         ?.toUpperCase()}
                                                                         </CText>
                                                                 )}
                                                         </View>
-                                                        <CText className="mb-1 text-lg">
+                                                        <CText className="mb-1 text-lg text-textPrimary dark:text-textPrimary-dark">
                                                                 {user?.name || user?.fullName || 'User'}
                                                         </CText>
-                                                        <CText className="">{user?.email || 'user@example.com'}</CText>
+                                                        <CText className="text-textSecondary dark:text-textSecondary-dark">
+                                                                {user?.email || 'user@example.com'}
+                                                        </CText>
                                                         <CText className="mt-2 text-sm text-primary">
                                                                 {user?.role?.toUpperCase() || 'FREE'} Plan
                                                         </CText>
@@ -90,12 +96,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                         {/* Daily Calorie Goal Card */}
                                         {profile && (
-                                                <View className="mb-6 rounded-lg bg-primary p-6">
+                                                <View className="mb-6 rounded-lg bg-surfacePrimary p-6 dark:bg-surfacePrimary-dark">
                                                         <View className="items-center">
                                                                 <View className="mb-3 h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-                                                                        <Target size={24} color="#10B981" />
+                                                                        <Target size={24} color="#4CAF50" />
                                                                 </View>
-                                                                <CText className="mb-2 text-xl">
+                                                                <CText className="mb-2 text-xl text-textPrimary dark:text-textPrimary-dark">
                                                                         Daily Calorie Goal
                                                                 </CText>
                                                                 <CText
@@ -104,16 +110,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                 >
                                                                         {profile.dailyCalorieGoal || 0}
                                                                 </CText>
-                                                                <CText className="text-sm">calories per day</CText>
+                                                                <CText className="text-sm text-textSecondary dark:text-textSecondary-dark">
+                                                                        calories per day
+                                                                </CText>
 
                                                                 {/* Goal Details */}
                                                                 <View className="mt-4 w-full">
                                                                         <View className="flex-row items-center justify-center">
                                                                                 {React.createElement(getGoalIcon(), {
                                                                                         size: 16,
-                                                                                        color: '#10B981',
+                                                                                        color: '#4CAF50',
                                                                                 })}
-                                                                                <CText className="ml-2 text-sm">
+                                                                                <CText className="ml-2 text-sm text-textSecondary dark:text-textSecondary-dark">
                                                                                         {getGoalText()}
                                                                                 </CText>
                                                                         </View>
@@ -122,14 +130,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                         {profile.targetWeight &&
                                                                                 profile.weightChangeRate && (
                                                                                         <View className="mt-2">
-                                                                                                <CText className="text-center text-xs">
+                                                                                                <CText className="text-center text-xs text-textTertiary dark:text-textTertiary-dark">
                                                                                                         Target:{' '}
                                                                                                         {
                                                                                                                 profile.targetWeight
                                                                                                         }
                                                                                                         kg
                                                                                                 </CText>
-                                                                                                <CText className="text-center text-xs">
+                                                                                                <CText className="text-center text-xs text-textTertiary dark:text-textTertiary-dark">
                                                                                                         Rate:{' '}
                                                                                                         {
                                                                                                                 profile.weightChangeRate
@@ -153,7 +161,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                         {/* Footer */}
                                         <View className="items-center">
-                                                <CText className="text-xs">
+                                                <CText className="text-xs text-textTertiary dark:text-textTertiary-dark">
                                                         Calog v1.0.0 • Authentication System Ready
                                                 </CText>
                                         </View>

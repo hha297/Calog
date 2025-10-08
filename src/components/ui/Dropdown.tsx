@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, TouchableOpacity, Modal, Dimensions, ScrollView } from 'react-native';
 import { CText } from './CText';
 import { ChevronDown } from 'lucide-react-native';
+import { useTheme } from '../../contexts';
 
 export interface DropdownOption {
         label: string;
@@ -26,6 +27,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         className = '',
         disabled = false,
 }) => {
+        const { isDark } = useTheme();
         const [isOpen, setIsOpen] = useState(false);
 
         const getSelectedLabel = () => {
@@ -50,13 +52,15 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return (
                 <>
                         <TouchableOpacity
-                                className={`flex-row items-center justify-between rounded-lg border border-white/20 bg-surfacePrimary p-4 ${className} ${
+                                className={`flex-row items-center justify-between rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4 ${className} ${
                                         disabled ? 'opacity-50' : ''
                                 }`}
                                 onPress={handlePress}
                                 disabled={disabled}
                         >
-                                <CText className="flex-1">{getSelectedLabel()}</CText>
+                                <CText className={`flex-1 ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}>
+                                        {getSelectedLabel()}
+                                </CText>
                                 <ChevronDown
                                         size={20}
                                         color="#9CA3AF"
@@ -73,12 +77,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                         onPress={handleClose}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary"
+                                                className="w-full max-w-sm rounded-xl bg-white dark:bg-surfacePrimary-dark"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
                                                 {/* Header */}
-                                                <View className="border-b border-white/10 px-6 py-4">
+                                                <View
+                                                        className={`border-b ${isDark ? 'border-white/10' : 'border-gray-200'} px-6 py-4`}
+                                                >
                                                         <CText size="lg" weight="bold" className="text-center">
                                                                 Select Option
                                                         </CText>
@@ -95,7 +101,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                                                         : 'bg-transparent'
                                                                         } ${
                                                                                 index !== options.length - 1
-                                                                                        ? 'border-b border-white/10'
+                                                                                        ? `border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`
                                                                                         : ''
                                                                         }`}
                                                                         onPress={() => handleSelect(option.value)}
@@ -129,12 +135,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                 </ScrollView>
 
                                                 {/* Footer */}
-                                                <View className="border-t border-white/10 p-4">
+                                                <View
+                                                        className={`border-t ${isDark ? 'border-white/10' : 'border-gray-200'} p-4`}
+                                                >
                                                         <TouchableOpacity
-                                                                className="rounded-lg bg-white/10 p-3"
+                                                                className={`rounded-lg ${isDark ? 'bg-white/10' : 'border border-gray-300 bg-surfacePrimary'} p-3`}
                                                                 onPress={handleClose}
                                                         >
-                                                                <CText className="text-center" weight="medium">
+                                                                <CText
+                                                                        className={`text-center ${isDark ? 'text-white' : 'text-gray-700'}`}
+                                                                        weight="medium"
+                                                                >
                                                                         Cancel
                                                                 </CText>
                                                         </TouchableOpacity>

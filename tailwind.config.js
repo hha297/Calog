@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+        // Enable dark mode with class strategy (NativeWind v4 uses this)
+        darkMode: 'class',
         content: [
                 './App.{js,jsx,ts,tsx}',
                 './src/**/*.{js,jsx,ts,tsx}',
@@ -10,14 +12,36 @@ module.exports = {
         theme: {
                 extend: {
                         colors: {
-                                // Old colors
-                                // primary: '#142b30', // Dark blue/black
-                                // secondary: '#1e3738', // Darker blue
-                                // tertiary: '#4CAF50', // Green
-
-                                // New colors
-                                background: '#181818',
-                                surfacePrimary: '#222630',
+                                // Light mode colors
+                                background: {
+                                        DEFAULT: '#EEEEEE',
+                                        dark: '#181818',
+                                },
+                                surfacePrimary: {
+                                        DEFAULT: '#FFFFFF',
+                                        dark: '#222630',
+                                },
+                                surfaceSecondary: {
+                                        DEFAULT: '#EFEFEF',
+                                        dark: '#1A1A1A',
+                                },
+                                textPrimary: {
+                                        DEFAULT: '#000000',
+                                        dark: '#FFFFFF',
+                                },
+                                textSecondary: {
+                                        DEFAULT: '#666666',
+                                        dark: '#A0A0A0',
+                                },
+                                textTertiary: {
+                                        DEFAULT: '#999999',
+                                        dark: '#666666',
+                                },
+                                border: {
+                                        DEFAULT: '#000000',
+                                        dark: '#333333',
+                                },
+                                // Theme colors (same in both modes)
                                 primary: '#4CAF50',
                                 secondary: '#1e3738',
                                 accent: '#FFC107',
@@ -34,7 +58,6 @@ module.exports = {
                                         800: '#2E7D32',
                                         900: '#1B5E20',
                                 },
-
                                 // Status colors
                                 status: {
                                         success: '#4CAF50',
@@ -48,16 +71,14 @@ module.exports = {
                                 'gradient-green-light': 'linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%)',
                                 'gradient-green-dark': 'linear-gradient(135deg, #388E3C 0%, #1B5E20 100%)',
                         },
-                        extend: {
-                                fontFamily: {
-                                        primary: 'SpaceGrotesk-Regular',
-                                        space: {
-                                                regular: 'SpaceGrotesk-Regular',
-                                                medium: 'SpaceGrotesk-Medium',
-                                                semibold: 'SpaceGrotesk-SemiBold',
-                                                bold: 'SpaceGrotesk-Bold',
-                                                light: 'SpaceGrotesk-Light',
-                                        },
+                        fontFamily: {
+                                primary: 'SpaceGrotesk-Regular',
+                                space: {
+                                        regular: 'SpaceGrotesk-Regular',
+                                        medium: 'SpaceGrotesk-Medium',
+                                        semibold: 'SpaceGrotesk-SemiBold',
+                                        bold: 'SpaceGrotesk-Bold',
+                                        light: 'SpaceGrotesk-Light',
                                 },
                         },
                 },

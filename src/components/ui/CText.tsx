@@ -17,7 +17,7 @@ export const CText: React.FC<CTextProps> = ({
         className = '',
         style,
         numberOfLines,
-        color = 'text-white',
+        color = 'text-textPrimary dark:text-textPrimary-dark',
         size = 'base',
         weight = 'normal',
         align = 'left',

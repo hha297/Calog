@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { CText } from './CText';
+import { useTheme } from '../../contexts';
 
 interface ButtonProps {
         title: string;
@@ -21,6 +22,8 @@ export const Button: React.FC<ButtonProps> = ({
         disabled = false,
         className = '',
 }) => {
+        const { isDark } = useTheme();
+
         return (
                 <TouchableOpacity
                         style={{} as ViewStyle}
@@ -28,7 +31,9 @@ export const Button: React.FC<ButtonProps> = ({
                                 variant === 'primary'
                                         ? 'bg-primary'
                                         : variant === 'ghost'
-                                          ? 'border border-primary/80 bg-transparent'
+                                          ? isDark
+                                                  ? 'border border-primary/80 bg-transparent'
+                                                  : 'border border-gray-300 bg-surfacePrimary'
                                           : 'bg-primary'
                         } ${
                                 size === 'small'
@@ -50,7 +55,9 @@ export const Button: React.FC<ButtonProps> = ({
                                                 variant === 'primary'
                                                         ? 'text-white'
                                                         : variant === 'ghost'
-                                                          ? 'text-primary'
+                                                          ? isDark
+                                                                  ? 'text-primary'
+                                                                  : 'text-gray-700'
                                                           : 'text-text-light'
                                         }`}
                                 >

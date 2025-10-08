@@ -6,15 +6,18 @@ import { TextField } from '../../components/ui/TextField';
 import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
+import { Switcher } from '../../components/ui/Switcher';
 import { validateSignupForm, SignupFormData, SignupFormErrors } from '../../utils/authValidation';
 import { useSignupMutation, useGoogleLoginMutation } from '../../hooks/useAuth';
 import { useAuthStore } from '../../store';
+import { useTheme } from '../../contexts';
 
 interface SignupScreenProps {
         navigation: any; // TODO: Add proper navigation typing
 }
 
 export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
+        const { isDark } = useTheme();
         const [formData, setFormData] = useState<SignupFormData>({
                 name: '',
                 email: '',
@@ -78,7 +81,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-surfacePrimary dark:bg-background-dark">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -157,8 +160,8 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                                 <View
                                                                         className={`h-5 w-5 items-center justify-center rounded border-2 ${
                                                                                 agreeToTerms
-                                                                                        ? 'border-secondary bg-primary'
-                                                                                        : 'border-gray-300'
+                                                                                        ? 'border-primary bg-primary'
+                                                                                        : `${isDark ? 'border-white' : 'border-border'}`
                                                                         }`}
                                                                 >
                                                                         {agreeToTerms && (
@@ -170,7 +173,9 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                                         </TouchableOpacity>
                                                         <View className="flex-1">
                                                                 <View className="flex-row flex-wrap">
-                                                                        <CText className="">I agree to </CText>
+                                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                                I agree to{' '}
+                                                                        </CText>
                                                                         <Pressable
                                                                                 onPress={() => {
                                                                                         navigation.navigate(
@@ -228,9 +233,15 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
 
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
-                                                <View className="h-px flex-1 bg-white" />
-                                                <CText className="mx-4">OR</CText>
-                                                <View className="h-px flex-1 bg-white" />
+                                                <View
+                                                        className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
+                                                />
+                                                <CText className={`mx-4 ${isDark ? 'text-white' : 'text-gray-600'}`}>
+                                                        OR
+                                                </CText>
+                                                <View
+                                                        className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
+                                                />
                                         </View>
 
                                         {/* OAuth Buttons */}

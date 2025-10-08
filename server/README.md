@@ -194,23 +194,28 @@ server/
 
     // User Profile (collected during onboarding)
     profile: {
-        gender: String,         // 'male', 'female', 'other'
-        age: Number,           // 13-120 years
-        height: Number,        // Height in cm (100-250)
-        weight: Number,        // Weight in kg (30-300)
-        activityLevel: String, // 'sedentary', 'light', 'moderate', 'active', 'very_active'
-        goal: String,          // 'maintain', 'lose', 'gain'
-        targetWeight: Number,   // Target weight in kg (for lose/gain goals)
-        weightChangeRate: Number, // Weight change rate in kcal/day (100-1000)
-        tdee: Number,          // Total Daily Energy Expenditure
-        dailyCalorieGoal: Number, // Calculated based on profile (800-5000)
+        gender: String,           // 'male', 'female', 'other'
+        age: Number,              // 13-120 years
+        height: Number,           // cm (100-250)
+        weight: Number,           // kg (30-300) — kept in sync with latest 'weight' log
+        activityLevel: String,    // 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'
+        goal: String,             // 'maintain' | 'lose' | 'gain'
+        targetWeight: Number,     // kg
+        weightChangeRate: Number, // kcal/day (100-1000)
+        tdee: Number,
+        dailyCalorieGoal: Number,
 
-        // Body Measurements for Composition Analysis
-        neck: Number,          // Neck circumference in cm (20-50)
-        waist: Number,         // Waist circumference in cm (50-150)
-        hip: Number,           // Hip circumference in cm (70-150)
-        bicep: Number,         // Bicep circumference in cm (15-60)
-        thigh: Number          // Thigh circumference in cm (30-100)
+        // Latest measurements snapshot (unitless values; units are standardized)
+        measurements: {
+            weight: Number, // kg
+            waist: Number,  // cm
+            hip: Number,    // cm
+            neck: Number,   // cm
+            thigh: Number,  // cm
+            bicep: Number   // cm
+        },
+
+        updatedAt: Date
     },
 
     // Refresh token management
@@ -224,6 +229,69 @@ server/
     updatedAt: Date
 }
 ```
+
+### Measurement Logs Model (updated)
+
+Each save creates ONE document containing all measurements for that moment. Units are standardized (weight→kg, others→cm). We removed `recordedAt` and `input`; use `createdAt` from Mongoose timestamps.
+
+```javascript
+// measurement_logs
+{
+  _id: ObjectId,
+  userId: ObjectId,
+  measurements: {
+    weight: { value: Number, unit: 'kg' },
+    waist:  { value: Number, unit: 'cm' },
+    hip:    { value: Number, unit: 'cm' },
+    neck:   { value: Number, unit: 'cm' },
+    thigh:  { value: Number, unit: 'cm' },
+    bicep:  { value: Number, unit: 'cm' }
+  },
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+Indexes:
+
+```
+db.measurement_logs.createIndex({ userId: 1, createdAt: -1 })
+```
+
+## Measurement Logs API (updated)
+
+POST `/api/measurement-logs`
+
+Request body:
+
+```json
+{
+        "measurements": {
+                "weight": { "value": 75, "unit": "kg" },
+                "waist": { "value": 83, "unit": "cm" },
+                "hip": { "value": 93, "unit": "cm" }
+        }
+}
+```
+
+Behavior:
+
+- Creates a single log document for the batch
+- Updates `user.profile.measurements` snapshot with provided values
+- If a `weight` value is present, also updates `user.profile.weight`
+
+GET `/api/measurement-logs`
+
+- Returns logs for current user sorted by `createdAt` desc
+
+DELETE `/api/measurement-logs/:id`
+
+- Deletes a log and refreshes the user's `profile.measurements` snapshot to the latest remaining log
+- If no logs remain, clears the snapshot
+
+DELETE `/auth/account`
+
+- Application-level cascade delete: removes all measurement logs for the user and then deletes the user (transactional)
 
 ### Profile Onboarding Flow
 

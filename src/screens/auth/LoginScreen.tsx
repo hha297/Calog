@@ -7,15 +7,18 @@ import { TextField } from '../../components/ui/TextField';
 import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
+import { Switcher } from '../../components/ui/Switcher';
 import { validateLoginForm, LoginFormData, LoginFormErrors } from '../../utils/authValidation';
 import { useLoginMutation, useGoogleLoginMutation } from '../../hooks/useAuth';
 import { useAuthStore } from '../../store';
+import { useTheme } from '../../contexts';
 
 interface LoginScreenProps {
         navigation: any; // TODO: Add proper navigation typing
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+        const { isDark } = useTheme();
         const [formData, setFormData] = useState<LoginFormData>({
                 email: '',
                 password: '',
@@ -73,7 +76,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-surfacePrimary dark:bg-background-dark">
                         <KeyboardAvoidingView
                                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                                 className="flex-1"
@@ -145,15 +148,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                         <View
                                                                 className={`mr-2 h-5 w-5 items-center justify-center rounded border-2 ${
                                                                         rememberMe
-                                                                                ? 'border-secondary bg-primary'
-                                                                                : 'border-gray-300'
+                                                                                ? 'border-primary bg-primary'
+                                                                                : `${isDark ? 'border-white' : 'border-border'}`
                                                                 }`}
                                                         >
                                                                 {rememberMe && (
                                                                         <CText className="text-xs text-white">✓</CText>
                                                                 )}
                                                         </View>
-                                                        <CText className="">Remember me</CText>
+                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                Remember me
+                                                        </CText>
                                                 </TouchableOpacity>
 
                                                 {/* Forgot Password */}
@@ -166,9 +171,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Divider */}
                                         <View className="mb-6 flex-row items-center">
-                                                <View className="h-px flex-1 bg-white" />
-                                                <CText className="mx-4">OR</CText>
-                                                <View className="h-px flex-1 bg-white" />
+                                                <View
+                                                        className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
+                                                />
+                                                <CText className={`mx-4 ${isDark ? 'text-white' : 'text-gray-600'}`}>
+                                                        OR
+                                                </CText>
+                                                <View
+                                                        className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
+                                                />
                                         </View>
 
                                         {/* OAuth Buttons */}
