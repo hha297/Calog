@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { CText } from '../ui/CText';
 import { Dropdown } from '../ui/Dropdown';
+import { useTheme } from '../../contexts';
 
 export interface FitnessGoalViewProps {
         formValues: Record<string, any>;
@@ -9,6 +10,7 @@ export interface FitnessGoalViewProps {
 }
 
 export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, setFormValues }) => {
+        const { isDark } = useTheme();
         const activityLevels = [
                 { label: 'Sedentary', value: 'sedentary', description: 'Little or no exercise' },
                 { label: 'Light', value: 'light', description: 'Light exercise 1-3 days/week' },
@@ -82,7 +84,9 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                         <CText className="mb-3" weight="medium">
                                                 Target Weight (kg)
                                         </CText>
-                                        <View className="rounded-lg bg-surfacePrimary p-4">
+                                        <View
+                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                        >
                                                 <View className="flex-row items-center justify-between">
                                                         <TouchableOpacity
                                                                 className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
@@ -100,7 +104,10 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                                         -
                                                                 </CText>
                                                         </TouchableOpacity>
-                                                        <CText className="text-lg" weight="medium">
+                                                        <CText
+                                                                className={`text-lg ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}
+                                                                weight="medium"
+                                                        >
                                                                 {formValues.targetWeight || 70}
                                                         </CText>
                                                         <TouchableOpacity

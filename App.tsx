@@ -6,7 +6,6 @@
  */
 
 import './global.css';
-import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import BootSplash from 'react-native-bootsplash';
@@ -16,9 +15,9 @@ import { initializeAuth, useAuthStore } from './src/store';
 import { GoogleSigninService } from './src/services/googleSigninService';
 import { useProfileSync } from './src/hooks/useProfileSync';
 import { SplashScreen } from './src/components/SplashScreen';
+import { ThemeProvider } from './src/contexts';
 
 function App() {
-        const isDarkMode = useColorScheme() === 'dark';
         const { setupUnauthorizedCallback } = useAuthStore();
         const [ready, setReady] = useState(false);
 
@@ -53,11 +52,12 @@ function App() {
         }
 
         return (
-                <SafeAreaProvider>
-                        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-                        <AppNavigator />
-                        <Toast />
-                </SafeAreaProvider>
+                <ThemeProvider>
+                        <SafeAreaProvider>
+                                <AppNavigator />
+                                <Toast />
+                        </SafeAreaProvider>
+                </ThemeProvider>
         );
 }
 

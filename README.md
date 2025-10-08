@@ -9,6 +9,7 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 - **Authentication**: Google OAuth + JWT with Keychain Storage
 - **Database**: MongoDB with Mongoose
 - **Security**: Secure token storage, JWT refresh, rate limiting
+- **Dark/Light Mode**: Complete theme system with NativeWind v4, persistent preference storage, dynamic UI components, and theme-aware styling across all screens
 - **Onboarding**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goals**: Lose/Gain weight with target weight and rate selection
 - **Calorie Calculation**: TDEE and daily calorie goal calculation based on Mifflin-St Jeor equation
@@ -257,7 +258,18 @@ npm run dev:ios
 - Frontend uses Zustand for state management
 - React Query for API calls and caching
 - TypeScript for type safety
-- NativeWind for styling
+- NativeWind v4 for styling with dark mode support
+- **Theme System**:
+     - Complete dark/light mode implementation with ThemeContext
+     - Dynamic UI components with theme-aware styling
+     - Switcher component for theme toggle in Account settings
+     - Theme preference saved to AsyncStorage with persistence
+     - Auto StatusBar updates based on theme
+     - Theme-aware styling for all screens: Login, Signup, Profile, Account, Home, Diary
+     - Dynamic colors for icons, borders, backgrounds, and text
+     - SplashScreen follows theme preference
+     - OAuth buttons with theme-specific styling
+     - Checkboxes and form elements adapt to theme
 - **Onboarding Flow**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goal System**: Target weight and rate selection with real-time pace labels
 - **Calorie Calculation**: TDEE and daily calorie goal using Mifflin-St Jeor equation

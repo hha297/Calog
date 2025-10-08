@@ -8,7 +8,6 @@ import {
         Send,
         Star,
         Share2,
-        Globe,
         Sun,
         HelpCircle,
         Shield,
@@ -28,15 +27,19 @@ import { CText, Switcher } from '../../components/ui';
 
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
+import { useTheme } from '../../contexts';
 
 export const AccountScreen: React.FC = () => {
         const navigation = useNavigation();
         const { profile } = useUserProfile();
         const { user, logout } = useAuthStore();
+        const { colorScheme, colorSchemePreference, setColorScheme, isDark } = useTheme();
+
+        // Border color for separators
+        const separatorClass = isDark ? 'border-white/10' : 'border-gray-200';
 
         const [languageModalVisible, setLanguageModalVisible] = useState(false);
         const [selectedLanguage, setSelectedLanguage] = useState('EN');
-        const [darkModeEnabled, setDarkModeEnabled] = useState(true);
         const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
         const handleLogout = async () => {
@@ -82,10 +85,8 @@ export const AccountScreen: React.FC = () => {
                 console.log('Language changed to:', language);
         };
 
-        const handleDarkMode = () => {
-                setDarkModeEnabled(!darkModeEnabled);
-                // TODO: Implement dark mode toggle
-                console.log('Toggle dark mode', !darkModeEnabled);
+        const handleDarkModeToggle = (value: boolean) => {
+                setColorScheme(value ? 'dark' : 'light');
         };
 
         const handleTermsOfService = () => {
@@ -103,12 +104,12 @@ export const AccountScreen: React.FC = () => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
                         <ScrollView className="flex-1 p-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* User Info Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleProfile}
                                         >
                                                 <View className="mr-4 size-16 items-center justify-center rounded-full bg-primary">
@@ -153,7 +154,7 @@ export const AccountScreen: React.FC = () => {
                                                 <ArrowRightIcon size={20} color="#FFFFFF" />
                                         </TouchableOpacity>
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleLogout}
                                         >
                                                 <CreditCardIcon size={20} color="#4CAF50" />
@@ -166,22 +167,24 @@ export const AccountScreen: React.FC = () => {
                                 </View>
 
                                 {/* App Settings Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleLanguage}
                                         >
                                                 <LanguagesIcon size={20} color="#4CAF50" />
                                                 <CText className="ml-3 flex-1">Language</CText>
-                                                <CText className="mr-2">{selectedLanguage}</CText>
+                                                <CText className="mr-2 text-textSecondary dark:text-textSecondary-dark">
+                                                        {selectedLanguage}
+                                                </CText>
                                                 <ChevronRightIcon size={16} color="#9CA3AF" />
                                         </TouchableOpacity>
-
-                                        <View className="flex-row items-center border-b border-white/10 p-4">
+                                        <View className={`flex-row items-center border-b ${separatorClass} p-4`}>
                                                 <Sun size={20} color="#4CAF50" />
                                                 <CText className="ml-3 flex-1">Dark Mode</CText>
-                                                <Switcher value={darkModeEnabled} onValueChange={setDarkModeEnabled} />
+                                                <Switcher value={isDark} onValueChange={handleDarkModeToggle} />
                                         </View>
+
                                         <View className="flex-row items-center p-4">
                                                 <BellIcon size={20} color="#4CAF50" />
                                                 <CText className="ml-3 flex-1">Notifications</CText>
@@ -193,9 +196,9 @@ export const AccountScreen: React.FC = () => {
                                 </View>
 
                                 {/* Community & Feedback Section */}
-                                <View className="mb-4 rounded-xl bg-surfacePrimary">
+                                <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleSendRequest}
                                         >
                                                 <Send size={20} color="#4CAF50" />
@@ -203,7 +206,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleRateApp}
                                         >
                                                 <Star size={20} color="#4CAF50" />
@@ -218,9 +221,9 @@ export const AccountScreen: React.FC = () => {
                                                 <CText className="ml-3 flex-1">Follow Calog</CText>
                                         </TouchableOpacity>
                                 </View>
-                                <View className="mb-6 rounded-xl bg-surfacePrimary">
+                                <View className="mb-6 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleTermsOfService}
                                         >
                                                 <HelpCircle size={20} color="#4CAF50" />
@@ -228,7 +231,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handlePrivacyPolicy}
                                         >
                                                 <Shield size={20} color="#4CAF50" />
@@ -236,7 +239,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className="flex-row items-center border-b border-white/10 p-4"
+                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
                                                 onPress={handleDeleteData}
                                         >
                                                 <Trash2 size={20} color="#F44336" />
@@ -262,12 +265,12 @@ export const AccountScreen: React.FC = () => {
                                         onPress={() => setLanguageModalVisible(false)}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary"
+                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
                                                 {/* Header */}
-                                                <View className="border-b border-white/10 px-6 py-4">
+                                                <View className="${separatorColor} border-b px-6 py-4">
                                                         <CText size="lg" weight="bold" className="text-center">
                                                                 Select Language
                                                         </CText>
@@ -289,7 +292,7 @@ export const AccountScreen: React.FC = () => {
                                                                                         : 'bg-transparent'
                                                                         } ${
                                                                                 index !== 2
-                                                                                        ? 'border-b border-white/10'
+                                                                                        ? '${separatorColor} border-b'
                                                                                         : ''
                                                                         }`}
                                                                         onPress={() =>

@@ -26,7 +26,7 @@ export const Switcher: React.FC<SwitcherProps> = ({ value, onValueChange, disabl
                 const backgroundColor = interpolateColor(
                         animatedValue.value,
                         [0, 1],
-                        ['#FFFFFF', '#4CAF50'], // White when OFF, Green when ON
+                        ['#E8E8E8', '#4CAF50'], // White when OFF, Green when ON
                 );
 
                 return {

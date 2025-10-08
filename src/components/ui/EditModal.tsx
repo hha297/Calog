@@ -6,6 +6,7 @@ import { CText } from './CText';
 import { Button } from './Button';
 import { TextField } from './TextField';
 import { Slider } from './Slider';
+import { useTheme } from '../../contexts';
 
 export interface EditModalField {
         key: string;
@@ -43,6 +44,8 @@ export const EditModal: React.FC<EditModalProps> = ({
         disableSave = false,
         children,
 }) => {
+        const { isDark } = useTheme();
+
         return (
                 <Modal
                         visible={visible}
@@ -57,15 +60,17 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onPress={onClose}
                         >
                                 <TouchableOpacity
-                                        className="w-full max-w-md rounded-xl bg-background"
+                                        className="w-full max-w-md rounded-xl bg-white dark:bg-background-dark"
                                         activeOpacity={1}
                                         onPress={(e) => e.stopPropagation()}
                                         style={{ maxHeight: '80%' }}
                                 >
                                         {/* Header */}
-                                        <View className="flex-row items-center justify-between border-b border-white/10 px-6 py-4">
+                                        <View
+                                                className={`flex-row items-center justify-between border-b ${isDark ? 'border-white/10' : 'border-gray-200'} px-6 py-4`}
+                                        >
                                                 <TouchableOpacity onPress={onClose}>
-                                                        <X size={24} color="#FFFFFF" />
+                                                        <X size={24} color={isDark ? '#FFFFFF' : '#000000'} />
                                                 </TouchableOpacity>
                                                 <CText size="lg" weight="bold" className="">
                                                         {title}
@@ -83,7 +88,9 @@ export const EditModal: React.FC<EditModalProps> = ({
                                         </ScrollView>
 
                                         {/* Footer */}
-                                        <View className="flex-row justify-between border-t border-white/10 p-6">
+                                        <View
+                                                className={`flex-row justify-between border-t ${isDark ? 'border-white/10' : 'border-gray-200'} p-6`}
+                                        >
                                                 <Button title="Cancel" onPress={onClose} variant="ghost" />
                                                 <Button
                                                         title="Save"
