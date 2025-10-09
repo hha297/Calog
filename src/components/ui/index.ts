@@ -9,3 +9,4 @@ export { EditModal } from './EditModal';
 export { ConfirmationModal } from './ConfirmationModal';
 export { Dropdown } from './Dropdown';
 export { Switcher } from './Switcher';
+export { TranslatedText } from './TranslatedText';

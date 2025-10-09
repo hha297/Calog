@@ -7,7 +7,7 @@ import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { AccountNavigator } from './AccountNavigator';
-import { CText } from '../components/ui/CText';
+import { TranslatedText } from '../components/ui/TranslatedText';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
 import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon } from 'lucide-react-native';
@@ -50,7 +50,7 @@ export const MainNavigator: React.FC = () => {
                                         left: 0,
                                         right: 0,
                                         height: 88,
-                                        paddingTop: 12,
+                                        paddingTop: 16,
                                         backgroundColor: isDark ? '#222630' : '#FFFFFF',
                                         borderTopLeftRadius: 32,
                                         borderTopRightRadius: 32,
@@ -61,7 +61,7 @@ export const MainNavigator: React.FC = () => {
                                         shadowOpacity: 0.25,
                                         shadowRadius: 10,
                                 },
-                                tabBarShowLabel: false,
+                                tabBarShowLabel: true,
                         }}
                 >
                         {/* Diary Tab */}
@@ -76,13 +76,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <CText
+                                                <TranslatedText
+                                                        text="diary"
+                                                        staticKey={true}
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
-                                                        size="base"
-                                                >
-                                                        Diary
-                                                </CText>
+                                                        size="sm"
+                                                />
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -100,12 +100,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <CText
+                                                <TranslatedText
+                                                        text="analytics"
+                                                        staticKey={true}
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
-                                                >
-                                                        Analytics
-                                                </CText>
+                                                        size="sm"
+                                                />
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -137,12 +138,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <CText
+                                                <TranslatedText
+                                                        text="help"
+                                                        staticKey={true}
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
-                                                >
-                                                        Help
-                                                </CText>
+                                                        size="sm"
+                                                />
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -160,12 +162,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <CText
+                                                <TranslatedText
+                                                        text="account"
+                                                        staticKey={true}
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
-                                                >
-                                                        Account
-                                                </CText>
+                                                        size="sm"
+                                                />
                                         ),
                                         tabBarShowLabel: true,
                                 }}
