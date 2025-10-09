@@ -2,10 +2,13 @@ import React from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CText } from '../components/ui/CText';
+import { TranslatedText } from '../components/ui/TranslatedText';
 import { Button } from '../components/ui/Button';
 import { useAuthStore } from '../store';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { Target, TrendingUp, TrendingDown, Scale } from 'lucide-react-native';
+import { useLanguage } from '../contexts';
+import { getStaticTranslation } from '../utils/translations';
 
 interface HomeScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -14,6 +17,7 @@ interface HomeScreenProps {
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         const { user, logout } = useAuthStore();
         const { profile, isLoading } = useUserProfile();
+        const { currentLanguage } = useLanguage();
 
         const handleLogout = async () => {
                 try {
@@ -34,14 +38,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         };
 
         const getGoalText = () => {
-                if (!profile?.goal) return 'Maintain Weight';
+                if (!profile?.goal) return getStaticTranslation('maintainWeight', currentLanguage);
                 switch (profile.goal) {
                         case 'lose':
-                                return 'Lose Weight';
+                                return getStaticTranslation('loseWeight', currentLanguage);
                         case 'gain':
-                                return 'Gain Weight';
+                                return getStaticTranslation('gainWeight', currentLanguage);
                         default:
-                                return 'Maintain Weight';
+                                return getStaticTranslation('maintainWeight', currentLanguage);
                 }
         };
 
@@ -51,16 +55,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                 <View className="py-8">
                                         {/* Welcome Header */}
                                         <View className="mb-8">
-                                                <CText
-                                                        size="3xl"
+                                                <TranslatedText
+                                                        text="welcomeToCalog"
+                                                        staticKey={true}
+                                                        size="2xl"
                                                         weight="bold"
                                                         className="mb-2 text-center text-textPrimary dark:text-textPrimary-dark"
-                                                >
-                                                        Welcome to Calog!
-                                                </CText>
-                                                <CText className="text-center text-textSecondary dark:text-textSecondary-dark">
-                                                        Track your nutrition and fitness journey
-                                                </CText>
+                                                />
+                                                <TranslatedText
+                                                        text="trackYourNutrition"
+                                                        staticKey={true}
+                                                        className="text-center text-textSecondary dark:text-textSecondary-dark"
+                                                />
                                         </View>
 
                                         {/* User Info Card */}
@@ -89,7 +95,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                 {user?.email || 'user@example.com'}
                                                         </CText>
                                                         <CText className="mt-2 text-sm text-primary">
-                                                                {user?.role?.toUpperCase() || 'FREE'} Plan
+                                                                {user?.role?.toUpperCase() || 'FREE'}{' '}
+                                                                <TranslatedText
+                                                                        text="plan"
+                                                                        staticKey={true}
+                                                                        className="text-sm text-primary"
+                                                                />
                                                         </CText>
                                                 </View>
                                         </View>
@@ -101,18 +112,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                 <View className="mb-3 h-12 w-12 items-center justify-center rounded-full bg-primary/20">
                                                                         <Target size={24} color="#4CAF50" />
                                                                 </View>
-                                                                <CText className="mb-2 text-xl text-textPrimary dark:text-textPrimary-dark">
-                                                                        Daily Calorie Goal
-                                                                </CText>
+                                                                <TranslatedText
+                                                                        text="dailyCalorieGoal"
+                                                                        staticKey={true}
+                                                                        className="mb-2 text-xl text-textPrimary dark:text-textPrimary-dark"
+                                                                />
                                                                 <CText
                                                                         className="mb-2 text-3xl text-primary"
                                                                         weight="bold"
                                                                 >
                                                                         {profile.dailyCalorieGoal || 0}
                                                                 </CText>
-                                                                <CText className="text-sm text-textSecondary dark:text-textSecondary-dark">
-                                                                        calories per day
-                                                                </CText>
+                                                                <TranslatedText
+                                                                        text="caloriesPerDay"
+                                                                        staticKey={true}
+                                                                        className="text-sm text-textSecondary dark:text-textSecondary-dark"
+                                                                />
 
                                                                 {/* Goal Details */}
                                                                 <View className="mt-4 w-full">
@@ -131,17 +146,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                                 profile.weightChangeRate && (
                                                                                         <View className="mt-2">
                                                                                                 <CText className="text-center text-xs text-textTertiary dark:text-textTertiary-dark">
-                                                                                                        Target:{' '}
+                                                                                                        <TranslatedText
+                                                                                                                text="target"
+                                                                                                                staticKey={
+                                                                                                                        true
+                                                                                                                }
+                                                                                                                className="text-xs"
+                                                                                                        />
+                                                                                                        :{' '}
                                                                                                         {
                                                                                                                 profile.targetWeight
-                                                                                                        }
+                                                                                                        }{' '}
                                                                                                         kg
                                                                                                 </CText>
                                                                                                 <CText className="text-center text-xs text-textTertiary dark:text-textTertiary-dark">
-                                                                                                        Rate:{' '}
+                                                                                                        <TranslatedText
+                                                                                                                text="rate"
+                                                                                                                staticKey={
+                                                                                                                        true
+                                                                                                                }
+                                                                                                                className="text-xs"
+                                                                                                        />
+                                                                                                        :{' '}
                                                                                                         {
                                                                                                                 profile.weightChangeRate
-                                                                                                        }
+                                                                                                        }{' '}
                                                                                                         kcal/day
                                                                                                 </CText>
                                                                                         </View>
@@ -153,10 +182,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
                                         {/* Logout Button */}
                                         <Button
-                                                title="Sign Out"
+                                                title="signOut"
                                                 onPress={handleLogout}
                                                 variant="ghost"
                                                 className="mb-4"
+                                                translate
                                         />
 
                                         {/* Footer */}

@@ -9,6 +9,8 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 - **Authentication**: Google OAuth + JWT with Keychain Storage
 - **Database**: MongoDB with Mongoose
 - **Security**: Secure token storage, JWT refresh, rate limiting
+- **Multi-Language Support**: Complete translation system with static dictionary and Google Translate API integration for dynamic content
+- **Supported Languages**: English (en), Finnish (fi), Vietnamese (vi)
 - **Dark/Light Mode**: Complete theme system with NativeWind v4, persistent preference storage, dynamic UI components, and theme-aware styling across all screens
 - **Onboarding**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goals**: Lose/Gain weight with target weight and rate selection
@@ -179,6 +181,17 @@ npm run dev
 npm run dev:ios
 ```
 
+## 🌍 Translation System
+
+Complete multi-language support with static dictionary + Google Translate API for dynamic content. Supports: English (en), Finnish (fi), Vietnamese (vi).
+
+**For Developers:**
+
+- **Add new translations**: Edit `src/utils/translations.ts` - add your key with translations for all languages
+- **Add new languages**: Update `src/contexts/LanguageContext.tsx` (SupportedLanguage, LANGUAGE_NAMES, LANGUAGE_FLAGS) and add translations to all keys in `translations.ts`
+- **Usage**: `<TranslatedText text="key" staticKey={true} />` or `const { t } = useTranslation(); await t('text');`
+- **Examples**: See `src/examples/TranslationExample.tsx`
+
 ## 🔧 API Endpoints
 
 ### Authentication
@@ -270,6 +283,18 @@ npm run dev:ios
      - SplashScreen follows theme preference
      - OAuth buttons with theme-specific styling
      - Checkboxes and form elements adapt to theme
+- **Translation System**:
+     - Complete multi-language support with LanguageContext
+     - Static text translations via dictionary (src/utils/translations.ts)
+     - Dynamic content translation via Google Translate API
+     - Language preference saved to AsyncStorage with persistence
+     - Supported languages: English (en), Finnish (fi), Vietnamese (vi)
+     - TranslatedText component for automatic static text translation
+     - useTranslation hook for dynamic runtime translation
+     - useTranslatedText hook for fixed text with automatic translation
+     - LanguageSelector component with compact and full display modes
+     - Language selection in Account settings
+     - All UI elements support translation (navigation, screens, components)
 - **Onboarding Flow**: Multi-step profile collection with advanced weight goal settings
 - **Weight Goal System**: Target weight and rate selection with real-time pace labels
 - **Calorie Calculation**: TDEE and daily calorie goal using Mifflin-St Jeor equation

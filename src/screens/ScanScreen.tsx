@@ -9,7 +9,7 @@ interface ScanScreenProps {
 
 export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
         return (
-                <SafeAreaView className="flex-1 bg-background">
+                <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
                         <ScrollView className="flex-1 px-6">
                                 <View className="py-8">
                                         {/* Header */}
@@ -21,7 +21,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                         </View>
 
                                         {/* Camera Placeholder */}
-                                        <View className="mb-6 h-64 items-center justify-center rounded-lg bg-surfacePrimary">
+                                        <View className="mb-6 h-64 items-center justify-center rounded-lg bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                                 <CText className="mb-4 text-6xl">📷</CText>
                                                 <CText className="text-lg">Camera</CText>
                                                 <CText className="mt-2 text-sm">Point camera at barcode</CText>
@@ -57,8 +57,8 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
 
                                         {/* Manual Entry */}
                                         <View className="mb-6 rounded-lg bg-primary p-4">
-                                                <CText className="mb-2">Can't scan?</CText>
-                                                <CText className="text-sm">
+                                                <CText className="mb-2 text-white">Can't scan?</CText>
+                                                <CText className="text-sm text-white">
                                                         You can manually add food items by searching our database.
                                                 </CText>
                                         </View>
