@@ -175,7 +175,26 @@ export const ProfileScreen: React.FC = () => {
                         email: user?.email || '',
                         avatar: user?.avatar || '',
                 });
+                setInitialValues({
+                        name: user?.fullName || user?.name || '',
+                        email: user?.email || '',
+                        avatar: user?.avatar || '',
+                });
                 setEditModalVisible(true);
+        };
+
+        const handleAvatarUploaded = async (avatarUrl: string) => {
+                // Update the user state with new avatar
+                const { setUser } = useAuthStore.getState();
+                if (user) {
+                        setUser({
+                                ...user,
+                                avatar: avatarUrl,
+                        });
+                }
+
+                // Reload profile to get fresh data
+                await loadProfile();
         };
 
         const handleSaveEdit = async () => {
@@ -249,7 +268,13 @@ export const ProfileScreen: React.FC = () => {
                                         />
                                 );
                         case 'profile_info':
-                                return <ProfileInfoView formValues={formValues} setFormValues={setFormValues} />;
+                                return (
+                                        <ProfileInfoView
+                                                formValues={formValues}
+                                                setFormValues={setFormValues}
+                                                onAvatarUploaded={handleAvatarUploaded}
+                                        />
+                                );
                         default:
                                 return null;
                 }

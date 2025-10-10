@@ -1,14 +1,10 @@
-# Calog - React Native App with Google OAuth
-
-Complete React Native + Node.js/Express + MongoDB system with Google OAuth integration.
-
-## 🚀 Features
-
-- **Backend**: Node.js + Express + MongoDB (Mongoose)
-- **Frontend**: React Native with TypeScript
-- **Authentication**: Google OAuth + JWT with Keychain Storage
-- **Database**: MongoDB with Mongoose
-- **Security**: Secure token storage, JWT refresh, rate limiting
+- **Avatar Upload**:
+     - Image picker integration with camera and gallery support
+     - Server-side upload to Cloudinary for security (client does NOT need .env)
+     - Automatic image optimization (500x500, quality: auto, format: auto)
+     - Old avatar cleanup to prevent storage bloat
+     - Base64 conversion and upload with loading states
+     - Permission handling for Android/iOS (Camera, Photo Library)g
 - **Multi-Language Support**: Complete translation system with static dictionary and Google Translate API integration for dynamic content
 - **Supported Languages**: English (en), Finnish (fi), Vietnamese (vi)
 - **Dark/Light Mode**: Complete theme system with NativeWind v4, persistent preference storage, dynamic UI components, and theme-aware styling across all screens
@@ -19,6 +15,7 @@ Complete React Native + Node.js/Express + MongoDB system with Google OAuth integ
 - **Body Measurements**: Track neck, waist, hip, bicep, and thigh measurements
 - **Fitness Metrics**: BMI, Body Fat Mass, Lean Body Mass, and FFMI calculations
 - **Persistent Login**: Users stay logged in using device keychain
+- **Avatar Upload**: Profile picture upload with Cloudinary integration, automatic image optimization, and old avatar cleanup
 
 ## 📋 System Requirements
 
@@ -77,7 +74,6 @@ NODE_ENV=development
 # MongoDB Configuration
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/calog
 
-
 # JWT Configuration
 JWT_ACCESS_SECRET=your-super-secret-access-key-here-make-it-long-and-random
 JWT_REFRESH_SECRET=your-super-secret-refresh-key-here-make-it-long-and-random
@@ -91,7 +87,20 @@ GOOGLE_REDIRECT_URI=http://localhost:4000/auth/google/callback
 
 # React Native App Configuration
 REACT_NATIVE_REDIRECT_URL=calog://auth/callback
+
+# Cloudinary Configuration (for avatar uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name_here
+CLOUDINARY_API_KEY=your_api_key_here
+CLOUDINARY_API_SECRET=your_api_secret_here
 ```
+
+**Cloudinary Setup:**
+
+1. Sign up at [Cloudinary](https://cloudinary.com/users/register/free)
+2. Get your Cloud Name, API Key, and API Secret from the Dashboard
+3. Add them to your server `.env` file
+
+> **Note:** The React Native app does NOT need any `.env` file. All Cloudinary uploads are handled server-side for security.
 
 ### 5. Configure React Native OAuth
 
@@ -202,6 +211,14 @@ Complete multi-language support with static dictionary + Google Translate API fo
 - `POST /auth/refresh` - Refresh JWT token
 - `POST /auth/logout` - Logout
 
+### Profile
+
+- `GET /api/profile` - Get user profile (requires JWT)
+- `PUT /api/profile` - Update user profile (requires JWT)
+- `POST /api/profile/upload-avatar` - Upload profile avatar (requires JWT)
+- `PUT /api/profile/user-info` - Update user info (name, email) (requires JWT)
+- `POST /api/profile/calculate-calories` - Calculate daily calorie goal
+
 ## 🗄️ Database Schema
 
 ### User Model
@@ -308,6 +325,13 @@ Complete multi-language support with static dictionary + Google Translate API fo
 - **Keychain Integration**: Secure storage using react-native-keychain
 - **Profile Management**: Local storage with database sync
 - **Auto-Login**: Persistent authentication across sessions
+- **Avatar Upload**:
+     - Image picker integration with camera and gallery support
+     - Server-side upload to Cloudinary for security (client does NOT need .env)
+     - Automatic image optimization (500x500, quality: auto, format: auto)
+     - Old avatar cleanup to prevent storage bloat
+     - Base64 conversion and upload with loading states
+     - Permission handling for Android/iOS (Camera, Photo Library)
 
 ## 🤝 Contributing
 

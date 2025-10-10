@@ -1,17 +1,45 @@
-import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { CText } from '../ui/CText';
 import { TextField } from '../ui/TextField';
 import { User, Camera } from 'lucide-react-native';
+import { selectAndUploadAvatar } from '../../services/avatarService';
 
 export interface ProfileInfoViewProps {
         formValues: Record<string, any>;
         setFormValues: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+        onAvatarUploaded?: (avatarUrl: string) => void;
 }
 
-export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, setFormValues }) => {
-        const handleAvatarChange = () => {
-                // TODO: Implement image picker
+export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, setFormValues, onAvatarUploaded }) => {
+        const [isUploading, setIsUploading] = useState(false);
+
+        const handleAvatarChange = async () => {
+                setIsUploading(true);
+                try {
+                        const result = await selectAndUploadAvatar();
+
+                        if (result.success && result.avatarUrl) {
+                                // Update form values
+                                setFormValues((prev) => ({
+                                        ...prev,
+                                        avatar: result.avatarUrl,
+                                }));
+
+                                // Notify parent component
+                                if (onAvatarUploaded) {
+                                        onAvatarUploaded(result.avatarUrl);
+                                }
+
+                                Alert.alert('Success', 'Avatar uploaded successfully!');
+                        } else if (result.error && result.error !== 'Cancelled') {
+                                Alert.alert('Error', result.error || 'Failed to upload avatar');
+                        }
+                } catch (error: any) {
+                        Alert.alert('Error', error.message || 'Failed to upload avatar');
+                } finally {
+                        setIsUploading(false);
+                }
         };
 
         return (
@@ -25,6 +53,7 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                         <TouchableOpacity
                                                 className="relative h-24 w-24 items-center justify-center rounded-full bg-primary"
                                                 onPress={handleAvatarChange}
+                                                disabled={isUploading}
                                         >
                                                 {formValues.avatar ? (
                                                         <Image
@@ -35,11 +64,15 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                                         <User size={48} color="#FFFFFF" />
                                                 )}
                                                 <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-green-500">
-                                                        <Camera size={16} color="#FFFFFF" />
+                                                        {isUploading ? (
+                                                                <ActivityIndicator size="small" color="#FFFFFF" />
+                                                        ) : (
+                                                                <Camera size={16} color="#FFFFFF" />
+                                                        )}
                                                 </View>
                                         </TouchableOpacity>
                                         <CText className="mt-2 text-center text-sm">
-                                                Tap to change profile picture
+                                                {isUploading ? 'Uploading...' : 'Tap to change profile picture'}
                                         </CText>
                                 </View>
                         </View>

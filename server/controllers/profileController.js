@@ -1,5 +1,6 @@
 const { User } = require('../models/User');
 const { ResponseUtils } = require('../utils');
+const { uploadImage, deleteImage, extractPublicId } = require('../config/cloudinary');
 
 class ProfileController {
         // Calculate daily calorie goal using Mifflin-St Jeor Equation
@@ -188,6 +189,94 @@ class ProfileController {
                         });
                 } catch (error) {
                         return ResponseUtils.serverError(res, 'Failed to calculate calorie goal');
+                }
+        }
+
+        // Upload avatar
+        static async uploadAvatar(req, res) {
+                try {
+                        const userId = req.user.userId;
+                        const { image } = req.body;
+
+                        if (!image) {
+                                return ResponseUtils.validationError(res, [
+                                        { field: 'image', message: 'Image is required' },
+                                ]);
+                        }
+
+                        // Get current user to delete old avatar if exists
+                        const user = await User.findById(userId);
+                        if (!user) {
+                                return ResponseUtils.notFound(res, 'User not found');
+                        }
+
+                        // Delete old avatar from Cloudinary if exists
+                        if (user.avatar) {
+                                const oldPublicId = extractPublicId(user.avatar);
+                                if (oldPublicId) {
+                                        try {
+                                                await deleteImage(oldPublicId);
+                                        } catch (error) {
+                                                console.error('Failed to delete old avatar:', error);
+                                                // Continue even if deletion fails
+                                        }
+                                }
+                        }
+
+                        // Upload new avatar to Cloudinary
+                        const uploadResult = await uploadImage(image, 'calog/avatars');
+
+                        if (!uploadResult.success) {
+                                return ResponseUtils.serverError(res, 'Failed to upload avatar');
+                        }
+
+                        // Update user avatar
+                        user.avatar = uploadResult.url;
+                        await user.save();
+
+                        return ResponseUtils.success(res, {
+                                message: 'Avatar uploaded successfully',
+                                avatar: uploadResult.url,
+                        });
+                } catch (error) {
+                        console.error('ProfileController.uploadAvatar - Error:', error);
+                        return ResponseUtils.serverError(res, 'Failed to upload avatar');
+                }
+        }
+
+        // Update user info (name, email)
+        static async updateUserInfo(req, res) {
+                try {
+                        const userId = req.user.userId;
+                        const { name, fullName } = req.body;
+
+                        const user = await User.findById(userId);
+                        if (!user) {
+                                return ResponseUtils.notFound(res, 'User not found');
+                        }
+
+                        // Update name or fullName
+                        if (name !== undefined) {
+                                user.name = name;
+                        }
+                        if (fullName !== undefined) {
+                                user.fullName = fullName;
+                        }
+
+                        await user.save();
+
+                        return ResponseUtils.success(res, {
+                                message: 'User info updated successfully',
+                                user: {
+                                        name: user.name,
+                                        fullName: user.fullName,
+                                        email: user.email,
+                                        avatar: user.avatar,
+                                },
+                        });
+                } catch (error) {
+                        console.error('ProfileController.updateUserInfo - Error:', error);
+                        return ResponseUtils.serverError(res, 'Failed to update user info');
                 }
         }
 }
