@@ -66,4 +66,10 @@ router.post(
         ProfileController.calculateCalorieGoal,
 );
 
+// POST /api/profile/upload-avatar - Upload user avatar
+router.post('/upload-avatar', authMiddleware, ProfileController.uploadAvatar);
+
+// PUT /api/profile/user-info - Update user info (name, email)
+router.put('/user-info', authMiddleware, ProfileController.updateUserInfo);
+
 module.exports = router;

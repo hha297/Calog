@@ -51,4 +51,23 @@ export const profileApi = {
                 const response = await apiClient.delete<{ message: string; deletedLogs: number }>('/auth/account');
                 return response;
         },
+
+        // Upload avatar
+        uploadAvatar: async (base64Image: string): Promise<{ message: string; avatar: string }> => {
+                const response = await apiClient.post<{ message: string; avatar: string }>(
+                        '/api/profile/upload-avatar',
+                        {
+                                image: base64Image,
+                        },
+                );
+                return response;
+        },
+
+        // Update user info (name, email)
+        updateUserInfo: async (name: string): Promise<{ message: string; user: any }> => {
+                const response = await apiClient.put<{ message: string; user: any }>('/api/profile/user-info', {
+                        name,
+                });
+                return response;
+        },
 };
