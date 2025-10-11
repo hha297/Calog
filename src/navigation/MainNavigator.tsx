@@ -7,11 +7,11 @@ import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { AccountNavigator } from './AccountNavigator';
-import { TranslatedText } from '../components/ui/TranslatedText';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
 import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon } from 'lucide-react-native';
 import { useTheme } from '../contexts';
+import { CText } from '../components/ui';
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Custom floating action button with NativeWind
@@ -76,13 +76,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <TranslatedText
-                                                        text="diary"
-                                                        staticKey={true}
+                                                <CText
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                         size="sm"
-                                                />
+                                                >
+                                                        Diary
+                                                </CText>
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -100,13 +100,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <TranslatedText
-                                                        text="analytics"
-                                                        staticKey={true}
+                                                <CText
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                         size="sm"
-                                                />
+                                                >
+                                                        Analytics
+                                                </CText>
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -138,13 +138,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <TranslatedText
-                                                        text="help"
-                                                        staticKey={true}
+                                                <CText
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                         size="sm"
-                                                />
+                                                >
+                                                        Help
+                                                </CText>
                                         ),
                                         tabBarShowLabel: true,
                                 }}
@@ -162,13 +162,13 @@ export const MainNavigator: React.FC = () => {
                                                 </View>
                                         ),
                                         tabBarLabel: ({ focused }) => (
-                                                <TranslatedText
-                                                        text="account"
-                                                        staticKey={true}
+                                                <CText
                                                         className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
                                                         weight="medium"
                                                         size="sm"
-                                                />
+                                                >
+                                                        Account
+                                                </CText>
                                         ),
                                         tabBarShowLabel: true,
                                 }}

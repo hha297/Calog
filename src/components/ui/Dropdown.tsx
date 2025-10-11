@@ -52,7 +52,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return (
                 <>
                         <TouchableOpacity
-                                className={`flex-row items-center justify-between rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4 ${className} ${
+                                className={`flex-row items-center justify-between rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4 ${className} ${
                                         disabled ? 'opacity-50' : ''
                                 }`}
                                 onPress={handlePress}
@@ -77,7 +77,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                         onPress={handleClose}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-white dark:bg-surfacePrimary-dark"
+                                                className="w-full max-w-sm rounded-xl bg-white dark:bg-background-dark"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
@@ -139,7 +139,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                         className={`border-t ${isDark ? 'border-white/10' : 'border-gray-200'} p-4`}
                                                 >
                                                         <TouchableOpacity
-                                                                className={`rounded-lg ${isDark ? 'bg-white/10' : 'border border-gray-300 bg-surfacePrimary'} p-3`}
+                                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'border border-gray-300 bg-surfacePrimary'} p-3`}
                                                                 onPress={handleClose}
                                                         >
                                                                 <CText

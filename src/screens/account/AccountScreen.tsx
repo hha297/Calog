@@ -21,26 +21,22 @@ import {
         CreditCardIcon,
         BellIcon,
         ChevronRightIcon,
-        LanguagesIcon,
 } from 'lucide-react-native';
-import { CText, Switcher, TranslatedText } from '../../components/ui';
+import { CText, Switcher } from '../../components/ui';
 
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
-import { useTheme, useLanguage, LANGUAGE_NAMES } from '../../contexts';
-import { getStaticTranslation } from '../../utils/translations';
+import { useTheme } from '../../contexts';
 
 export const AccountScreen: React.FC = () => {
         const navigation = useNavigation();
         const { profile } = useUserProfile();
         const { user, logout } = useAuthStore();
         const { colorScheme, colorSchemePreference, setColorScheme, isDark } = useTheme();
-        const { currentLanguage, setLanguage } = useLanguage();
 
         // Border color for separators
         const separatorClass = isDark ? 'border-white/10' : 'border-gray-200';
 
-        const [languageModalVisible, setLanguageModalVisible] = useState(false);
         const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
         const handleLogout = async () => {
@@ -73,19 +69,6 @@ export const AccountScreen: React.FC = () => {
         const handleFollowSocial = () => {
                 // TODO: Implement social media links
                 console.log('Follow on social media');
-        };
-
-        const handleLanguage = () => {
-                setLanguageModalVisible(true);
-        };
-
-        const handleLanguageSelect = async (language: 'en' | 'fi' | 'vi') => {
-                try {
-                        await setLanguage(language);
-                        setLanguageModalVisible(false);
-                } catch (error) {
-                        console.error('Error changing language:', error);
-                }
         };
 
         const handleDarkModeToggle = (value: boolean) => {
@@ -137,17 +120,15 @@ export const AccountScreen: React.FC = () => {
                                                                                         : 'bg-primary'
                                                                         }`}
                                                                 >
-                                                                        <TranslatedText
-                                                                                text={
-                                                                                        user?.role === 'premium'
-                                                                                                ? 'premium'
-                                                                                                : 'free'
-                                                                                }
-                                                                                staticKey={true}
+                                                                        <CText
                                                                                 size="xs"
                                                                                 weight="medium"
                                                                                 className="text-white"
-                                                                        />
+                                                                        >
+                                                                                {user?.role === 'premium'
+                                                                                        ? 'Premium'
+                                                                                        : 'Free'}
+                                                                        </CText>
                                                                 </View>
                                                         </View>
                                                         <CText className="">{user?.email || 'user@example.com'}</CText>
@@ -159,56 +140,25 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleLogout}
                                         >
                                                 <CreditCardIcon size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="manageSubscription"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Manage Subscription</CText>
                                         </TouchableOpacity>
                                         <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
                                                 <LockIcon size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="changePassword"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Change Password</CText>
                                         </TouchableOpacity>
                                 </View>
 
                                 {/* App Settings Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
-                                        <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
-                                                onPress={handleLanguage}
-                                        >
-                                                <LanguagesIcon size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="language"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
-                                                <CText className="mr-2 text-textSecondary dark:text-textSecondary-dark">
-                                                        {LANGUAGE_NAMES[currentLanguage]}
-                                                </CText>
-                                                <ChevronRightIcon size={16} color="#9CA3AF" />
-                                        </TouchableOpacity>
                                         <View className={`flex-row items-center border-b ${separatorClass} p-4`}>
                                                 <Sun size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="darkMode"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Dark Mode</CText>
                                                 <Switcher value={isDark} onValueChange={handleDarkModeToggle} />
                                         </View>
 
                                         <View className="flex-row items-center p-4">
                                                 <BellIcon size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="notifications"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Notifications</CText>
                                                 <Switcher
                                                         value={notificationsEnabled}
                                                         onValueChange={setNotificationsEnabled}
@@ -223,11 +173,7 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleSendRequest}
                                         >
                                                 <Send size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="sendRequest"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Send Request</CText>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -235,11 +181,7 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleRateApp}
                                         >
                                                 <Star size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="rateApp"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Rate Calog</CText>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -247,11 +189,7 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleFollowSocial}
                                         >
                                                 <Share2 size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="followCalog"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Follow Calog</CText>
                                         </TouchableOpacity>
                                 </View>
                                 <View className="mb-6 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
@@ -260,11 +198,7 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleTermsOfService}
                                         >
                                                 <HelpCircle size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="termsOfUse"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Terms of Use</CText>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -272,11 +206,7 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handlePrivacyPolicy}
                                         >
                                                 <Shield size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="privacyPolicy"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Privacy Policy</CText>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -284,119 +214,14 @@ export const AccountScreen: React.FC = () => {
                                                 onPress={handleDeleteData}
                                         >
                                                 <Trash2 size={20} color="#F44336" />
-                                                <TranslatedText
-                                                        text="deleteAccount"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1 !text-status-error"
-                                                />
+                                                <CText className="ml-3 flex-1 !text-status-error">Delete Account</CText>
                                         </TouchableOpacity>
                                         <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
                                                 <LogOut size={20} color="#4CAF50" />
-                                                <TranslatedText
-                                                        text="signOut"
-                                                        staticKey={true}
-                                                        className="ml-3 flex-1"
-                                                />
+                                                <CText className="ml-3 flex-1">Sign Out</CText>
                                         </TouchableOpacity>
                                 </View>
                         </ScrollView>
-
-                        {/* Language Selection Modal */}
-                        <Modal
-                                visible={languageModalVisible}
-                                transparent
-                                animationType="fade"
-                                onRequestClose={() => setLanguageModalVisible(false)}
-                        >
-                                <TouchableOpacity
-                                        className="flex-1 items-center justify-center bg-black/50 px-6"
-                                        activeOpacity={1}
-                                        onPress={() => setLanguageModalVisible(false)}
-                                >
-                                        <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark"
-                                                activeOpacity={1}
-                                                onPress={(e) => e.stopPropagation()}
-                                        >
-                                                {/* Header */}
-                                                <View className={`border-b ${separatorClass} px-6 py-4`}>
-                                                        <TranslatedText
-                                                                text="selectLanguage"
-                                                                staticKey={true}
-                                                                size="lg"
-                                                                weight="bold"
-                                                                className="text-center"
-                                                        />
-                                                </View>
-
-                                                {/* Language Options */}
-                                                <View>
-                                                        {[
-                                                                { code: 'en' as const, flag: '🇬🇧', name: 'English' },
-                                                                { code: 'fi' as const, flag: '🇫🇮', name: 'Suomi' },
-                                                                { code: 'vi' as const, flag: '🇻🇳', name: 'Tiếng Việt' },
-                                                        ].map((language, index) => (
-                                                                <TouchableOpacity
-                                                                        key={language.code}
-                                                                        className={`p-4 ${
-                                                                                currentLanguage === language.code
-                                                                                        ? 'bg-primary'
-                                                                                        : 'bg-transparent'
-                                                                        } ${
-                                                                                index !== 2
-                                                                                        ? `border-b ${separatorClass}`
-                                                                                        : ''
-                                                                        }`}
-                                                                        onPress={() =>
-                                                                                handleLanguageSelect(language.code)
-                                                                        }
-                                                                >
-                                                                        <View className="items-center justify-center">
-                                                                                {/* Flag */}
-                                                                                <CText
-                                                                                        className={`mb-1 text-center text-xl ${
-                                                                                                currentLanguage ===
-                                                                                                language.code
-                                                                                                        ? 'text-white'
-                                                                                                        : ''
-                                                                                        }`}
-                                                                                >
-                                                                                        {language.flag}
-                                                                                </CText>
-                                                                                {/* Language Name */}
-                                                                                <CText
-                                                                                        className={`text-center text-sm ${
-                                                                                                currentLanguage ===
-                                                                                                language.code
-                                                                                                        ? 'text-white'
-                                                                                                        : ''
-                                                                                        }`}
-                                                                                        weight="medium"
-                                                                                >
-                                                                                        {language.name}
-                                                                                </CText>
-                                                                        </View>
-                                                                </TouchableOpacity>
-                                                        ))}
-                                                </View>
-
-                                                {/* Footer */}
-                                                <View className={`border-t ${separatorClass} p-4`}>
-                                                        <TouchableOpacity
-                                                                className="rounded-lg bg-white/10 p-3"
-                                                                onPress={() => setLanguageModalVisible(false)}
-                                                        >
-                                                                <TranslatedText
-                                                                        text="cancel"
-                                                                        staticKey={true}
-                                                                        className="text-center"
-                                                                        weight="medium"
-                                                                />
-                                                        </TouchableOpacity>
-                                                </View>
-                                        </TouchableOpacity>
-                                </TouchableOpacity>
-                        </Modal>
                 </SafeAreaView>
         );
 };

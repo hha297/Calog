@@ -8,7 +8,6 @@ import { OAuthButton } from '../../components/ui/OAuthButton';
 import { CText } from '../../components/ui/CText';
 import { Logo } from '../../components/ui/Logo';
 import { Switcher } from '../../components/ui/Switcher';
-import { TranslatedText } from '../../components/ui/TranslatedText';
 import { validateLoginForm, LoginFormData, LoginFormErrors } from '../../utils/authValidation';
 import { useLoginMutation, useGoogleLoginMutation } from '../../hooks/useAuth';
 import { useAuthStore } from '../../store';
@@ -96,19 +95,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Header */}
                                         <View className="mb-8">
-                                                <TranslatedText
-                                                        text="welcomeBack"
-                                                        staticKey={true}
-                                                        size="2xl"
-                                                        weight="bold"
-                                                        className="mb-2 text-center"
-                                                />
-                                                <TranslatedText
-                                                        text="consistencyBuilds"
-                                                        staticKey={true}
-                                                        size="base"
-                                                        className="text-center"
-                                                />
+                                                <CText size="2xl" weight="bold" className="mb-2 text-center">
+                                                        Welcome Back
+                                                </CText>
+                                                <CText size="base" className="text-center">
+                                                        Consistency builds strength – log in and keep pushing forward.
+                                                </CText>
                                         </View>
 
                                         {/* Form */}
@@ -135,7 +127,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Login Button */}
                                         <Button
-                                                title="signIn"
+                                                title="Sign In"
                                                 onPress={handleLogin}
                                                 loading={loginMutation.isPending}
                                                 disabled={
@@ -144,7 +136,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                         loginMutation.isPending
                                                 }
                                                 className="mb-4"
-                                                translate
                                         />
 
                                         {/* Remember Me & Forgot Password */}
@@ -165,21 +156,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                                         <CText className="text-xs text-white">✓</CText>
                                                                 )}
                                                         </View>
-                                                        <TranslatedText
-                                                                text="rememberMe"
-                                                                staticKey={true}
-                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                        />
+                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                Remember me
+                                                        </CText>
                                                 </TouchableOpacity>
 
                                                 {/* Forgot Password */}
                                                 <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                                                        <TranslatedText
-                                                                text="forgotPasswordQuestion"
-                                                                staticKey={true}
-                                                                className="!text-primary"
-                                                                weight="medium"
-                                                        />
+                                                        <CText className="!text-primary" weight="medium">
+                                                                Forgot password?
+                                                        </CText>
                                                 </TouchableOpacity>
                                         </View>
 
@@ -188,11 +174,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                                 <View
                                                         className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
                                                 />
-                                                <TranslatedText
-                                                        text="or"
-                                                        staticKey={true}
-                                                        className={`mx-4 ${isDark ? 'text-white' : 'text-gray-600'}`}
-                                                />
+                                                <CText className={`mx-4 ${isDark ? 'text-white' : 'text-gray-600'}`}>
+                                                        OR
+                                                </CText>
                                                 <View
                                                         className={`h-px flex-1 ${isDark ? 'bg-white/20' : 'bg-gray-300'}`}
                                                 />
@@ -209,15 +193,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
                                         {/* Sign Up Link */}
                                         <View className="flex-row justify-center">
-                                                <TranslatedText text="dontHaveAccount" staticKey={true} className="" />
-                                                <CText> </CText>
+                                                <CText>Don't have an account? </CText>
                                                 <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                                                        <TranslatedText
-                                                                text="signUp"
-                                                                staticKey={true}
-                                                                className="!text-primary"
-                                                                weight="medium"
-                                                        />
+                                                        <CText className="!text-primary" weight="medium">
+                                                                Sign up
+                                                        </CText>
                                                 </TouchableOpacity>
                                         </View>
                                 </ScrollView>

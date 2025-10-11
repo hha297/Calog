@@ -60,7 +60,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onPress={onClose}
                         >
                                 <TouchableOpacity
-                                        className="w-full max-w-md rounded-xl bg-white dark:bg-background-dark"
+                                        className="w-full max-w-md rounded-xl bg-white dark:bg-surfacePrimary-dark"
                                         activeOpacity={1}
                                         onPress={(e) => e.stopPropagation()}
                                         style={{ maxHeight: '80%' }}

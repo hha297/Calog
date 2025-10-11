@@ -15,10 +15,9 @@ import { initializeAuth, useAuthStore } from './src/store';
 import { GoogleSigninService } from './src/services/googleSigninService';
 import { useProfileSync } from './src/hooks/useProfileSync';
 import { SplashScreen } from './src/components/SplashScreen';
-import { ThemeProvider, LanguageProvider } from './src/contexts';
-import { TranslatorProvider } from 'react-native-translator';
+import { ThemeProvider } from './src/contexts';
 
-function App() {
+function AppContent() {
         const { setupUnauthorizedCallback } = useAuthStore();
         const [ready, setReady] = useState(false);
 
@@ -49,20 +48,22 @@ function App() {
         }, [setupUnauthorizedCallback]);
 
         if (!ready) {
-                <SplashScreen />;
+                return <SplashScreen />;
         }
 
         return (
-                <TranslatorProvider>
-                        <LanguageProvider>
-                                <ThemeProvider>
-                                        <SafeAreaProvider>
-                                                <AppNavigator />
-                                                <Toast />
-                                        </SafeAreaProvider>
-                                </ThemeProvider>
-                        </LanguageProvider>
-                </TranslatorProvider>
+                <SafeAreaProvider>
+                        <AppNavigator />
+                        <Toast />
+                </SafeAreaProvider>
+        );
+}
+
+function App() {
+        return (
+                <ThemeProvider>
+                        <AppContent />
+                </ThemeProvider>
         );
 }
 

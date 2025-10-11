@@ -26,7 +26,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         return (
                 <Modal transparent visible={visible} animationType="fade" onRequestClose={onCancel}>
                         <Pressable onPress={onCancel} className="flex-1 items-center justify-center bg-black/60 p-6">
-                                <View className="w-full max-w-md rounded-2xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
+                                <View className="w-full max-w-md rounded-2xl bg-surfacePrimary p-4 dark:bg-background-dark">
                                         <View className="mb-3">
                                                 <CText
                                                         size="lg"
@@ -42,7 +42,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                                         <View className="my-3 flex-row justify-end gap-3">
                                                 <TouchableOpacity
                                                         onPress={onCancel}
-                                                        className="rounded-md bg-white/10 px-4 py-2"
+                                                        className="rounded-md bg-surfacePrimary px-4 py-2 dark:bg-surfacePrimary-dark"
                                                 >
                                                         <CText className="text-textPrimary dark:text-textPrimary-dark">
                                                                 {cancelText}

@@ -11,6 +11,7 @@ export interface FitnessGoalViewProps {
 
 export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, setFormValues }) => {
         const { isDark } = useTheme();
+
         const activityLevels = [
                 { label: 'Sedentary', value: 'sedentary', description: 'Little or no exercise' },
                 { label: 'Light', value: 'light', description: 'Light exercise 1-3 days/week' },
@@ -85,7 +86,7 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                 Target Weight (kg)
                                         </CText>
                                         <View
-                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                                className={`rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4`}
                                         >
                                                 <View className="flex-row items-center justify-between">
                                                         <TouchableOpacity
