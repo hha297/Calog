@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, User, PenBoxIcon, Trash2Icon } from 'lucide-react-native';
+import { ArrowLeft, User, PenBoxIcon } from 'lucide-react-native';
 import { CText } from '../../components/ui/CText';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { Button } from '../../components/ui/Button';
@@ -13,6 +13,7 @@ import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
 import { calculateBodyComposition, calculateTDEE, calculateBMI, getBMIStatus } from '../../utils/helpers';
 import { useTheme } from '../../contexts';
+import { MeasurementLogModal } from '../../components/MeasurementLogModal';
 
 export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -281,33 +282,23 @@ export const ProfileScreen: React.FC = () => {
         };
 
         const getEditModalTitle = () => {
-                switch (editModalType) {
-                        case 'basic_info':
-                                return 'Change Personal Information';
-                        case 'fitness_goal':
-                                return 'Fitness Goals & Activity';
-                        case 'measurements':
-                                return 'Change Your Measurements';
-                        case 'profile_info':
-                                return 'Edit Profile';
-                        default:
-                                return 'Edit';
-                }
+                const titles = {
+                        basic_info: 'Change Personal Information',
+                        fitness_goal: 'Fitness Goals & Activity',
+                        measurements: 'Change Your Measurements',
+                        profile_info: 'Edit Profile',
+                };
+                return titles[editModalType as keyof typeof titles] || 'Edit';
         };
 
         const getEditModalDescription = () => {
-                switch (editModalType) {
-                        case 'basic_info':
-                                return 'Update your personal information';
-                        case 'fitness_goal':
-                                return 'Set your activity level, weight goals, and target weight';
-                        case 'measurements':
-                                return 'Enter your body measurements for detailed analysis';
-                        case 'profile_info':
-                                return 'Update your profile information';
-                        default:
-                                return '';
-                }
+                const descriptions = {
+                        basic_info: 'Update your personal information',
+                        fitness_goal: 'Set your activity level, weight goals, and target weight',
+                        measurements: 'Enter your body measurements for detailed analysis',
+                        profile_info: 'Update your profile information',
+                };
+                return descriptions[editModalType as keyof typeof descriptions] || '';
         };
 
         React.useEffect(() => {
@@ -455,10 +446,7 @@ export const ProfileScreen: React.FC = () => {
                                 >
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText>Activity Level</CText>
-                                                <CText>
-                                                        {getActivityLevelText(currentProfile.activityLevel)}: {tdee}{' '}
-                                                        kcal/day
-                                                </CText>
+                                                <CText>{getActivityLevelText(currentProfile.activityLevel)}</CText>
                                         </View>
                                         <View className="mb-2 flex-row justify-between">
                                                 <CText>Goal</CText>
@@ -624,60 +612,12 @@ export const ProfileScreen: React.FC = () => {
                         </EditModal>
 
                         {/* Measurement Log Modal */}
-                        <EditModal
+                        <MeasurementLogModal
                                 visible={logModalVisible}
-                                title={'Measurement Log'}
+                                logs={logs}
                                 onClose={() => setLogModalVisible(false)}
-                                onSave={() => setLogModalVisible(false)}
-                                disableSave={true}
-                        >
-                                <View>
-                                        {logs.length === 0 ? (
-                                                <CText>No logs yet</CText>
-                                        ) : (
-                                                logs.map((log: any) => (
-                                                        <View key={log._id} className="mb-4 rounded-lg bg-white/5 p-3">
-                                                                <View className="mb-3 flex-row items-center justify-between">
-                                                                        <CText className="font-semibold">
-                                                                                {new Date(
-                                                                                        log.createdAt || log.recordedAt,
-                                                                                ).toLocaleString()}
-                                                                        </CText>
-                                                                        <TouchableOpacity
-                                                                                onPress={() =>
-                                                                                        handleDeleteMeasurementLog(
-                                                                                                log._id,
-                                                                                        )
-                                                                                }
-                                                                                className="rounded-full bg-status-error p-2"
-                                                                        >
-                                                                                <Trash2Icon size={16} color="#FFFFFF" />
-                                                                        </TouchableOpacity>
-                                                                </View>
-                                                                {Object.entries(log.measurements || {}).map(
-                                                                        ([type, data]: [string, any]) =>
-                                                                                data &&
-                                                                                data.value !== undefined &&
-                                                                                data.value !== null ? (
-                                                                                        <View
-                                                                                                key={type}
-                                                                                                className="mb-1 flex-row justify-between"
-                                                                                        >
-                                                                                                <CText className="capitalize">
-                                                                                                        {type}
-                                                                                                </CText>
-                                                                                                <CText>
-                                                                                                        {data.value}{' '}
-                                                                                                        {data.unit}
-                                                                                                </CText>
-                                                                                        </View>
-                                                                                ) : null,
-                                                                )}
-                                                        </View>
-                                                ))
-                                        )}
-                                </View>
-                        </EditModal>
+                                onDeleteLog={handleDeleteMeasurementLog}
+                        />
 
                         <ConfirmationModal
                                 visible={confirmVisible}

@@ -38,8 +38,8 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
         };
 
         const openEditModal = (key: 'weight' | 'age') => {
-                const title = key === 'weight' ? 'Edit Weight (kg)' : 'Edit Age';
-                setEditField({ key, title });
+                const titleText = key === 'weight' ? 'Edit Weight (kg)' : 'Edit Age';
+                setEditField({ key, title: titleText });
                 const current = values[key] ?? (key === 'weight' ? 70 : 25);
                 setTempValue(String(current));
         };
@@ -71,7 +71,7 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                         className={`mx-1 flex-1 rounded-lg border px-4 py-3 ${
                                                                 values.gender === option.value
                                                                         ? 'border-green-500 bg-green-500/20'
-                                                                        : `${isDark ? 'border-transparent bg-surfacePrimary-dark' : 'border-transparent bg-background'}`
+                                                                        : `${isDark ? 'border-transparent bg-background-dark' : 'border-transparent bg-background'}`
                                                         }`}
                                                         onPress={() => handleValueChange('gender', option.value)}
                                                 >
@@ -115,7 +115,7 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                         Weight (kg)
                                                 </CText>
                                                 <View
-                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4`}
                                                 >
                                                         <View className="flex-row items-center justify-between">
                                                                 <TouchableOpacity
@@ -172,7 +172,7 @@ export const BasicInfoView: React.FC<BasicInfoViewProps> = ({ currentProfile, on
                                                         Age
                                                 </CText>
                                                 <View
-                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'bg-background'} p-4`}
+                                                        className={`mb-2 rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4`}
                                                 >
                                                         <View className="flex-row items-center justify-between">
                                                                 <TouchableOpacity

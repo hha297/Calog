@@ -1,7 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { CText } from './CText';
-import { TranslatedText } from './TranslatedText';
 import { useTheme } from '../../contexts';
 
 interface ButtonProps {
@@ -12,7 +11,6 @@ interface ButtonProps {
         loading?: boolean;
         disabled?: boolean;
         className?: string;
-        translate?: boolean; // If true, treat title as translation key
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -23,7 +21,6 @@ export const Button: React.FC<ButtonProps> = ({
         loading = false,
         disabled = false,
         className = '',
-        translate = false,
 }) => {
         const { isDark } = useTheme();
 
@@ -51,21 +48,6 @@ export const Button: React.FC<ButtonProps> = ({
                 >
                         {loading ? (
                                 <ActivityIndicator size="small" color={variant === 'ghost' ? '#4CAF50' : '#FFFFFF'} />
-                        ) : translate ? (
-                                <TranslatedText
-                                        text={title}
-                                        staticKey={true}
-                                        size={size === 'small' ? 'sm' : size === 'medium' ? 'base' : 'lg'}
-                                        className={`${
-                                                variant === 'primary'
-                                                        ? 'text-white'
-                                                        : variant === 'ghost'
-                                                          ? isDark
-                                                                  ? 'text-primary'
-                                                                  : 'text-gray-700'
-                                                          : 'text-text-light'
-                                        }`}
-                                />
                         ) : (
                                 <CText
                                         size={size === 'small' ? 'sm' : size === 'medium' ? 'base' : 'lg'}
