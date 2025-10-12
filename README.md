@@ -1,68 +1,126 @@
-- **Avatar Upload**:
-     - Image picker integration with camera and gallery support
-     - Server-side upload to Cloudinary for security (client does NOT need .env)
-     - Automatic image optimization (500x500, quality: auto, format: auto)
-     - Old avatar cleanup to prevent storage bloat
-     - Base64 conversion and upload with loading states
-     - Permission handling for Android/iOS (Camera, Photo Library)g
-- **Multi-Language Support**: Complete translation system with static dictionary and Google Translate API integration for dynamic content
-- **Supported Languages**: English (en), Finnish (fi), Vietnamese (vi)
-- **Dark/Light Mode**: Complete theme system with NativeWind v4, persistent preference storage, dynamic UI components, and theme-aware styling across all screens
-- **Onboarding**: Multi-step profile collection with advanced weight goal settings
-- **Weight Goals**: Lose/Gain weight with target weight and rate selection
-- **Calorie Calculation**: TDEE and daily calorie goal calculation based on Mifflin-St Jeor equation
-- **Body Composition Analysis**: Advanced body fat percentage calculation using U.S. Navy Method with cm measurements
-- **Body Measurements**: Track neck, waist, hip, bicep, and thigh measurements
+# Calog
+
+Calog is a comprehensive fitness tracking and calorie management platform designed for React Native. Built with modern technologies and secure authentication, it provides users with advanced body composition analysis, multi-language support, and personalized fitness goals.
+
+## 📋 Table of Contents
+
+- [🚀 Introduction](#introduction)
+- [⚡ Tech Stack](#tech-stack)
+- [✨ Key Features](#key-features)
+- [📁 Project Structure](#project-structure)
+- [🔧 Environment Variables](#environment-variables)
+- [🏃‍♂️ Getting Started](#getting-started)
+- [🔗 API Endpoints](#api-endpoints)
+- [🔒 Security Features](#security-features)
+- [🤝 Contributing](#contributing)
+- [📄 License](#license)
+
+## 🚀 Introduction
+
+Calog is a full-stack fitness tracking application that combines React Native with a Node.js backend to deliver a comprehensive health and fitness management experience. The platform features advanced body composition analysis using the U.S. Navy Method, multi-language support with Google Translate integration, and secure authentication with persistent login capabilities.
+
+**Smart Calorie Tracking**: Scan QR codes from food products to instantly log calories and track your daily nutrition intake. Monitor your calorie consumption with real-time tracking and personalized daily calorie goals based on your fitness objectives.
+
+**Daily Calorie Management**: Set personalized daily calorie targets based on your weight goals (lose, maintain, or gain weight) and activity level. Get real-time feedback on your progress and recommendations to stay on track with your fitness journey.
+
+## ⚡ Tech Stack
+
+![React Native](https://img.shields.io/badge/React_Native-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![NativeWind](https://img.shields.io/badge/NativeWind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-FF6B6B?style=for-the-badge&logo=zustand&logoColor=white)
+![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Google OAuth](https://img.shields.io/badge/Google_OAuth-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+
+## ✨ Key Features
+
+### 📱 QR Code & Calorie Tracking
+
+- **QR Code Scanning**: Scan food product barcodes to instantly log calories and nutrition
+- **Smart Food Recognition**: AI-powered food identification and calorie calculation
+- **Daily Calorie Tracking**: Monitor your calorie intake throughout the day
+- **Nutrition Database**: Comprehensive food database with accurate nutritional information
+- **Quick Logging**: Fast and easy calorie logging with barcode scanning
+
+### 🔐 Authentication & Security
+
+- **Google OAuth Integration**: Secure sign-in with Google accounts
+- **JWT Token Management**: Access tokens (15min) and refresh tokens (7 days)
+- **Keychain Storage**: Secure token storage using device keychain
+- **Biometric Protection**: Enhanced security with fingerprint/face recognition
+- **Persistent Login**: Users stay logged in across app restarts
+
+### 📊 Advanced Body Composition Analysis
+
+- **U.S. Navy Method**: Accurate body fat percentage calculation
+- **Body Measurements Tracking**: Neck, waist, hip, bicep, and thigh measurements
 - **Fitness Metrics**: BMI, Body Fat Mass, Lean Body Mass, and FFMI calculations
-- **Persistent Login**: Users stay logged in using device keychain
-- **Avatar Upload**: Profile picture upload with Cloudinary integration, automatic image optimization, and old avatar cleanup
+- **Real-time Updates**: Instant recalculation when measurements change
 
-## 📋 System Requirements
+### 🎯 Personalized Fitness Goals
 
-- Node.js >= 20
-- MongoDB
-- React Native development environment
-- Google Cloud Console account
+- **Weight Goals**: Lose, gain, or maintain weight with target setting
+- **Calorie Calculation**: TDEE calculation using Mifflin-St Jeor equation
+- **Activity Level Assessment**: Sedentary to very active lifestyle options
+- **Progress Tracking**: Visual analytics and achievement system
 
-## 🛠️ Installation
+### 🌍 Multi-Language Support
 
-### 1. Clone and install dependencies
+- **Static Translations**: Dictionary-based translations for UI elements
+- **Dynamic Translation**: Google Translate API integration for dynamic content
+- **Supported Languages**: English, Finnish, Vietnamese
+- **Language Persistence**: User preference saved across sessions
 
-```bash
-# Clone repository
-git clone https://github.com/hha297/Calog.git
-cd calog
+### 🎨 Modern UI/UX
 
-# Install dependencies for React Native app
-npm install
+- **Dark/Light Mode**: Complete theme system with NativeWind v4
+- **Theme Persistence**: User preference saved to AsyncStorage
+- **Dynamic Components**: Theme-aware styling across all screens
+- **Avatar Upload**: Profile picture management with Cloudinary integration
 
-# Install dependencies for backend
-cd server
-npm install
-cd ..
+### 📱 Cross-Platform Features
+
+- **Deep Linking**: Custom URL scheme for authentication callbacks
+- **Image Picker**: Camera and gallery integration for photos
+- **Permission Handling**: Proper camera and photo library permissions
+- **BootSplash**: Custom launch screen with logo animation
+
+## 📁 Project Structure
+
+```
+calog/
+├── src/                                            # React Native source code
+│   ├── components/                                 # Reusable UI components
+│   │   ├── ui/                                     # Reusabled UI components
+│   │   ├── profile/                                # Profile-related components
+│   │   └── ...                                     # Other specialized components
+│   ├── screens/                                    # Application screens
+│   │   ├── auth/                                   # Authentication screens
+│   │   ├── onboarding/                             # User onboarding flow
+│   │   └── ...                                     # Other screens
+│   ├── navigation/                                 # Navigation configuration
+│   ├── services/                                   # API and external services
+│   ├── hooks/                                      # Custom React hooks
+│   ├── contexts/                                   # React contexts (Theme, Language)
+│   ├── utils/                                      # Utility functions
+│   └── types/                                      # TypeScript type definitions
+├── server/                                         # Node.js backend
+│   ├── controllers/                                # Route controllers
+│   ├── models/                                     # Database models
+│   ├── routes/                                     # API routes
+│   ├── middleware/                                 # Express middleware
+│   └── utils/                                      # Server utilities
+├── android/                                        # Android-specific configuration
+├── ios/                                            # iOS-specific configuration
+└── assets/                                         # Static assets (images, fonts)
 ```
 
-### 2. Configure Google OAuth
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing project
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials:
-      - Application type: Web application
-      - Authorized redirect URIs: `http://localhost:4000/auth/google/callback`
-5. Save Client ID and Client Secret
-
-### 3. Configure MongoDB
-
-```bash
-# Start MongoDB (if using local)
-mongod
-
-# Or use MongoDB Atlas (cloud)
-# Create cluster and get connection string
-```
-
-### 4. Configure Environment Variables
+## 🔧 Environment Variables
 
 Create `.env` file in `server` directory:
 
@@ -94,15 +152,66 @@ CLOUDINARY_API_KEY=your_api_key_here
 CLOUDINARY_API_SECRET=your_api_secret_here
 ```
 
-**Cloudinary Setup:**
+## 🏃‍♂️ Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/hha297/Calog.git
+cd calog
+```
+
+### 2. Install dependencies
+
+```bash
+# Install React Native dependencies
+npm install
+
+# Install server dependencies
+cd server
+npm install
+cd ..
+```
+
+### 3. Configure Google OAuth
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing project
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials:
+      - Application type: Web application
+      - Authorized redirect URIs: `http://localhost:4000/auth/google/callback`
+5. Save Client ID and Client Secret
+
+### 4. Configure MongoDB
+
+**Option 1: MongoDB Atlas (Recommended)**
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a free account and new cluster
+3. Get your connection string and add to `.env` file
+
+**Option 2: Local MongoDB**
+
+```bash
+# Install MongoDB locally (if not installed)
+# Windows: Download from MongoDB website
+# macOS: brew install mongodb-community
+# Ubuntu: sudo apt-get install mongodb
+
+# Start MongoDB service
+# Windows: Run MongoDB as service or use MongoDB Compass
+# macOS: brew services start mongodb-community
+# Ubuntu: sudo systemctl start mongod
+```
+
+### 5. Configure Cloudinary
 
 1. Sign up at [Cloudinary](https://cloudinary.com/users/register/free)
 2. Get your Cloud Name, API Key, and API Secret from the Dashboard
 3. Add them to your server `.env` file
 
-> **Note:** The React Native app does NOT need any `.env` file. All Cloudinary uploads are handled server-side for security.
-
-### 5. Configure React Native OAuth
+### 6. Update React Native OAuth Configuration
 
 Update `src/services/googleSigninService.ts`:
 
@@ -116,7 +225,9 @@ const googleConfig = {
 };
 ```
 
-### 6. Configure Deep Linking (Android)
+### 7. Configure Deep Linking
+
+#### Android
 
 Update `android/app/src/main/AndroidManifest.xml`:
 
@@ -138,7 +249,7 @@ Update `android/app/src/main/AndroidManifest.xml`:
 </activity>
 ```
 
-### 7. Configure Deep Linking (iOS)
+#### iOS
 
 Update `ios/calog/Info.plist`:
 
@@ -156,191 +267,78 @@ Update `ios/calog/Info.plist`:
 </array>
 ```
 
-## 🚀 Running the Application
-
-### 1. Start Backend
+### 8. Run the application
 
 ```bash
+# Start backend
 cd server
 npm run dev
+
+# In another terminal, start React Native
+npm run android  # For Android
+npm run ios      # For iOS
+
+# Or run both together
+npm run dev      # Android + Backend
+npm run dev:ios  # iOS + Backend
 ```
 
-Backend will run on `http://localhost:4000`
-
-### 2. Start React Native App
-
-```bash
-# Android
-npm run android
-
-# iOS
-npm run ios
-
-# Or run Metro bundler only
-npm start
-```
-
-### 3. Run Both Together
-
-```bash
-# Android + Backend
-npm run dev
-
-# iOS + Backend
-npm run dev:ios
-```
-
-## 🌍 Translation System
-
-Complete multi-language support with static dictionary + Google Translate API for dynamic content. Supports: English (en), Finnish (fi), Vietnamese (vi).
-
-**For Developers:**
-
-- **Add new translations**: Edit `src/utils/translations.ts` - add your key with translations for all languages
-- **Add new languages**: Update `src/contexts/LanguageContext.tsx` (SupportedLanguage, LANGUAGE_NAMES, LANGUAGE_FLAGS) and add translations to all keys in `translations.ts`
-- **Usage**: `<TranslatedText text="key" staticKey={true} />` or `const { t } = useTranslation(); await t('text');`
-- **Examples**: See `src/examples/TranslationExample.tsx`
-
-## 🔧 API Endpoints
+## 🔗 API Endpoints
 
 ### Authentication
 
-- `GET /auth/google` - Initiate Google OAuth flow
-- `GET /auth/google/callback` - Handle Google OAuth callback
-- `GET /auth/me` - Get current user info (requires JWT)
+- `GET  /auth/google` - Initiate Google OAuth flow
+
+- `GET  /auth/google/callback` - Handle Google OAuth callback
+
+- `GET  /auth/me` - Get current user info
+  - **Headers**: `Authorization: Bearer <token>`
+
 - `POST /auth/refresh` - Refresh JWT token
+  - **Body**: `{ refreshToken }`
+
 - `POST /auth/logout` - Logout
+  - **Headers**: `Authorization: Bearer <token>`
 
 ### Profile
 
-- `GET /api/profile` - Get user profile (requires JWT)
-- `PUT /api/profile` - Update user profile (requires JWT)
-- `POST /api/profile/upload-avatar` - Upload profile avatar (requires JWT)
-- `PUT /api/profile/user-info` - Update user info (name, email) (requires JWT)
+- `GET /api/profile` - Get user profile
+  - **Headers**: `Authorization: Bearer <token>`
+
+- `PUT /api/profile` - Update user profile
+  - **Headers**: `Authorization: Bearer <token>`
+  - **Body**: `{ profileData }`
+
+- `POST /api/profile/upload-avatar` - Upload profile avatar
+  - **Headers**: `Authorization: Bearer <token>`
+  - **Body**: `FormData: { image }`
+
+- `PUT /api/profile/user-info` - Update user info (name, email)
+  - **Headers**: `Authorization: Bearer <token>`
+  - **Body**: `{ name, email }`
+
 - `POST /api/profile/calculate-calories` - Calculate daily calorie goal
-
-## 🗄️ Database Schema
-
-### User Model
-
-```javascript
-{
-    googleId: String,               // Google OAuth ID
-    email: String,                  // Email (required)
-    name: String,                   // Google display name
-    avatar: String,                 // Google profile picture
-    refreshToken: String,           // Google refresh token
-    role: String,                   // 'free', 'premium', 'admin'
-    profile: {
-        gender: String,             // 'male', 'female', 'other'
-        age: Number,                // 13-120
-        height: Number,             // Height in cm (100-250)
-        weight: Number,             // Weight in kg (30-300)
-        activityLevel: String,      // 'sedentary', 'light', 'moderate', 'active', 'very_active'
-        goal: String,               // 'maintain', 'lose', 'gain'
-        targetWeight: Number,       // Target weight in kg (for lose/gain goals)
-        weightChangeRate: Number,   // Weight change rate in kcal/day (100-1000)
-        tdee: Number,               // Total Daily Energy Expenditure
-        dailyCalorieGoal: Number    // Calculated daily calorie goal
-    },
-    createdAt: Date,
-    updatedAt: Date
-}
-```
+  - **Headers**: `Authorization: Bearer <token>`
+  - **Body**: `{ profileData }`
 
 ## 🔒 Security Features
 
-- JWT access tokens (15 minutes)
-- JWT refresh tokens (7 days for "Remember Me", 1 day otherwise)
-- **Keychain Storage**: Refresh tokens stored securely in device keychain/keystore
-- **Biometric Protection**: User data protected with biometrics when available
-- **Persistent Login**: Users stay logged in across app restarts and device reboots
-- **Auto-Refresh**: Seamless token refresh without user intervention
-- Rate limiting (100 requests/15 minutes)
-- CORS protection
-- Helmet security headers
-- Password hashing with bcrypt
-- Non-rolling refresh token system (keeps same refresh token)
-
-## 🐛 Troubleshooting
-
-### Google OAuth Errors
-
-1. Check Client ID and Client Secret
-2. Ensure redirect URI is correct
-3. Check Google Cloud Console settings
-
-### MongoDB Errors
-
-1. Ensure MongoDB is running
-2. Check connection string
-3. Check network connectivity
-
-### Deep Linking Errors
-
-1. Check scheme configuration
-2. Test with `adb` commands (Android)
-3. Check Info.plist (iOS)
-
-## 📝 Development Notes
-
-- Backend uses Express with security middleware
-- Frontend uses Zustand for state management
-- React Query for API calls and caching
-- TypeScript for type safety
-- NativeWind v4 for styling with dark mode support
-- **Theme System**:
-     - Complete dark/light mode implementation with ThemeContext
-     - Dynamic UI components with theme-aware styling
-     - Switcher component for theme toggle in Account settings
-     - Theme preference saved to AsyncStorage with persistence
-     - Auto StatusBar updates based on theme
-     - Theme-aware styling for all screens: Login, Signup, Profile, Account, Home, Diary
-     - Dynamic colors for icons, borders, backgrounds, and text
-     - SplashScreen follows theme preference
-     - OAuth buttons with theme-specific styling
-     - Checkboxes and form elements adapt to theme
-- **Translation System**:
-     - Complete multi-language support with LanguageContext
-     - Static text translations via dictionary (src/utils/translations.ts)
-     - Dynamic content translation via Google Translate API
-     - Language preference saved to AsyncStorage with persistence
-     - Supported languages: English (en), Finnish (fi), Vietnamese (vi)
-     - TranslatedText component for automatic static text translation
-     - useTranslation hook for dynamic runtime translation
-     - useTranslatedText hook for fixed text with automatic translation
-     - LanguageSelector component with compact and full display modes
-     - Language selection in Account settings
-     - All UI elements support translation (navigation, screens, components)
-- **Onboarding Flow**: Multi-step profile collection with advanced weight goal settings
-- **Weight Goal System**: Target weight and rate selection with real-time pace labels
-- **Calorie Calculation**: TDEE and daily calorie goal using Mifflin-St Jeor equation
-- **Body Composition Analysis**:
-     - U.S. Navy Method body fat percentage calculation (separate formulas for male/female)
-     - Uses centimeters directly for convenience (original method uses inches)
-     - Body measurements tracking (neck, waist, hip, bicep, thigh)
-     - Comprehensive fitness metrics (BMI, Body Fat Mass, Lean Body Mass, FFMI)
-     - Real-time calculation updates when measurements change
-     - Reference: [U.S. Navy body fat estimation formula](https://med.libretexts.org/Courses/Irvine_Valley_College/Physiology_Labs_at_Home/03%3A_Anthropometrics/3.02%3A_Part_B-_Circumference_Measures/3.2.04%3A_Part_B4-_The_U.S._Navy_body_fat_estimation_formula)
+- **JWT Authentication**: Secure token-based authentication system
 - **Keychain Integration**: Secure storage using react-native-keychain
-- **Profile Management**: Local storage with database sync
-- **Auto-Login**: Persistent authentication across sessions
-- **Avatar Upload**:
-     - Image picker integration with camera and gallery support
-     - Server-side upload to Cloudinary for security (client does NOT need .env)
-     - Automatic image optimization (500x500, quality: auto, format: auto)
-     - Old avatar cleanup to prevent storage bloat
-     - Base64 conversion and upload with loading states
-     - Permission handling for Android/iOS (Camera, Photo Library)
+- **Rate Limiting**: 100 requests per 15 minutes
+- **CORS Protection**: Cross-origin request security
+- **Helmet Security Headers**: Additional HTTP security headers
+- **Biometric Protection**: Enhanced security with device biometrics
+- **Non-rolling Refresh Tokens**: Maintains same refresh token for better UX
 
 ## 🤝 Contributing
 
-1. Fork repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - see LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
