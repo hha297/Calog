@@ -51,7 +51,7 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                 </CText>
                                 <View className="items-center">
                                         <TouchableOpacity
-                                                className="relative h-24 w-24 items-center justify-center rounded-full bg-primary"
+                                                className="relative h-24 w-24 items-center justify-center rounded-full border border-primary bg-white dark:border-transparent"
                                                 onPress={handleAvatarChange}
                                                 disabled={isUploading}
                                         >
@@ -61,9 +61,9 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                                                 className="h-24 w-24 rounded-full"
                                                         />
                                                 ) : (
-                                                        <User size={48} color="#FFFFFF" />
+                                                        <User size={48} color="#4CAF50" />
                                                 )}
-                                                <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-green-500">
+                                                <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-primary">
                                                         {isUploading ? (
                                                                 <ActivityIndicator size="small" color="#FFFFFF" />
                                                         ) : (

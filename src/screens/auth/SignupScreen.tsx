@@ -93,7 +93,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
                                         keyboardShouldPersistTaps="handled"
                                 >
                                         {/* Logo */}
-                                        <View className="my-4 items-center pt-8">
+                                        <View className="my-8 items-center pt-8">
                                                 <Logo size={96} />
                                         </View>
 

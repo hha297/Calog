@@ -165,7 +165,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
         try {
                 return (
-                        <SafeAreaView className="flex-1 bg-background">
+                        <SafeAreaView className="flex-1 bg-surfacePrimary py-8 dark:bg-background-dark">
                                 <AppIntroSlider
                                         ref={sliderRef}
                                         renderItem={renderSlide}
@@ -182,15 +182,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                 const isDoneDisabled = currentSlideIndex === 3 && !isGoalValid;
 
                                                 return (
-                                                        <View
-                                                                style={{
-                                                                        flexDirection: 'row',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'space-between',
-                                                                        paddingHorizontal: 16,
-                                                                        paddingVertical: 12,
-                                                                }}
-                                                        >
+                                                        <View className="flex-row items-center justify-between bg-surfacePrimary px-8 py-3 dark:bg-background-dark">
                                                                 {/* Back button */}
                                                                 <Button
                                                                         title="Back"
@@ -202,31 +194,21 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
                                                                 />
 
                                                                 {/* Dots in the middle */}
-                                                                <View
-                                                                        style={{
-                                                                                flexDirection: 'row',
-                                                                                alignItems: 'center',
-                                                                        }}
-                                                                >
+                                                                <View className="flex-row items-center">
                                                                         {slides.map((_, i) => (
                                                                                 <View
                                                                                         key={i}
-                                                                                        style={{
-                                                                                                width: 8,
-                                                                                                height: 8,
-                                                                                                borderRadius: 4,
-                                                                                                marginHorizontal: 4,
-                                                                                                backgroundColor:
-                                                                                                        i ===
-                                                                                                        currentSlideIndex
-                                                                                                                ? '#4CAF50' // active dot
-                                                                                                                : 'rgba(255,255,255,0.3)', // inactive dot
-                                                                                        }}
+                                                                                        className={`mx-1 h-2 w-2 rounded-full ${
+                                                                                                i === currentSlideIndex
+                                                                                                        ? 'bg-primary'
+                                                                                                        : 'bg-gray-300 dark:bg-gray-600'
+                                                                                        }`}
                                                                                 />
                                                                         ))}
                                                                 </View>
 
                                                                 {/* Next or Finish button */}
+
                                                                 {currentSlideIndex === slides.length - 1 ? (
                                                                         <Button
                                                                                 title="Finish"
@@ -261,8 +243,8 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
                 // Return fallback UI
                 return (
-                        <SafeAreaView className="flex-1 items-center justify-center bg-background">
-                                <CText className="text-center text-white">
+                        <SafeAreaView className="flex-1 items-center justify-center bg-surfacePrimary dark:bg-background-dark">
+                                <CText className="text-center text-textPrimary dark:text-white">
                                         Something went wrong.{'\n'}Please restart the app.
                                 </CText>
                         </SafeAreaView>

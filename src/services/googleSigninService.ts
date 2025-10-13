@@ -41,23 +41,20 @@ export class GoogleSigninService {
                 tokens: AuthTokens;
         }> {
                 try {
-                        // Check if Google Play Services are available
                         const isPlayServicesAvailable = await this.isPlayServicesAvailable();
+
                         if (!isPlayServicesAvailable) {
                                 throw new Error('Google Play Services not available');
                         }
 
-                        // Sign in
                         const userInfo = await GoogleSignin.signIn();
 
                         if (!userInfo.data) {
                                 throw new Error('No user information received');
                         }
 
-                        // Get access token
                         const tokens = await GoogleSignin.getTokens();
 
-                        // Format user data
                         const user: User = {
                                 _id: userInfo.data.user.id,
                                 id: userInfo.data.user.id,
@@ -69,12 +66,11 @@ export class GoogleSigninService {
                                 updatedAt: new Date().toISOString(),
                         };
 
-                        // Format tokens
                         const authTokens: AuthTokens = {
                                 accessToken: tokens.accessToken,
-                                refreshToken: '', // Google Sign-In doesn't provide refresh token directly
+                                refreshToken: '',
                                 idToken: userInfo.data.idToken || '',
-                                expiresIn: 3600, // Default 1 hour
+                                expiresIn: 3600,
                                 tokenType: 'Bearer',
                         };
 

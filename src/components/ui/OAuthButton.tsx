@@ -20,13 +20,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                         case 'google':
                                 return {
                                         label: 'Continue with Google',
-                                        icon: (
-                                                <AntDesign
-                                                        name="google"
-                                                        size={18}
-                                                        color={isDark ? '#FFFFFF' : '#000000'}
-                                                />
-                                        ),
+                                        icon: <AntDesign name="google" size={18} color={'#000000'} />,
                                 };
                         case 'apple':
                                 return {
@@ -70,7 +64,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                 <TouchableOpacity
                         style={{} as ViewStyle}
                         className={`min-h-[48px] items-center justify-center rounded-lg border px-3 py-3 ${disabled ? 'opacity-50' : ''} ${className} ${
-                                isDark ? 'border-transparent bg-secondary' : 'border-gray-500 bg-white'
+                                isDark ? 'border-transparent bg-surfacePrimary' : 'border-gray-500 bg-white'
                         }`}
                         onPress={onPress}
                         disabled={disabled}
@@ -78,7 +72,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                 >
                         <View className="flex-row items-center space-x-3">
                                 {config.icon}
-                                <CText size="base" className={`pl-3 ${isDark ? '!text-white' : '!text-black'}`}>
+                                <CText size="base" className={`pl-3 !text-textPrimary`}>
                                         {config.label}
                                 </CText>
                         </View>

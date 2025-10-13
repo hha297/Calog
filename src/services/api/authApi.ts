@@ -44,13 +44,9 @@ export const authApi = {
         // Google OAuth - Sign in with Google
         googleSignIn: async (): Promise<AuthResponse> => {
                 try {
-                        // Initialize Google Sign-In if not already done
                         await GoogleSigninService.initialize();
-
-                        // Sign in with Google
                         const { user, tokens } = await GoogleSigninService.signIn();
 
-                        // Send Google tokens to server for verification and user creation/login
                         const response = await apiClient.post<AuthResponse>('/auth/google', {
                                 idToken: tokens.idToken,
                                 accessToken: tokens.accessToken,

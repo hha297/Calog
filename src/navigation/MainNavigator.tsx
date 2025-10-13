@@ -21,7 +21,7 @@ const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
         return (
                 <TouchableOpacity
                         onPress={onPress}
-                        className={`absolute bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 bg-primary ${
+                        className={`absolute bottom-2 left-1/2 mx-auto h-[64px] w-[64px] -translate-x-1/2 items-center justify-center rounded-full bg-primary ${
                                 isDark ? 'border-surfacePrimary-dark' : 'border-surfacePrimary'
                         }`}
                 >
@@ -49,17 +49,17 @@ export const MainNavigator: React.FC = () => {
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        height: 88,
+                                        height: 80,
                                         paddingTop: 16,
-                                        backgroundColor: isDark ? '#222630' : '#FFFFFF',
+                                        backgroundColor: isDark ? '#252525' : '#FFFFFF',
                                         borderTopLeftRadius: 32,
                                         borderTopRightRadius: 32,
                                         borderTopWidth: 0,
-                                        elevation: 15, // Android
-                                        shadowColor: '#000', // iOS
-                                        shadowOffset: { width: 0, height: 8 },
-                                        shadowOpacity: 0.25,
-                                        shadowRadius: 10,
+                                        // elevation: 8, // Android
+                                        // shadowColor: '#FFFFFF',
+                                        // shadowOffset: { width: 4, height: 0 },
+                                        // shadowOpacity: 0.5,
+                                        // shadowRadius: 32,
                                 },
                                 tabBarShowLabel: true,
                         }}

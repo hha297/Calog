@@ -292,34 +292,34 @@ npm run dev:ios  # iOS + Backend
 - `GET  /auth/google/callback` - Handle Google OAuth callback
 
 - `GET  /auth/me` - Get current user info
-  - **Headers**: `Authorization: Bearer <token>`
+     - **Headers**: `Authorization: Bearer <token>`
 
 - `POST /auth/refresh` - Refresh JWT token
-  - **Body**: `{ refreshToken }`
+     - **Body**: `{ refreshToken }`
 
 - `POST /auth/logout` - Logout
-  - **Headers**: `Authorization: Bearer <token>`
+     - **Headers**: `Authorization: Bearer <token>`
 
 ### Profile
 
 - `GET /api/profile` - Get user profile
-  - **Headers**: `Authorization: Bearer <token>`
+     - **Headers**: `Authorization: Bearer <token>`
 
 - `PUT /api/profile` - Update user profile
-  - **Headers**: `Authorization: Bearer <token>`
-  - **Body**: `{ profileData }`
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ profileData }`
 
 - `POST /api/profile/upload-avatar` - Upload profile avatar
-  - **Headers**: `Authorization: Bearer <token>`
-  - **Body**: `FormData: { image }`
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `FormData: { image }`
 
 - `PUT /api/profile/user-info` - Update user info (name, email)
-  - **Headers**: `Authorization: Bearer <token>`
-  - **Body**: `{ name, email }`
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ name, email }`
 
 - `POST /api/profile/calculate-calories` - Calculate daily calorie goal
-  - **Headers**: `Authorization: Bearer <token>`
-  - **Body**: `{ profileData }`
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ profileData }`
 
 ## 🔒 Security Features
 

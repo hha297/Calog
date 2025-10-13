@@ -42,7 +42,7 @@ export const TextField: React.FC<TextFieldProps> = ({
                         <View className="relative">
                                 <TextInput
                                         style={[{ fontFamily: 'SpaceGrotesk-Regular' } as TextStyle]}
-                                        className={`font-space-grotesk rounded-lg border ${isDark ? 'bg-background-dark' : 'bg-background'} px-4 py-3 ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'} ${
+                                        className={`font-space-grotesk rounded-lg border ${isDark ? 'bg-surfacePrimary' : 'bg-background'} px-4 py-3 ${isDark ? 'text-textPrimary' : 'text-textPrimary'} ${
                                                 isFocused ? 'border-primary' : 'border-transparent'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}

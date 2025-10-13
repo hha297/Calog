@@ -69,7 +69,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         const handleGoogleAuth = async () => {
                 try {
                         await googleLoginMutation.mutateAsync();
-                        // Navigation will be handled by the auth flow
                 } catch (error) {
                         // Error is handled by the mutation and toast
                 }
@@ -89,7 +88,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                                         showsVerticalScrollIndicator={false}
                                 >
                                         {/* Logo */}
-                                        <View className="my-4 items-center pt-8">
+                                        <View className="my-8 items-center pt-8">
                                                 <Logo size={96} />
                                         </View>
 

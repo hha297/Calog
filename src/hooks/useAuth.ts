@@ -290,6 +290,7 @@ export const useGoogleLoginMutation = () => {
 
                         if (error instanceof Error) {
                                 const message = error.message.toLowerCase();
+                                
                                 if (message.includes('cancelled') || message.includes('canceled')) {
                                         errorTitle = 'Sign-in Cancelled';
                                         errorMessage =

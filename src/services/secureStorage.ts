@@ -1,4 +1,5 @@
 import * as Keychain from 'react-native-keychain';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEYS = {
         REFRESH_TOKEN: 'calog_refresh_token',
@@ -40,12 +41,15 @@ class SecureStorageService {
         async storeUserData(userData: any): Promise<void> {
                 try {
                         await Keychain.setGenericPassword(STORAGE_KEYS.USER_DATA, JSON.stringify(userData), {
-                                accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY_OR_DEVICE_PASSCODE,
-                                authenticationType: Keychain.AUTHENTICATION_TYPE.DEVICE_PASSCODE_OR_BIOMETRICS,
                                 service: 'calog_user_data',
+                                accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED,
                         });
                 } catch (error) {
-                        throw new Error('Failed to store user data');
+                        try {
+                                await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+                        } catch (asyncError) {
+                                throw new Error('Failed to store user data');
+                        }
                 }
         }
 
@@ -59,7 +63,12 @@ class SecureStorageService {
                         }
                         return null;
                 } catch (error) {
-                        return null;
+                        try {
+                                const data = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
+                                return data ? JSON.parse(data) : null;
+                        } catch (asyncError) {
+                                return null;
+                        }
                 }
         }
 
@@ -69,13 +78,17 @@ class SecureStorageService {
                                 service: 'calog_user_data',
                         });
                 } catch (error) {
-                        throw new Error('Failed to remove user data');
+                        await AsyncStorage.removeItem(STORAGE_KEYS.USER_DATA);
                 }
         }
 
         async clearAll(): Promise<void> {
                 try {
-                        await Promise.all([this.removeRefreshToken(), this.removeUserData()]);
+                        await Promise.all([
+                                this.removeRefreshToken(),
+                                this.removeUserData(),
+                                AsyncStorage.removeItem(STORAGE_KEYS.USER_DATA),
+                        ]);
                 } catch (error) {
                         throw new Error('Failed to clear all data');
                 }

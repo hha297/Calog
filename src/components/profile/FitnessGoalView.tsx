@@ -86,11 +86,11 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                 Target Weight (kg)
                                         </CText>
                                         <View
-                                                className={`rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4`}
+                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary' : 'bg-background'} p-4`}
                                         >
                                                 <View className="flex-row items-center justify-between">
                                                         <TouchableOpacity
-                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
+                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white dark:bg-surfacePrimary-dark"
                                                                 onPress={() => {
                                                                         const currentValue =
                                                                                 formValues.targetWeight || 70;
@@ -105,14 +105,11 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                                                                         -
                                                                 </CText>
                                                         </TouchableOpacity>
-                                                        <CText
-                                                                className={`text-lg ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}
-                                                                weight="medium"
-                                                        >
+                                                        <CText className="text-lg !text-textPrimary" weight="medium">
                                                                 {formValues.targetWeight || 70}
                                                         </CText>
                                                         <TouchableOpacity
-                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
+                                                                className="h-10 w-10 items-center justify-center rounded-full bg-white dark:bg-surfacePrimary-dark"
                                                                 onPress={() => {
                                                                         const currentValue =
                                                                                 formValues.targetWeight || 70;
