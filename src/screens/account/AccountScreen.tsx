@@ -35,7 +35,7 @@ export const AccountScreen: React.FC = () => {
         const { colorScheme, colorSchemePreference, setColorScheme, isDark } = useTheme();
 
         // Border color for separators
-        const separatorClass = isDark ? 'border-white/10' : 'border-gray-200';
+        const separatorClass = isDark ? 'border-white/10' : 'border-gray-300';
 
         const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
@@ -90,12 +90,12 @@ export const AccountScreen: React.FC = () => {
         };
 
         return (
-                <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
+                <SafeAreaView className="flex-1 bg-background pt-4 dark:bg-background-dark">
                         <ScrollView className="flex-1 p-6" contentContainerStyle={{ paddingBottom: 100 }}>
                                 {/* User Info Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleProfile}
                                         >
                                                 <View className="mr-4 size-16 items-center justify-center rounded-full bg-primary">
@@ -136,7 +136,7 @@ export const AccountScreen: React.FC = () => {
                                                 <ArrowRightIcon size={20} color="#FFFFFF" />
                                         </TouchableOpacity>
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleLogout}
                                         >
                                                 <CreditCardIcon size={20} color="#4CAF50" />
@@ -150,7 +150,9 @@ export const AccountScreen: React.FC = () => {
 
                                 {/* App Settings Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
-                                        <View className={`flex-row items-center border-b ${separatorClass} p-4`}>
+                                        <View
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
+                                        >
                                                 <Sun size={20} color="#4CAF50" />
                                                 <CText className="ml-3 flex-1">Dark Mode</CText>
                                                 <Switcher value={isDark} onValueChange={handleDarkModeToggle} />
@@ -169,7 +171,7 @@ export const AccountScreen: React.FC = () => {
                                 {/* Community & Feedback Section */}
                                 <View className="mb-4 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleSendRequest}
                                         >
                                                 <Send size={20} color="#4CAF50" />
@@ -177,7 +179,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleRateApp}
                                         >
                                                 <Star size={20} color="#4CAF50" />
@@ -194,7 +196,7 @@ export const AccountScreen: React.FC = () => {
                                 </View>
                                 <View className="mb-6 rounded-xl bg-surfacePrimary dark:bg-surfacePrimary-dark">
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleTermsOfService}
                                         >
                                                 <HelpCircle size={20} color="#4CAF50" />
@@ -202,7 +204,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handlePrivacyPolicy}
                                         >
                                                 <Shield size={20} color="#4CAF50" />
@@ -210,7 +212,7 @@ export const AccountScreen: React.FC = () => {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
-                                                className={`flex-row items-center border-b ${separatorClass} p-4`}
+                                                className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleDeleteData}
                                         >
                                                 <Trash2 size={20} color="#F44336" />

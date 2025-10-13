@@ -127,7 +127,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
         }, [selectedGoal, targetWeight, weightChangeRate, onValidationChange]);
 
         return (
-                <View className="flex-1 bg-background px-8 pt-8">
+                <View className="flex-1 bg-surfacePrimary px-8 pt-8 dark:bg-background-dark">
                         <ScrollView
                                 className="flex-1"
                                 showsVerticalScrollIndicator={false}
@@ -135,10 +135,14 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                         >
                                 {/* Header */}
                                 <View className="mb-12">
-                                        <CText size="2xl" weight="bold" className="mb-2 text-center">
+                                        <CText
+                                                size="2xl"
+                                                weight="bold"
+                                                className="mb-2 text-center text-textPrimary dark:text-white"
+                                        >
                                                 Choose your goal
                                         </CText>
-                                        <CText size="lg" className="text-center">
+                                        <CText size="lg" className="text-center text-textSecondary dark:text-gray-300">
                                                 Pick the target that best matches your journey.
                                         </CText>
                                 </View>
@@ -154,7 +158,7 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                 className={`mb-4 rounded-xl border-2 p-6 ${
                                                                         selectedGoal === option.value
                                                                                 ? 'border-primary/80 bg-primary'
-                                                                                : 'border-surfacePrimary bg-surfacePrimary'
+                                                                                : 'border-gray-200 bg-white dark:border-transparent dark:bg-surfacePrimary'
                                                                 }`}
                                                         >
                                                                 <View className="flex-row items-center">
@@ -182,8 +186,8 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                         className={`mb-1 ${
                                                                                                 selectedGoal ===
                                                                                                 option.value
-                                                                                                        ? 'text-white'
-                                                                                                        : ''
+                                                                                                        ? '!text-white'
+                                                                                                        : '!text-textPrimary'
                                                                                         }`}
                                                                                 >
                                                                                         {option.label}
@@ -192,8 +196,8 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                         className={`text-sm ${
                                                                                                 selectedGoal ===
                                                                                                 option.value
-                                                                                                        ? 'text-white/80'
-                                                                                                        : ''
+                                                                                                        ? '!text-white/80'
+                                                                                                        : '!text-textSecondary'
                                                                                         }`}
                                                                                 >
                                                                                         {option.description}
@@ -208,7 +212,11 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                 {/* Weight Goal Configuration */}
                                 {(selectedGoal === 'lose' || selectedGoal === 'gain') && (
                                         <View>
-                                                <CText size="xl" weight="medium" className="mb-4">
+                                                <CText
+                                                        size="xl"
+                                                        weight="medium"
+                                                        className="mb-4 text-textPrimary dark:text-white"
+                                                >
                                                         Goal Overview
                                                 </CText>
 

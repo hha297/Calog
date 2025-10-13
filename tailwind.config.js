@@ -19,7 +19,8 @@ module.exports = {
                                 },
                                 surfacePrimary: {
                                         DEFAULT: '#FFFFFF',
-                                        dark: '#222630',
+                                        dark: '#252525',
+                                        // dark: '#222630',
                                 },
                                 surfaceSecondary: {
                                         DEFAULT: '#EFEFEF',

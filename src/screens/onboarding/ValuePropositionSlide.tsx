@@ -34,13 +34,17 @@ const features = [
 
 export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ onNext }) => {
         return (
-                <View className="flex-1 bg-background px-8 pt-8">
+                <View className="flex-1 bg-surfacePrimary px-8 pt-8 dark:bg-background-dark">
                         {/* Header */}
                         <View className="pb-6">
-                                <CText size="2xl" weight="bold" className="mb-2 text-center">
+                                <CText
+                                        size="2xl"
+                                        weight="bold"
+                                        className="mb-2 text-center text-textPrimary dark:text-white"
+                                >
                                         What Calog Offers
                                 </CText>
-                                <CText size="lg" className="text-center">
+                                <CText size="lg" className="text-center text-textSecondary dark:text-gray-300">
                                         Everything you need to reach your nutrition goals
                                 </CText>
                         </View>
@@ -56,21 +60,24 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                         return (
                                                 <View
                                                         key={feature.id}
-                                                        className="mb-4 rounded-xl bg-surfacePrimary p-6"
+                                                        className="mt-4 rounded-xl bg-background p-6 dark:bg-surfacePrimary-dark"
                                                 >
                                                         <View className="flex-row items-start">
-                                                                <View className="mr-4 rounded-lg bg-primary/20 p-3">
+                                                                <View className="mr-4 rounded-lg bg-primary/20 p-3 dark:bg-primary/30">
                                                                         <IconComponent size={24} color="#4CAF50" />
                                                                 </View>
                                                                 <View className="flex-1">
                                                                         <CText
                                                                                 size="lg"
                                                                                 weight="medium"
-                                                                                className="mb-2"
+                                                                                className="mb-2 !text-surfacePrimary"
                                                                         >
                                                                                 {feature.title}
                                                                         </CText>
-                                                                        <CText size="base" className="leading-5">
+                                                                        <CText
+                                                                                size="base"
+                                                                                className="leading-5 !text-textSecondary dark:!text-gray-300"
+                                                                        >
                                                                                 {feature.subtitle}
                                                                         </CText>
                                                                 </View>

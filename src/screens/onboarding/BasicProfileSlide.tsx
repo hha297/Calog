@@ -71,7 +71,7 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
         }, [isFormValid, onValidationChange]);
 
         return (
-                <View className="flex-1 bg-background px-8 pb-20 pt-8">
+                <View className="flex-1 bg-surfacePrimary px-8 pb-20 pt-8 dark:bg-background-dark">
                         <ScrollView
                                 className="flex-1"
                                 showsVerticalScrollIndicator={false}
@@ -79,17 +79,25 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
                         >
                                 {/* Header */}
                                 <View className="mb-8">
-                                        <CText size="2xl" weight="bold" className="mb-2 text-center">
+                                        <CText
+                                                size="2xl"
+                                                weight="bold"
+                                                className="mb-2 text-center text-textPrimary dark:text-white"
+                                        >
                                                 Tell us about you
                                         </CText>
-                                        <CText size="lg" className="text-center">
+                                        <CText size="lg" className="text-center text-textSecondary dark:text-gray-300">
                                                 We'll calculate your daily calorie needs based on this info.
                                         </CText>
                                 </View>
 
                                 {/* Gender Selection */}
                                 <View className="mb-6">
-                                        <CText size="base" weight="medium" className="mb-3">
+                                        <CText
+                                                size="base"
+                                                weight="medium"
+                                                className="mb-3 text-textPrimary dark:text-white"
+                                        >
                                                 Gender
                                         </CText>
                                         <Dropdown
@@ -135,7 +143,11 @@ export const BasicProfileSlide: React.FC<BasicProfileSlideProps> = ({
 
                                 {/* Activity Level */}
                                 <View className="mb-8">
-                                        <CText size="base" weight="medium" className="mb-3">
+                                        <CText
+                                                size="base"
+                                                weight="medium"
+                                                className="mb-3 text-textPrimary dark:text-white"
+                                        >
                                                 Activity Level
                                         </CText>
                                         <Dropdown

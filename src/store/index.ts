@@ -152,7 +152,12 @@ export const initializeAuth = async () => {
                                 const { getCurrentUser } = await import('../services/api/authApi');
                                 const res = await getCurrentUser();
                                 setUser(res.user);
-                                await secureStorage.storeUserData(res.user);
+                                try {
+                                        await secureStorage.storeUserData(res.user);
+                                } catch (storageError) {
+                                        // Ignore storage errors during init
+                                        console.error('Error storing user data:', storageError);
+                                }
                         }
                 }
         } finally {

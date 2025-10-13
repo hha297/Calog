@@ -340,11 +340,11 @@ export const ProfileScreen: React.FC = () => {
         return (
                 <SafeAreaView className="flex-1 bg-background dark:bg-background-dark">
                         {/* Header */}
-                        <View className="flex-row items-center justify-between px-6 py-4">
+                        <View className="flex-row items-center justify-between px-6 py-6">
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                                        <ArrowLeft size={24} color={isDark ? '#FFFFFF' : '#000000'} />
+                                        <ArrowLeft size={20} color={isDark ? '#FFFFFF' : '#000000'} />
                                 </TouchableOpacity>
-                                <CText size="lg" weight="bold">
+                                <CText size="2xl" weight="bold">
                                         Profile
                                 </CText>
                                 <View style={{ width: 24 }} />

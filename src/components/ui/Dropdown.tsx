@@ -52,15 +52,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return (
                 <>
                         <TouchableOpacity
-                                className={`flex-row items-center justify-between rounded-lg ${isDark ? 'bg-background-dark' : 'bg-background'} p-4 ${className} ${
+                                className={`flex-row items-center justify-between rounded-lg ${isDark ? 'bg-surfacePrimary' : 'bg-background'} p-4 ${className} ${
                                         disabled ? 'opacity-50' : ''
                                 }`}
                                 onPress={handlePress}
                                 disabled={disabled}
                         >
-                                <CText className={`flex-1 ${isDark ? 'text-textPrimary-dark' : 'text-textPrimary'}`}>
-                                        {getSelectedLabel()}
-                                </CText>
+                                <CText className="flex-1 !text-textPrimary">{getSelectedLabel()}</CText>
                                 <ChevronDown
                                         size={20}
                                         color="#9CA3AF"
@@ -77,7 +75,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                         onPress={handleClose}
                                 >
                                         <TouchableOpacity
-                                                className="w-full max-w-sm rounded-xl bg-white dark:bg-background-dark"
+                                                className="w-full max-w-sm rounded-xl bg-white dark:bg-surfacePrimary-dark"
                                                 activeOpacity={1}
                                                 onPress={(e) => e.stopPropagation()}
                                         >
@@ -139,11 +137,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                                         className={`border-t ${isDark ? 'border-white/10' : 'border-gray-200'} p-4`}
                                                 >
                                                         <TouchableOpacity
-                                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary-dark' : 'border border-gray-300 bg-surfacePrimary'} p-3`}
+                                                                className={`rounded-lg ${isDark ? 'bg-surfacePrimary' : 'border border-gray-300 bg-surfacePrimary'} p-3`}
                                                                 onPress={handleClose}
                                                         >
                                                                 <CText
-                                                                        className={`text-center ${isDark ? 'text-white' : 'text-gray-700'}`}
+                                                                        className="text-center !text-textPrimary"
                                                                         weight="medium"
                                                                 >
                                                                         Cancel
