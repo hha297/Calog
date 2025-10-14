@@ -53,12 +53,12 @@ export const Button: React.FC<ButtonProps> = ({
                                         size={size === 'small' ? 'sm' : size === 'medium' ? 'base' : 'lg'}
                                         className={`${
                                                 variant === 'primary'
-                                                        ? 'text-white'
+                                                        ? '!text-white'
                                                         : variant === 'ghost'
                                                           ? isDark
-                                                                  ? 'text-primary'
-                                                                  : 'text-gray-700'
-                                                          : 'text-text-light'
+                                                                  ? '!text-primary'
+                                                                  : '!text-gray-700'
+                                                          : '!text-text-light'
                                         }`}
                                 >
                                         {title}
