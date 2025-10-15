@@ -142,6 +142,11 @@ export type MainTabParamList = {
         Account: undefined;
 };
 
+export type DiaryStackParamList = {
+        DiaryMain: undefined;
+        CalendarTracking: undefined;
+};
+
 export type AccountStackParamList = {
         Account: undefined;
         Profile: undefined;

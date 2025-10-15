@@ -47,7 +47,8 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                         setScanning(false);
                 }
         }, []);
-
+        console.log(result);
+        console.log(rawResponse);
         const handleAddToDiary = useCallback(async () => {
                 if (!result) return;
 
