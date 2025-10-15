@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { DiaryScreen } from '../screens/DiaryScreen';
 import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
+import { CalendarTrackingScreen } from '../screens/CalendarTrackingScreen';
 import { AccountNavigator } from './AccountNavigator';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
@@ -13,6 +15,17 @@ import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon } 
 import { useTheme } from '../contexts';
 import { CText } from '../components/ui';
 const Tab = createBottomTabNavigator<MainTabParamList>();
+const DiaryStack = createNativeStackNavigator();
+
+// Diary Stack Navigator
+const DiaryStackNavigator = () => {
+        return (
+                <DiaryStack.Navigator screenOptions={{ headerShown: false }}>
+                        <DiaryStack.Screen name="DiaryMain" component={DiaryScreen} />
+                        <DiaryStack.Screen name="CalendarTracking" component={CalendarTrackingScreen} />
+                </DiaryStack.Navigator>
+        );
+};
 
 // Custom floating action button with NativeWind
 const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
@@ -67,7 +80,7 @@ export const MainNavigator: React.FC = () => {
                         {/* Diary Tab */}
                         <Tab.Screen
                                 name="Diary"
-                                component={DiaryScreen}
+                                component={DiaryStackNavigator}
                                 options={{
                                         title: 'Diary',
                                         tabBarIcon: ({ color, focused }) => (
