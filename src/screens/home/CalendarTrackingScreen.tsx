@@ -4,15 +4,33 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeftIcon, ZapIcon } from 'lucide-react-native';
 import { Calendar } from 'react-native-calendars';
-import { CText } from '../components/ui/CText';
-import { useTheme } from '../contexts';
+import { CText } from '../../components/ui/CText';
+import { useTheme } from '../../contexts';
+import { useUserProfile } from '../../hooks/useUserProfile';
 
 export const CalendarTrackingScreen: React.FC = () => {
         const navigation = useNavigation();
         const { isDark } = useTheme();
         const [selectedDate, setSelectedDate] = useState(new Date());
         const [currentMonth, setCurrentMonth] = useState(new Date());
+        const { profile } = useUserProfile();
+        console.log(profile);
 
+        // Calculate calorie statistics based on profile
+        const dailyCalorieGoal = profile?.dailyCalorieGoal || 0;
+        const weightChangeRate = profile?.weightChangeRate || 0; // Daily calorie deficit needed
+        const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+        const totalCaloriesNeeded = dailyCalorieGoal * daysInMonth;
+
+        // For now, using placeholder values for consumed calories
+        // These should be calculated from actual food logs in the future
+        const totalCaloriesConsumed = 0; // TODO: Calculate from food logs
+
+        // Calories Deficit Needed = weightChangeRate * days in month
+        const caloriesDeficitNeeded = weightChangeRate * daysInMonth;
+
+        // Calories Deficit Achieved = actual deficit based on consumed calories
+        const caloriesDeficitAchieved = Math.max(0, totalCaloriesNeeded - totalCaloriesConsumed);
         const formatDateString = (date: Date) => {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -122,7 +140,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                 </CText>
 
                                                 <View className="space-y-3">
-                                                        <View className="flex-row items-center">
+                                                        <View className="mb-1 flex-row items-center">
                                                                 <View className="mr-3 size-3 rounded-full bg-green-500" />
                                                                 <CText className="flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Days eating recommended amount
@@ -135,7 +153,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                 </CText>
                                                         </View>
 
-                                                        <View className="flex-row items-center">
+                                                        <View className="mb-1 flex-row items-center">
                                                                 <View className="mr-3 size-3 rounded-full bg-orange-500" />
                                                                 <CText className="flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Days eating below BMR
@@ -148,7 +166,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                 </CText>
                                                         </View>
 
-                                                        <View className="flex-row items-center">
+                                                        <View className="mb-1 flex-row items-center">
                                                                 <View className="mr-3 size-3 rounded-full bg-red-500" />
                                                                 <CText className="flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Days eating over required amount
@@ -187,7 +205,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                         weight="medium"
                                                                         className="text-textPrimary dark:text-textPrimary-dark"
                                                                 >
-                                                                        73,997 kcal
+                                                                        {totalCaloriesNeeded.toLocaleString()} kcal
                                                                 </CText>
                                                         </View>
 
@@ -200,7 +218,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                         weight="medium"
                                                                         className="text-textPrimary dark:text-textPrimary-dark"
                                                                 >
-                                                                        0 kcal
+                                                                        {totalCaloriesConsumed.toLocaleString()} kcal
                                                                 </CText>
                                                         </View>
 
@@ -213,7 +231,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                         weight="medium"
                                                                         className="text-textPrimary dark:text-textPrimary-dark"
                                                                 >
-                                                                        17,050 kcal
+                                                                        {caloriesDeficitNeeded.toLocaleString()} kcal
                                                                 </CText>
                                                         </View>
 
@@ -226,7 +244,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                         weight="medium"
                                                                         className="text-textPrimary dark:text-textPrimary-dark"
                                                                 >
-                                                                        44,070 kcal
+                                                                        {caloriesDeficitAchieved.toLocaleString()} kcal
                                                                 </CText>
                                                         </View>
                                                 </View>
