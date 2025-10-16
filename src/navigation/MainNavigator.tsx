@@ -3,11 +3,11 @@ import { View, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { DiaryScreen } from '../screens/DiaryScreen';
+import { DiaryScreen } from '../screens/home/DiaryScreen';
 import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
-import { CalendarTrackingScreen } from '../screens/CalendarTrackingScreen';
+import { CalendarTrackingScreen } from '../screens/home/CalendarTrackingScreen';
 import { AccountNavigator } from './AccountNavigator';
 import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';

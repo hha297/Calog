@@ -5,7 +5,7 @@ export * from './LogScreen';
 export * from './ScanScreen';
 
 // Bottom tab screens
-export * from './DiaryScreen';
+export * from './home';
 export * from './AnalyticsScreen';
 export * from './HelpScreen';
 
