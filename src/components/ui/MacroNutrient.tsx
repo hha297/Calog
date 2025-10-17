@@ -34,7 +34,7 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
                         </View>
 
                         {/* Progress Bar */}
-                        <View className="mb-2 h-2 w-20 rounded-full bg-white">
+                        <View className="mb-2 h-2 w-20 rounded-full bg-background dark:bg-white">
                                 <View
                                         className="h-2 rounded-full bg-primary"
                                         style={{

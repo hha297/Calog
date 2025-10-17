@@ -50,7 +50,7 @@ export const DiaryScreen: React.FC = () => {
                                 onCalendarPress={handleCalendarPress}
                         />
 
-                        <ScrollView className="flex-1 p-4">
+                        <ScrollView className="flex-1 px-2 py-4">
                                 {/* View Selector */}
                                 <ViewSelector selectedView={selectedView} onViewChange={setSelectedView} />
 
