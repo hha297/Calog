@@ -25,27 +25,43 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 
 ## ⚡ Tech Stack
 
+### Frontend (React Native)
+
 ![React Native](https://img.shields.io/badge/React_Native-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![NativeWind](https://img.shields.io/badge/NativeWind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-FF6B6B?style=for-the-badge&logo=zustand&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![React Navigation](https://img.shields.io/badge/React_Navigation-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![Lottie](https://img.shields.io/badge/Lottie-000000?style=for-the-badge&logo=lottie&logoColor=white)
+![Lucide Icons](https://img.shields.io/badge/Lucide_Icons-000000?style=for-the-badge&logo=lucide&logoColor=white)
+
+### Backend (Node.js)
+
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Google OAuth](https://img.shields.io/badge/Google_OAuth-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Helmet](https://img.shields.io/badge/Helmet-000000?style=for-the-badge&logo=helmet&logoColor=white)
+![CORS](https://img.shields.io/badge/CORS-000000?style=for-the-badge&logo=cors&logoColor=white)
+
+### External Services
+
+![Open Food Facts](https://img.shields.io/badge/Open_Food_Facts-000000?style=for-the-badge&logo=openfoodfacts&logoColor=white)
 
 ## ✨ Key Features
 
-### 📱 QR Code & Calorie Tracking
+### 📱 QR Code & Food Tracking
 
-- **QR Code Scanning**: Scan food product barcodes to instantly log calories and nutrition
-- **Smart Food Recognition**: AI-powered food identification and calorie calculation
-- **Daily Calorie Tracking**: Monitor your calorie intake throughout the day
-- **Nutrition Database**: Comprehensive food database with accurate nutritional information
-- **Quick Logging**: Fast and easy calorie logging with barcode scanning
+- **QR Code Scanning**: Scan food product barcodes using camera integration
+- **Open Food Facts Integration**: Real-time food database lookup with comprehensive nutrition data
+- **Food Diary**: Track daily food intake with detailed nutrition breakdown
+- **Manual Food Entry**: Add food items manually when scanning isn't available
+- **Nutrition Analysis**: Complete macronutrient tracking (calories, protein, carbs, fat, fiber, etc.)
+- **Meal Categorization**: Organize food by meal types (breakfast, lunch, dinner, snacks)
 
 ### 🔐 Authentication & Security
 
@@ -54,20 +70,53 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 - **Keychain Storage**: Secure token storage using device keychain
 - **Biometric Protection**: Enhanced security with fingerprint/face recognition
 - **Persistent Login**: Users stay logged in across app restarts
+- **Auto-refresh**: Seamless token renewal for uninterrupted experience
 
 ### 📊 Advanced Body Composition Analysis
 
 - **U.S. Navy Method**: Accurate body fat percentage calculation
-- **Body Measurements Tracking**: Neck, waist, hip, bicep, and thigh measurements
+- **Body Measurements Tracking**: Comprehensive tracking of neck, waist, hip, bicep, and thigh measurements
 - **Fitness Metrics**: BMI, Body Fat Mass, Lean Body Mass, and FFMI calculations
-- **Real-time Updates**: Instant recalculation when measurements change
+- **Measurement History**: Track progress over time with trend analysis
+- **Measurement Logs**: View and manage historical measurement data
+- **Trend Indicators**: Visual indicators showing measurement changes (up/down/same)
 
-### 🎯 Personalized Fitness Goals
+### 🎯 Personalized Fitness Goals & Diet Plans
 
 - **Weight Goals**: Lose, gain, or maintain weight with target setting
 - **Calorie Calculation**: TDEE calculation using Mifflin-St Jeor equation
 - **Activity Level Assessment**: Sedentary to very active lifestyle options
-- **Progress Tracking**: Visual analytics and achievement system
+- **Diet Mode Selection**: Choose from 9 predefined diet plans (Balanced, Low Carb, High Protein, Keto, Atkins, Paleo, Mediterranean, DASH, Custom)
+- **Custom Macronutrient Ratios**: Fine-tune carb/protein/fat percentages with wheel picker interface
+- **Macro Validation**: Automatic validation ensuring macronutrients total exactly 100%
+- **Diet Plan Persistence**: Save and sync diet preferences across devices
+
+### 🚀 User Onboarding Experience
+
+- **Interactive Onboarding**: Multi-slide introduction with smooth transitions
+- **Welcome & Value Proposition**: Clear app benefits and features explanation
+- **Basic Profile Setup**: Collect essential user information (age, gender, height, weight)
+- **Goal Setting**: Personalized fitness goal configuration
+- **Profile Validation**: Real-time form validation with user feedback
+- **Local Storage**: Offline profile saving with cloud sync when available
+
+### 📱 Modern UI/UX & Navigation
+
+- **Dark/Light Mode**: Complete theme system with NativeWind v4
+- **Theme Persistence**: User preference saved to AsyncStorage
+- **Dynamic Components**: Theme-aware styling across all screens
+- **Bottom Tab Navigation**: Intuitive navigation between main app sections
+- **Modal Interfaces**: Smooth modal presentations for settings and data entry
+- **Wheel Picker Components**: Intuitive number selection for measurements and macros
+- **Custom UI Components**: Reusable components with consistent styling
+
+### 📊 Analytics & Tracking
+
+- **Daily Calorie Tracking**: Monitor calorie intake vs. goals
+- **Weekly/Monthly Views**: Switch between different time periods
+- **Calendar Integration**: Visual calendar for tracking progress
+- **Progress Visualization**: Charts and graphs for fitness metrics
+- **Analytics Dashboard**: Comprehensive overview of health and fitness data
 
 ### 🌍 Multi-Language Support
 
@@ -76,48 +125,103 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 - **Supported Languages**: English, Finnish, Vietnamese
 - **Language Persistence**: User preference saved across sessions
 
-### 🎨 Modern UI/UX
-
-- **Dark/Light Mode**: Complete theme system with NativeWind v4
-- **Theme Persistence**: User preference saved to AsyncStorage
-- **Dynamic Components**: Theme-aware styling across all screens
-- **Avatar Upload**: Profile picture management with Cloudinary integration
-
 ### 📱 Cross-Platform Features
 
 - **Deep Linking**: Custom URL scheme for authentication callbacks
+- **Camera Integration**: Native camera access for barcode scanning
 - **Image Picker**: Camera and gallery integration for photos
 - **Permission Handling**: Proper camera and photo library permissions
 - **BootSplash**: Custom launch screen with logo animation
+- **Safe Area Support**: Proper handling of device notches and safe areas
+
+### 🖥️ Backend Features
+
+- **RESTful API**: Complete REST API with proper HTTP methods and status codes
+- **MongoDB Integration**: Scalable NoSQL database with Mongoose ODM
+- **JWT Authentication**: Secure token-based authentication with refresh token rotation
+- **Google OAuth**: Server-side Google authentication integration
+- **Cloudinary Integration**: Image upload and management for user avatars
+- **Rate Limiting**: API rate limiting to prevent abuse (100 requests per 15 minutes)
+- **Security Headers**: Helmet.js for additional HTTP security headers
+- **CORS Protection**: Cross-origin request security configuration
+- **Input Validation**: Express-validator for request data validation
+- **Error Handling**: Comprehensive error handling with proper HTTP status codes
+- **Data Models**: Structured data models for Users, Food entries, and Measurements
+- **Middleware Architecture**: Modular middleware for authentication and validation
 
 ## 📁 Project Structure
 
-```
+```text
 calog/
 ├── src/                                            # React Native source code
 │   ├── components/                                 # Reusable UI components
-│   │   ├── ui/                                     # Reusabled UI components
+│   │   ├── ui/                                     # Base UI components (Button, TextField, etc.)
 │   │   ├── profile/                                # Profile-related components
-│   │   └── ...                                     # Other specialized components
+│   │   ├── home/                                   # Home screen components
+│   │   ├── CameraView.tsx                          # Camera integration for barcode scanning
+│   │   ├── DietModeModal.tsx                       # Diet plan selection modal
+│   │   ├── MeasurementLogModal.tsx                 # Body measurements tracking
+│   │   └── FoodItemCard.tsx                       # Food item display component
 │   ├── screens/                                    # Application screens
-│   │   ├── auth/                                   # Authentication screens
-│   │   ├── onboarding/                             # User onboarding flow
-│   │   └── ...                                     # Other screens
+│   │   ├── auth/                                   # Authentication screens (Login, Signup, etc.)
+│   │   ├── onboarding/                             # User onboarding flow (4 slides)
+│   │   ├── home/                                   # Home screens (Diary, Calendar)
+│   │   ├── account/                                # Account management screens
+│   │   ├── ScanScreen.tsx                          # Barcode scanning interface
+│   │   ├── AnalyticsScreen.tsx                     # Analytics and progress tracking
+│   │   └── HelpScreen.tsx                          # Help and support
 │   ├── navigation/                                 # Navigation configuration
+│   │   ├── AppNavigator.tsx                        # Main app navigation
+│   │   ├── AuthNavigator.tsx                       # Authentication flow navigation
+│   │   ├── MainNavigator.tsx                       # Main app tab navigation
+│   │   └── AccountNavigator.tsx                     # Account section navigation
 │   ├── services/                                   # API and external services
+│   │   ├── api/                                    # API service modules
+│   │   ├── googleSigninService.ts                  # Google OAuth integration
+│   │   ├── measurementLogStorage.ts                # Local measurement storage
+│   │   ├── onboardingStorage.ts                    # Onboarding data persistence
+│   │   └── secureStorage.ts                        # Secure token storage
 │   ├── hooks/                                      # Custom React hooks
-│   ├── contexts/                                   # React contexts (Theme, Language)
+│   │   ├── useAuth.ts                              # Authentication state management
+│   │   ├── useUserProfile.ts                       # User profile data
+│   │   ├── useFoodItems.ts                         # Food tracking functionality
+│   │   └── useProfileSync.ts                       # Profile synchronization
+│   ├── contexts/                                   # React contexts
+│   │   ├── ThemeContext.tsx                        # Dark/Light theme management
+│   │   └── index.ts                                # Context exports
 │   ├── utils/                                      # Utility functions
-│   └── types/                                      # TypeScript type definitions
+│   │   ├── authValidation.ts                       # Authentication validation
+│   │   ├── measurementUtils.ts                     # Body measurement calculations
+│   │   └── helpers.ts                              # General helper functions
+│   ├── types/                                      # TypeScript type definitions
+│   │   ├── dietModes.ts                            # Diet plan type definitions
+│   │   └── index.ts                                # Main type exports
+│   └── store/                                      # State management
+│       └── index.ts                                # Zustand store configuration
 ├── server/                                         # Node.js backend
 │   ├── controllers/                                # Route controllers
+│   │   ├── authController.js                       # Authentication logic
+│   │   └── profileController.js                    # Profile management
 │   ├── models/                                     # Database models
+│   │   ├── User.js                                 # User schema
+│   │   ├── Food.js                                 # Food entries schema
+│   │   └── MeasurementLog.js                       # Body measurements schema
 │   ├── routes/                                     # API routes
+│   │   ├── auth.js                                 # Authentication endpoints
+│   │   ├── profile.js                              # Profile endpoints
+│   │   ├── food.js                                 # Food tracking endpoints
+│   │   └── measurementLogs.js                      # Measurement endpoints
 │   ├── middleware/                                 # Express middleware
+│   │   └── auth.js                                 # JWT authentication middleware
+│   ├── config/                                     # Configuration files
+│   │   └── cloudinary.js                           # Cloudinary setup
 │   └── utils/                                      # Server utilities
+│       └── index.js                                # Utility functions
 ├── android/                                        # Android-specific configuration
 ├── ios/                                            # iOS-specific configuration
 └── assets/                                         # Static assets (images, fonts)
+    ├── bootsplash/                                 # App launch screen assets
+    └── images/                                     # App images and icons
 ```
 
 ## 🔧 Environment Variables
@@ -288,38 +392,56 @@ npm run dev:ios  # iOS + Backend
 ### Authentication
 
 - `GET  /auth/google` - Initiate Google OAuth flow
-
 - `GET  /auth/google/callback` - Handle Google OAuth callback
-
 - `GET  /auth/me` - Get current user info
      - **Headers**: `Authorization: Bearer <token>`
-
 - `POST /auth/refresh` - Refresh JWT token
      - **Body**: `{ refreshToken }`
-
 - `POST /auth/logout` - Logout
      - **Headers**: `Authorization: Bearer <token>`
 
-### Profile
+### Profile Management
 
 - `GET /api/profile` - Get user profile
      - **Headers**: `Authorization: Bearer <token>`
-
 - `PUT /api/profile` - Update user profile
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ profileData }`
-
 - `POST /api/profile/upload-avatar` - Upload profile avatar
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `FormData: { image }`
-
 - `PUT /api/profile/user-info` - Update user info (name, email)
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ name, email }`
-
 - `POST /api/profile/calculate-calories` - Calculate daily calorie goal
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ profileData }`
+
+### Food Tracking
+
+- `GET /api/food` - Get user's food entries
+     - **Headers**: `Authorization: Bearer <token>`
+- `POST /api/food` - Add new food entry
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ foodEntry }`
+- `PUT /api/food/:id` - Update food entry
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ updatedFoodEntry }`
+- `DELETE /api/food/:id` - Delete food entry
+     - **Headers**: `Authorization: Bearer <token>`
+
+### Body Measurements
+
+- `GET /api/measurement-logs` - Get user's measurement logs
+     - **Headers**: `Authorization: Bearer <token>`
+- `POST /api/measurement-logs` - Add new measurement log
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ measurements }`
+- `PUT /api/measurement-logs/:id` - Update measurement log
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ updatedMeasurements }`
+- `DELETE /api/measurement-logs/:id` - Delete measurement log
+     - **Headers**: `Authorization: Bearer <token>`
 
 ## 🔒 Security Features
 
