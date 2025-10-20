@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from 'react';
-import { View, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React from 'react';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BellIcon, CalendarIcon, User } from 'lucide-react-native';
 import { CText } from './ui/CText';
 import { useAuthStore } from '../store';
 import { useTheme } from '../contexts';
+import { HorizontalCalendar } from './HorizontalCalendar';
 
 interface DiaryHeaderProps {
         selectedDate: Date;
@@ -67,65 +68,12 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                 return "HELLO FRIEND, LET'S START TOGETHER!";
         };
 
-        const generateDateOptions = () => {
-                const dates = [];
-                const today = new Date();
-                const currentYear = today.getFullYear();
-
-                // Generate dates for all months (1 to 12)
-                for (let month = 0; month < 12; month++) {
-                        const daysInMonth = new Date(currentYear, month + 1, 0).getDate();
-
-                        for (let day = 1; day <= daysInMonth; day++) {
-                                const date = new Date(currentYear, month, day);
-                                dates.push(date);
-                        }
-                }
-
-                return dates;
+        const handleDateSelect = (dateString: string) => {
+                const date = new Date(dateString);
+                onDateSelect(date);
         };
 
-        const isCurrentMonth = (date: Date) => {
-                const today = new Date();
-                return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
-        };
-
-        const isToday = (date: Date) => {
-                const today = new Date();
-                return date.toDateString() === today.toDateString();
-        };
-
-        const isSelectedDate = (date: Date) => {
-                return date.toDateString() === selectedDate.toDateString();
-        };
-
-        const formatDayNumber = (date: Date) => {
-                return date.getDate().toString();
-        };
-
-        const scrollViewRef = useRef<ScrollView>(null);
-
-        // Auto-scroll to keep today centered
-        useEffect(() => {
-                const today = new Date();
-                const dates = generateDateOptions();
-                const todayIndex = dates.findIndex((date) => date.toDateString() === today.toDateString());
-
-                if (todayIndex !== -1 && scrollViewRef.current) {
-                        // Calculate center position - today should be in the middle
-                        const screenWidth = 300;
-                        const itemWidth = 64;
-                        const centerOffset = screenWidth / 2 - itemWidth / 2;
-                        const targetX = todayIndex * itemWidth - centerOffset;
-
-                        setTimeout(() => {
-                                scrollViewRef.current?.scrollTo({
-                                        x: Math.max(0, targetX),
-                                        animated: true,
-                                });
-                        }, 100);
-                }
-        }, []);
+        const selectedDateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
         return (
                 <View className="bg-surfacePrimary px-4 pt-4 dark:bg-surfacePrimary-dark">
@@ -174,53 +122,10 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
 
                         {/* Date Picker Section */}
                         <View className="mb-4 flex-row items-center">
-                                <ScrollView
-                                        ref={scrollViewRef}
-                                        horizontal
-                                        showsHorizontalScrollIndicator={false}
-                                        className="mr-2 flex-1"
-                                        contentContainerStyle={{ paddingRight: 16 }}
-                                >
-                                        {generateDateOptions().map((date, index) => (
-                                                <TouchableOpacity
-                                                        key={date.toDateString()}
-                                                        className="mr-3 items-center"
-                                                        onPress={() => onDateSelect(date)}
-                                                >
-                                                        <View
-                                                                className={`size-12 items-center justify-center rounded-full ${
-                                                                        isSelectedDate(date)
-                                                                                ? 'bg-primary'
-                                                                                : isToday(date)
-                                                                                  ? 'border border-primary bg-primary/20'
-                                                                                  : isCurrentMonth(date)
-                                                                                    ? 'border border-gray-300 bg-transparent dark:border-gray-600'
-                                                                                    : 'border border-gray-200 bg-transparent dark:border-gray-700'
-                                                                }`}
-                                                        >
-                                                                <CText
-                                                                        size="sm"
-                                                                        weight="medium"
-                                                                        className={`${
-                                                                                isSelectedDate(date)
-                                                                                        ? 'text-white'
-                                                                                        : isCurrentMonth(date)
-                                                                                          ? 'text-textPrimary dark:text-textPrimary-dark'
-                                                                                          : 'text-gray-400 dark:text-gray-500'
-                                                                        }`}
-                                                                >
-                                                                        {formatDayNumber(date)}
-                                                                </CText>
-                                                        </View>
-                                                        {isToday(date) && (
-                                                                <View className="mt-1 size-1 rounded-full bg-primary" />
-                                                        )}
-                                                </TouchableOpacity>
-                                        ))}
-                                </ScrollView>
+                                <HorizontalCalendar onSelectDate={handleDateSelect} selected={selectedDateString} />
 
                                 {/* Calendar Icon */}
-                                <View className="mb-2 flex-row items-center">
+                                <View className="flex-row items-center">
                                         <View className="mr-2 h-12 w-px bg-background dark:bg-gray-600" />
                                         <TouchableOpacity onPress={onCalendarPress}>
                                                 <View className="size-10 items-center justify-center rounded-lg bg-surfaceSecondary dark:bg-surfaceSecondary-dark">

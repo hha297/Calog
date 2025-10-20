@@ -9,12 +9,18 @@ import { useUserProfile } from '../../hooks/useUserProfile';
 
 export const DiaryScreen: React.FC = () => {
         const navigation = useNavigation<any>();
-        const [selectedDate, setSelectedDate] = useState(() => new Date());
+        const [selectedDate, setSelectedDate] = useState(() => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Reset time to avoid timezone issues
+                return today;
+        });
         const [selectedView, setSelectedView] = useState<'daily' | 'weekly'>('daily');
         const { profile, isLoading } = useUserProfile();
 
         const handleDateSelect = (date: Date) => {
-                setSelectedDate(date);
+                const newDate = new Date(date);
+                newDate.setHours(0, 0, 0, 0); // Reset time to avoid timezone issues
+                setSelectedDate(newDate);
         };
 
         const handleCalendarPress = () => {
