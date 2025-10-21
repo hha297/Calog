@@ -11,38 +11,80 @@ interface MeasurementLogModalProps {
         visible: boolean;
         logs: MeasurementLogEntry[];
         onClose: () => void;
-        onDeleteLog: (logId: string) => void;
+        onDeleteLog: (logIndex: number) => void;
 }
 
 export const MeasurementLogModal: React.FC<MeasurementLogModalProps> = ({ visible, logs, onClose, onDeleteLog }) => {
+        // Normalize logs so each item has a `measurements` object for trend calc
+        const measurementLogs = (logs || []).map((l) => {
+                const keys = ['weight', 'waist', 'hip', 'neck', 'thigh', 'bicep'] as const;
+                const flat: Record<string, any> = {};
+                keys.forEach((k) => {
+                        const v = (l as any)[k];
+                        if (v && typeof v === 'object' && v.value !== undefined && v.value !== null) {
+                                flat[k] = v;
+                        }
+                });
+                const hasMeasurements = (l as any).measurements && Object.keys((l as any).measurements || {}).length;
+                return {
+                        ...l,
+                        measurements: hasMeasurements ? (l as any).measurements : flat,
+                } as any;
+        });
+
         const renderLogEntry = (log: MeasurementLogEntry, index: number) => {
                 // Last log (oldest) always shows minus - no trend to compare
                 // Logs are sorted newest first, so last index is oldest
                 const isOldestLog = index === logs.length - 1;
 
+                const measurementKeys = ['weight', 'waist', 'hip', 'neck', 'thigh', 'bicep'] as const;
+                const flatMeasurements: Record<string, any> = {};
+                measurementKeys.forEach((key) => {
+                        const maybe = (log as any)[key];
+                        if (maybe && typeof maybe === 'object' && maybe.value !== undefined && maybe.value !== null) {
+                                flatMeasurements[key] = maybe;
+                        }
+                });
+
+                const entryMeasurements =
+                        (log as any).measurements && Object.keys((log as any).measurements || {}).length
+                                ? (log as any).measurements
+                                : flatMeasurements;
+
                 return (
                         <View key={log._id} className="mb-4 rounded-lg bg-white/5 p-3">
                                 <View className="mb-3 flex-row items-center justify-between">
-                                        <CText className="font-semibold">
-                                                {new Date(
-                                                        log.createdAt || log.updatedAt || new Date().toISOString(),
-                                                ).toLocaleString()}
-                                        </CText>
-                                        <TouchableOpacity
-                                                onPress={() => onDeleteLog(log._id!)}
-                                                className="rounded-full bg-status-error p-2"
-                                        >
-                                                <Trash2Icon size={16} color="#FFFFFF" />
-                                        </TouchableOpacity>
+                                        <View className="flex-row items-center gap-3">
+                                                <CText className="font-semibold">
+                                                        {new Date(
+                                                                log.createdAt ||
+                                                                        log.updatedAt ||
+                                                                        new Date().toISOString(),
+                                                        ).toLocaleString()}
+                                                </CText>
+                                                {isOldestLog && (
+                                                        <CText className="rounded-full border border-primary bg-transparent px-2 text-sm !text-primary">
+                                                                Baseline
+                                                        </CText>
+                                                )}
+                                        </View>
+                                        {!isOldestLog && (
+                                                <TouchableOpacity
+                                                        onPress={() => onDeleteLog(index)}
+                                                        className="rounded-full bg-status-error p-2"
+                                                >
+                                                        <Trash2Icon size={16} color="#FFFFFF" />
+                                                </TouchableOpacity>
+                                        )}
                                 </View>
-                                {Object.entries(log.measurements || {}).map(([type, data]: [string, any]) => {
+                                {Object.entries(entryMeasurements || {}).map(([type, data]: [string, any]) => {
                                         if (!data || data.value === undefined || data.value === null) {
                                                 return null;
                                         }
 
                                         const measurementTrend = isOldestLog
                                                 ? null
-                                                : getMeasurementTrend(logs as any[], index, type);
+                                                : getMeasurementTrend(measurementLogs as any[], index, type);
                                         const trendColor = measurementTrend
                                                 ? getTrendColor(measurementTrend.direction)
                                                 : '#666666';
@@ -99,7 +141,7 @@ export const MeasurementLogModal: React.FC<MeasurementLogModalProps> = ({ visibl
                 >
                         <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={{ paddingBottom: 20 }}>
                                 {logs.length === 0 ? (
-                                        <CText>No logs yet</CText>
+                                        <CText>You haven't logged any measurements yet</CText>
                                 ) : (
                                         logs.map((log, index) => renderLogEntry(log, index))
                                 )}

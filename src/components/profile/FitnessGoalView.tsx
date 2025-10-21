@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { CText } from '../ui/CText';
 import { Dropdown } from '../ui/Dropdown';
+import { Slider } from '../ui/Slider';
 import { useTheme } from '../../contexts';
 
 export interface FitnessGoalViewProps {
@@ -135,19 +136,16 @@ export const FitnessGoalView: React.FC<FitnessGoalViewProps> = ({ formValues, se
                         {/* Weight Change Rate (only show if goal is lose or gain) */}
                         {(formValues.goal === 'lose' || formValues.goal === 'gain') && (
                                 <View className="mb-6">
-                                        <CText className="mb-3" weight="medium">
-                                                Daily Calorie Deficit/Surplus
-                                        </CText>
-                                        <Dropdown
-                                                options={reductionRates}
-                                                value={formValues.weightChangeRate}
+                                        <Slider
+                                                type="weight_goal"
+                                                goal={formValues.goal}
+                                                value={formValues.weightChangeRate || 400}
                                                 onValueChange={(value) =>
                                                         setFormValues((prev) => ({
                                                                 ...prev,
-                                                                weightChangeRate: value,
+                                                                weightChangeRate: Math.round(value),
                                                         }))
                                                 }
-                                                placeholder="Select Daily Calorie Change"
                                         />
                                 </View>
                         )}

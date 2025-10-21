@@ -5,7 +5,7 @@ const MeasurementLog = require('../models/MeasurementLog');
 const { User } = require('../models/User');
 const auth = require('../middleware/auth');
 
-// Create measurement log (single document with all measurements)
+// Create measurement log (add to user's measurements array)
 router.post('/', auth, async (req, res) => {
         try {
                 const { measurements } = req.body; // Object with { weight: {value, unit}, waist: {value, unit}, ... }
@@ -25,11 +25,26 @@ router.post('/', auth, async (req, res) => {
                         });
                 }
 
-                // Create single measurement log document
-                const measurementLog = new MeasurementLog({
-                        userId,
-                        measurements,
-                });
+                // Add timestamps to the measurement entry
+                const measurementEntry = {
+                        ...measurements,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                };
+
+                // Find existing measurement log for user or create new one
+                let measurementLog = await MeasurementLog.findOne({ userId });
+
+                if (!measurementLog) {
+                        // Create new measurement log document for user
+                        measurementLog = new MeasurementLog({
+                                userId,
+                                measurements: [measurementEntry],
+                        });
+                } else {
+                        // Add new measurement to existing array
+                        measurementLog.measurements.push(measurementEntry);
+                }
 
                 const savedLog = await measurementLog.save();
 
@@ -76,22 +91,36 @@ router.post('/', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
         try {
                 const userId = req.user.userId;
-                const { limit = 50, page = 1, type } = req.query;
+                const { limit = 50, page = 1 } = req.query;
 
                 const skip = (page - 1) * limit;
-                const filter = { userId };
-                if (type) filter.type = type;
 
-                const logs = await MeasurementLog.find(filter)
-                        .sort({ createdAt: -1 })
-                        .limit(parseInt(limit))
-                        .skip(skip);
+                // Find user's measurement log document
+                const measurementLog = await MeasurementLog.findOne({ userId });
 
-                const total = await MeasurementLog.countDocuments(filter);
+                if (!measurementLog) {
+                        return res.json({
+                                success: true,
+                                data: [],
+                                pagination: {
+                                        total: 0,
+                                        page: parseInt(page),
+                                        limit: parseInt(limit),
+                                        pages: 0,
+                                },
+                        });
+                }
+
+                // Sort measurements by createdAt descending and apply pagination
+                const sortedMeasurements = measurementLog.measurements
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .slice(skip, skip + parseInt(limit));
+
+                const total = measurementLog.measurements.length;
 
                 res.json({
                         success: true,
-                        data: logs,
+                        data: sortedMeasurements,
                         pagination: {
                                 total,
                                 page: parseInt(page),
@@ -114,11 +143,24 @@ router.get('/latest', auth, async (req, res) => {
         try {
                 const userId = req.user.userId;
 
-                const latestLogs = await MeasurementLog.find({ userId }).sort({ createdAt: -1 }).limit(1);
+                // Find user's measurement log document
+                const measurementLog = await MeasurementLog.findOne({ userId });
+
+                if (!measurementLog || measurementLog.measurements.length === 0) {
+                        return res.json({
+                                success: true,
+                                data: [],
+                        });
+                }
+
+                // Get the most recent measurement entry
+                const latestMeasurement = measurementLog.measurements.sort(
+                        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+                )[0];
 
                 res.json({
                         success: true,
-                        data: latestLogs,
+                        data: [latestMeasurement],
                 });
         } catch (error) {
                 console.error('Error fetching latest measurement logs:', error);
@@ -130,20 +172,26 @@ router.get('/latest', auth, async (req, res) => {
         }
 });
 
-// Get measurement logs by groupId
+// Get measurement logs by groupId (deprecated - keeping for backward compatibility)
 router.get('/group/:groupId', auth, async (req, res) => {
         try {
                 const { groupId } = req.params;
                 const userId = req.user.userId;
 
-                const logs = await MeasurementLog.find({
-                        userId,
-                        groupId: new mongoose.Types.ObjectId(groupId),
-                }).sort({ createdAt: -1 });
+                // Since we now store all measurements in a single document per user,
+                // this endpoint returns all measurements for the user
+                const measurementLog = await MeasurementLog.findOne({ userId });
+
+                if (!measurementLog) {
+                        return res.json({
+                                success: true,
+                                data: [],
+                        });
+                }
 
                 res.json({
                         success: true,
-                        data: logs,
+                        data: measurementLog.measurements,
                 });
         } catch (error) {
                 console.error('Error fetching measurement logs by group:', error);
@@ -155,32 +203,48 @@ router.get('/group/:groupId', auth, async (req, res) => {
         }
 });
 
-// Delete measurement log
-router.delete('/:id', auth, async (req, res) => {
+// Delete measurement log (by index in array)
+router.delete('/:index', auth, async (req, res) => {
         try {
-                const { id } = req.params;
+                const { index } = req.params;
                 const userId = req.user.userId;
+                const measurementIndex = parseInt(index);
 
-                const log = await MeasurementLog.findOneAndDelete({
-                        _id: id,
-                        userId,
-                });
+                if (isNaN(measurementIndex)) {
+                        return res.status(400).json({
+                                success: false,
+                                message: 'Invalid measurement index',
+                        });
+                }
 
-                if (!log) {
+                // Find user's measurement log document
+                const measurementLog = await MeasurementLog.findOne({ userId });
+
+                if (!measurementLog || !measurementLog.measurements[measurementIndex]) {
                         return res.status(404).json({
                                 success: false,
                                 message: 'Measurement log not found',
                         });
                 }
 
-                // Update user's measurements snapshot to latest remaining log
-                const latestLog = await MeasurementLog.findOne({ userId }).sort({ createdAt: -1 });
+                // Remove the measurement at the specified index
+                measurementLog.measurements.splice(measurementIndex, 1);
+                await measurementLog.save();
 
-                if (latestLog) {
-                        // Update with latest measurements
+                // Update user's measurements snapshot to latest remaining measurement
+                if (measurementLog.measurements.length > 0) {
+                        const latestMeasurement = measurementLog.measurements.sort(
+                                (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+                        )[0];
+
                         const measurementsSnapshot = {};
-                        Object.entries(latestLog.measurements).forEach(([type, data]) => {
-                                if (data && data.value !== undefined && data.value !== null) {
+                        Object.entries(latestMeasurement).forEach(([type, data]) => {
+                                if (
+                                        data &&
+                                        typeof data === 'object' &&
+                                        data.value !== undefined &&
+                                        data.value !== null
+                                ) {
                                         measurementsSnapshot[type] = data.value;
                                 }
                         });
@@ -192,7 +256,7 @@ router.delete('/:id', auth, async (req, res) => {
                                 },
                         });
                 } else {
-                        // No logs left, clear measurements snapshot
+                        // No measurements left, clear measurements snapshot
                         await User.findByIdAndUpdate(userId, {
                                 $unset: {
                                         'profile.measurements': 1,

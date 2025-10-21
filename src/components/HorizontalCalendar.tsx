@@ -6,12 +6,14 @@ import { DateItem } from './DateItem';
 interface HorizontalCalendarProps {
         onSelectDate: (date: string) => void;
         selected: string | null;
+        width?: number; // optional container width to avoid overlap
 }
 
-export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelectDate, selected }) => {
+export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelectDate, selected, width }) => {
         const [datePages, setDatePages] = useState<Date[][]>([]);
         const flatListRef = useRef<FlatList>(null);
         const windowDimensions = Dimensions.get('window');
+        const pageWidth = width || windowDimensions.width;
 
         // Generate date pages (7-8 days per page)
         const getDatePages = () => {
@@ -29,7 +31,7 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
 
                 // Split into pages of 7-8 days each
                 const pages: Date[][] = [];
-                const daysPerPage = 8;
+                const daysPerPage = 7;
 
                 for (let i = 0; i < allDates.length; i += daysPerPage) {
                         const page = allDates.slice(i, i + daysPerPage);
@@ -80,12 +82,9 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
 
         const renderDatePage = ({ item: page }: { item: Date[] }) => {
                 return (
-                        <View
-                                className="flex-row items-center justify-center"
-                                style={{ width: windowDimensions.width }}
-                        >
+                        <View className="flex-row items-center justify-center" style={{ width: pageWidth }}>
                                 {page.map((date, index) => (
-                                        <View key={index} className="flex-1 items-center pr-4">
+                                        <View key={index} className="flex-1 items-center pr-3">
                                                 <DateItem date={date} onSelectDate={onSelectDate} selected={selected} />
                                         </View>
                                 ))}
@@ -105,12 +104,12 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
                                         pagingEnabled
-                                        snapToInterval={windowDimensions.width}
+                                        snapToInterval={pageWidth}
                                         snapToAlignment="start"
                                         decelerationRate="fast"
                                         getItemLayout={(data, index) => ({
-                                                length: windowDimensions.width,
-                                                offset: windowDimensions.width * index,
+                                                length: pageWidth,
+                                                offset: pageWidth * index,
                                                 index,
                                         })}
                                         initialScrollIndex={0}

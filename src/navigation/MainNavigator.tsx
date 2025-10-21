@@ -34,9 +34,7 @@ const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
         return (
                 <TouchableOpacity
                         onPress={onPress}
-                        className={`absolute -bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 border-surfacePrimary-dark bg-primary ${
-                                isDark ? 'border-surfacePrimary-dark' : 'border-surfacePrimary'
-                        }`}
+                        className={`} absolute -bottom-0 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 border-surfacePrimary bg-primary dark:border-surfacePrimary-dark`}
                 >
                         <LottieView
                                 source={require('../assets/images/scan.json')}

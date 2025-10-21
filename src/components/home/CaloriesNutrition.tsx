@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { ZapIcon, Utensils, Flame, Wheat, Beef, Apple, Carrot, HelpCircle, ChevronDown } from 'lucide-react-native';
+import {
+        ZapIcon,
+        Utensils,
+        Flame,
+        Wheat,
+        Beef,
+        Apple,
+        Carrot,
+        HelpCircle,
+        ChevronDown,
+        Sprout,
+        Pizza,
+        Droplet,
+        Droplets,
+} from 'lucide-react-native';
 import { CText, CircularProgress, MacroNutrient } from '../ui';
 import { UserProfile } from '../../types';
 import { DietMode, DIET_MODES } from '../../types/dietModes';
@@ -60,14 +74,14 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         goal: macroGoals.protein,
                         unit: 'g',
                         icon: Beef,
-                        color: '#4CAF50',
+                        color: '#F44336',
                 },
                 {
                         name: 'Fat',
                         consumed: 0, // TODO: Get from actual data
                         goal: macroGoals.fat,
                         unit: 'g',
-                        icon: Apple,
+                        icon: Droplets,
                         color: '#2196F3',
                 },
                 {
@@ -75,8 +89,8 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         consumed: 0, // TODO: Get from actual data
                         goal: macroGoals.fiber,
                         unit: 'g',
-                        icon: Carrot,
-                        color: '#9C27B0',
+                        icon: Sprout,
+                        color: '#4CAF50',
                 },
         ];
 
@@ -111,7 +125,6 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                                                 >
                                                         <View className="items-center">
                                                                 <CText
-                                                                        size="sm"
                                                                         weight="medium"
                                                                         className="text-textSecondary dark:text-textSecondary-dark"
                                                                 >
