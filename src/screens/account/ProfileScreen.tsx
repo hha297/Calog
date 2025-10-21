@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, User, PenBoxIcon } from 'lucide-react-native';
+import { ArrowLeft, User, PenBoxIcon, AlertTriangleIcon } from 'lucide-react-native';
 import { CText } from '../../components/ui/CText';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { Button } from '../../components/ui/Button';
@@ -30,7 +30,7 @@ export const ProfileScreen: React.FC = () => {
         const [logModalVisible, setLogModalVisible] = useState(false);
         const [logs, setLogs] = useState<MeasurementLogEntry[]>([]);
         const [confirmVisible, setConfirmVisible] = useState(false);
-        const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+        const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
 
         // Handlers
         const handleReviewMeasurementLog = async () => {
@@ -44,15 +44,15 @@ export const ProfileScreen: React.FC = () => {
                 setLogModalVisible(true);
         };
 
-        const handleDeleteMeasurementLog = async (logId: string) => {
-                setPendingDeleteId(logId);
+        const handleDeleteMeasurementLog = async (logIndex: number) => {
+                setPendingDeleteIndex(logIndex);
                 setConfirmVisible(true);
         };
 
         const confirmDelete = async () => {
-                if (!pendingDeleteId) return;
+                if (pendingDeleteIndex === null) return;
                 try {
-                        await measurementLogStorage.deleteLog(pendingDeleteId);
+                        await measurementLogStorage.deleteLog(pendingDeleteIndex);
                         await loadProfile();
                         setProfile(null);
                         setTimeout(async () => {
@@ -67,7 +67,7 @@ export const ProfileScreen: React.FC = () => {
                         );
                         setLogs(sortedLogs as any);
                         setConfirmVisible(false);
-                        setPendingDeleteId(null);
+                        setPendingDeleteIndex(null);
                 } catch (error) {
                         console.error('Failed to delete measurement log:', error);
                 }
@@ -247,6 +247,10 @@ export const ProfileScreen: React.FC = () => {
                         } else if (editModalType === 'profile_info') {
                                 // TODO: Update user profile info (name, email, avatar)
                         }
+
+                        // Reload profile data to ensure UI shows latest data
+                        await loadProfile();
+
                         setEditModalVisible(false);
                         setEditModalType(null);
                 } catch (error) {
@@ -477,6 +481,19 @@ export const ProfileScreen: React.FC = () => {
                                         <CText className="text-sm">
                                                 The amount of calories needed to achieve your weight goal.
                                         </CText>
+                                        {dailyCalorieGoal < bmr && (
+                                                <View className="mt-3 rounded-lg border bg-status-error p-3">
+                                                        <View className="flex-col items-center justify-center">
+                                                                <AlertTriangleIcon size={24} color="#FFFFFF" />
+
+                                                                <CText className="mt-1 text-sm" weight="medium">
+                                                                        Eating below BMR may be unsafe and can harm your
+                                                                        metabolism. Consider reducing your daily calorie
+                                                                        deficit/surplus in Fitness Goals.
+                                                                </CText>
+                                                        </View>
+                                                </View>
+                                        )}
                                 </View>
 
                                 {/* TDEE Section */}
@@ -628,7 +645,7 @@ export const ProfileScreen: React.FC = () => {
                                 danger
                                 onCancel={() => {
                                         setConfirmVisible(false);
-                                        setPendingDeleteId(null);
+                                        setPendingDeleteIndex(null);
                                 }}
                                 onConfirm={confirmDelete}
                         />

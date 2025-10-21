@@ -30,21 +30,7 @@ export const useUserProfile = () => {
                 try {
                         setIsLoading(true);
 
-                        // Check if profile in user object is complete
-                        const hasCompleteProfile =
-                                user?.profile &&
-                                user.profile.gender &&
-                                user.profile.age &&
-                                user.profile.height &&
-                                user.profile.weight;
-
-                        if (hasCompleteProfile) {
-                                setProfile(normalizeProfile(user.profile) as UserProfile);
-                                setIsLoading(false);
-                                return;
-                        } else if (user?.profile) {
-                        }
-
+                        // Always fetch fresh data from API to ensure we have the latest profile
                         try {
                                 const response = await profileApi.getProfile();
 
@@ -72,13 +58,36 @@ export const useUserProfile = () => {
 
                                         setProfile(merged as UserProfile);
                                 } else {
-                                        setProfile(null);
+                                        // Fallback to user.profile if API returns no data
+                                        const hasCompleteProfile =
+                                                user?.profile &&
+                                                user.profile.gender &&
+                                                user.profile.age &&
+                                                user.profile.height &&
+                                                user.profile.weight;
+
+                                        if (hasCompleteProfile) {
+                                                setProfile(normalizeProfile(user.profile) as UserProfile);
+                                        } else {
+                                                setProfile(null);
+                                        }
                                 }
                         } catch (apiError) {
                                 console.error('Failed to fetch profile from API:', apiError);
 
-                                // If API fails, keep profile as null
-                                setProfile(null);
+                                // Fallback to user.profile if API fails
+                                const hasCompleteProfile =
+                                        user?.profile &&
+                                        user.profile.gender &&
+                                        user.profile.age &&
+                                        user.profile.height &&
+                                        user.profile.weight;
+
+                                if (hasCompleteProfile) {
+                                        setProfile(normalizeProfile(user.profile) as UserProfile);
+                                } else {
+                                        setProfile(null);
+                                }
                         }
                 } catch (error) {
                         console.error('Error loading profile:', error);
@@ -96,8 +105,11 @@ export const useUserProfile = () => {
                         // Update via API
                         await profileApi.updateProfile(updatedProfile);
 
-                        // Update local state
+                        // Update local state immediately for better UX
                         setProfile(updatedProfile);
+
+                        // Also reload from API to ensure we have the latest data
+                        await loadProfile();
                 } catch (error) {
                         console.error('Error updating profile:', error);
                         throw error;

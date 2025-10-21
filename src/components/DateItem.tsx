@@ -33,7 +33,7 @@ export const DateItem: React.FC<DateItemProps> = ({ date, onSelectDate, selected
                         className={`items-center justify-center ${!isCurrentMonth ? 'opacity-50' : ''}`}
                 >
                         <View
-                                className={`mb-2 size-12 items-center justify-center rounded-full ${
+                                className={`mb-2 size-10 items-center justify-center rounded-full ${
                                         isSelected
                                                 ? 'bg-primary'
                                                 : isToday

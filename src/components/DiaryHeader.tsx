@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BellIcon, CalendarIcon, User } from 'lucide-react-native';
 import { CText } from './ui/CText';
@@ -65,7 +65,7 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
         };
 
         const formatDateSubtitle = (date: Date) => {
-                return "HELLO FRIEND, LET'S START TOGETHER!";
+                return "Hi there! Let's start today together!";
         };
 
         const handleDateSelect = (dateString: string) => {
@@ -76,7 +76,7 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
         const selectedDateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
         return (
-                <View className="bg-surfacePrimary px-4 pt-4 dark:bg-surfacePrimary-dark">
+                <View className="bg-surfacePrimary pl-4 pr-2 pt-4 dark:bg-surfacePrimary-dark">
                         {/* Top Section */}
                         <View className="mb-4 flex-row items-center justify-between">
                                 {/* Left Side - Avatar and Date */}
@@ -96,9 +96,9 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
 
                                         <View className="flex-1">
                                                 <CText
-                                                        size="2xl"
+                                                        size="lg"
                                                         weight="bold"
-                                                        className="mb-2 text-textPrimary dark:text-textPrimary-dark"
+                                                        className="text-textPrimary dark:text-textPrimary-dark"
                                                 >
                                                         {formatDateDisplay(selectedDate)}
                                                 </CText>
@@ -113,7 +113,7 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                                 </TouchableOpacity>
 
                                 {/* Right Side - Notification */}
-                                <TouchableOpacity className="ml-4">
+                                <TouchableOpacity className="ml-4 flex-row items-center gap-3">
                                         <View className="size-10 items-center justify-center rounded-full bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
                                                 <BellIcon size={20} color={isDark ? '#FFFFFF' : '#666666'} />
                                         </View>
@@ -122,12 +122,19 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
 
                         {/* Date Picker Section */}
                         <View className="mb-4 flex-row items-center">
-                                <HorizontalCalendar onSelectDate={handleDateSelect} selected={selectedDateString} />
+                                {/* Horizontal calendar takes remaining width after the calendar button */}
+                                <View style={{ flex: 1 }}>
+                                        <HorizontalCalendar
+                                                onSelectDate={handleDateSelect}
+                                                selected={selectedDateString}
+                                                width={Math.round((Dimensions.get('window').width || 0) - 80)}
+                                        />
+                                </View>
 
-                                {/* Calendar Icon */}
-                                <View className="flex-row items-center">
-                                        <View className="mr-2 h-12 w-px bg-background dark:bg-gray-600" />
-                                        <TouchableOpacity onPress={onCalendarPress}>
+                                {/* Calendar Icon (fixed width) */}
+                                <View className="my-1 flex-row items-center" style={{ width: 44 }}>
+                                        <View className="h-12 w-px bg-background dark:bg-gray-600" />
+                                        <TouchableOpacity onPress={onCalendarPress} className="ml-2">
                                                 <View className="size-10 items-center justify-center rounded-lg bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
                                                         <CalendarIcon
                                                                 size={20}

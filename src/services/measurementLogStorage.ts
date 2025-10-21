@@ -134,9 +134,9 @@ export const measurementLogStorage = {
 
                 return [];
         },
-        async deleteLog(logId: string): Promise<void> {
+        async deleteLog(logIndex: number): Promise<void> {
                 try {
-                        await apiClient.delete(`/api/measurement-logs/${logId}`);
+                        await apiClient.delete(`/api/measurement-logs/${logIndex}`);
                 } catch (error) {
                         console.error('Failed to delete measurement log:', error);
                         throw error;
