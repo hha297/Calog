@@ -23,8 +23,8 @@ module.exports = {
                                         // dark: '#222630',
                                 },
                                 surfaceSecondary: {
-                                        DEFAULT: '#EFEFEF',
-                                        dark: '#1A1A1A',
+                                        DEFAULT: '#1A1A1A1A',
+                                        dark: '#EFEFEF1A',
                                 },
                                 textPrimary: {
                                         DEFAULT: '#000000',

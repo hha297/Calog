@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { CText, ViewSelector } from '../../components/ui';
+import { CText } from '../../components/ui';
 import { DiaryHeader } from '../../components/DiaryHeader';
 import { CaloriesNutrition } from '../../components/home';
 import { useUserProfile } from '../../hooks/useUserProfile';
@@ -57,14 +57,13 @@ export const DiaryScreen: React.FC = () => {
                         />
 
                         <ScrollView className="flex-1 px-2 py-4">
-                                {/* View Selector */}
-                                <ViewSelector selectedView={selectedView} onViewChange={setSelectedView} />
-
                                 {/* Calories & Nutrition Section */}
                                 <CaloriesNutrition
                                         profile={profile}
                                         caloriesConsumed={caloriesConsumed}
                                         caloriesBurned={caloriesBurned}
+                                        selectedView={selectedView}
+                                        onViewChange={setSelectedView}
                                 />
 
                                 {/* Food Diary Section */}
