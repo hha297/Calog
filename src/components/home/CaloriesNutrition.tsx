@@ -20,16 +20,230 @@ import { UserProfile } from '../../types';
 import { DietMode, DIET_MODES } from '../../types/dietModes';
 import { DietModeModal } from '../DietModeModal';
 
+// Daily View Component
+const DailyView: React.FC<{
+        caloriesNeeded: number;
+        actualConsumed: number;
+        caloriesRemaining: number;
+        caloriesBurned: number;
+        calorieProgress: number;
+        macroNutrients: any[];
+}> = ({ caloriesNeeded, actualConsumed, caloriesRemaining, caloriesBurned, calorieProgress, macroNutrients }) => {
+        return (
+                <>
+                        {/* Circular Progress and Calorie Summary */}
+                        <View className="mb-6 flex-row justify-between px-5">
+                                {/* Circular Progress for Calories */}
+                                <View className="items-center justify-center">
+                                        <CircularProgress
+                                                progress={calorieProgress}
+                                                size={160}
+                                                strokeWidth={8}
+                                                color="#4CAF50"
+                                                backgroundColor="#E5E5E5"
+                                        >
+                                                <View className="items-center">
+                                                        <CText
+                                                                weight="medium"
+                                                                className="text-textSecondary dark:text-textSecondary-dark"
+                                                        >
+                                                                Consumed
+                                                        </CText>
+                                                        <CText size="3xl" weight="bold" className="!text-primary">
+                                                                {actualConsumed}
+                                                        </CText>
+                                                </View>
+                                        </CircularProgress>
+                                </View>
+
+                                {/* Daily Summary */}
+                                <View className="justify-center space-y-4">
+                                        <View className="my-2 flex-row items-center">
+                                                <ZapIcon size={24} color="#4CAF50" fill="#4CAF50" />
+                                                <View className="ml-3 flex-col">
+                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                Needed
+                                                        </CText>
+                                                        <CText
+                                                                weight="medium"
+                                                                className="text-textPrimary dark:text-textPrimary-dark"
+                                                        >
+                                                                {caloriesNeeded}
+                                                        </CText>
+                                                </View>
+                                        </View>
+                                        <View className="my-2 flex-row items-center">
+                                                <Utensils size={24} color="#FF9800" fill="#FF9800" />
+                                                <View className="ml-3 flex-col">
+                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                Remaining
+                                                        </CText>
+                                                        <CText
+                                                                weight="medium"
+                                                                className="text-textPrimary dark:text-textPrimary-dark"
+                                                        >
+                                                                {caloriesRemaining}
+                                                        </CText>
+                                                </View>
+                                        </View>
+                                        <View className="my-2 flex-row items-center">
+                                                <Flame size={24} color="#F44336" fill="#F44336" />
+                                                <View className="ml-3 flex-col">
+                                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
+                                                                Burned
+                                                        </CText>
+                                                        <CText
+                                                                weight="medium"
+                                                                className="text-textPrimary dark:text-textPrimary-dark"
+                                                        >
+                                                                {caloriesBurned}
+                                                        </CText>
+                                                </View>
+                                        </View>
+                                </View>
+                        </View>
+
+                        {/* Macronutrients - 2x2 Grid Layout */}
+                        <View className="px-4">
+                                <View className="gap-2">
+                                        <View className="mb-2 flex-row justify-between gap-2">
+                                                <View className="mr-1 flex-1">
+                                                        <MacroNutrient
+                                                                icon={macroNutrients[0].icon}
+                                                                name={macroNutrients[0].name}
+                                                                consumed={macroNutrients[0].consumed}
+                                                                goal={macroNutrients[0].goal}
+                                                                unit={macroNutrients[0].unit}
+                                                                color={macroNutrients[0].color}
+                                                        />
+                                                </View>
+                                                <View className="ml-1 flex-1">
+                                                        <MacroNutrient
+                                                                icon={macroNutrients[1].icon}
+                                                                name={macroNutrients[1].name}
+                                                                consumed={macroNutrients[1].consumed}
+                                                                goal={macroNutrients[1].goal}
+                                                                unit={macroNutrients[1].unit}
+                                                                color={macroNutrients[1].color}
+                                                        />
+                                                </View>
+                                        </View>
+                                        <View className="flex-row justify-between gap-2">
+                                                <View className="mr-1 flex-1">
+                                                        <MacroNutrient
+                                                                icon={macroNutrients[2].icon}
+                                                                name={macroNutrients[2].name}
+                                                                consumed={macroNutrients[2].consumed}
+                                                                goal={macroNutrients[2].goal}
+                                                                unit={macroNutrients[2].unit}
+                                                                color={macroNutrients[2].color}
+                                                        />
+                                                </View>
+                                                <View className="ml-1 flex-1">
+                                                        <MacroNutrient
+                                                                icon={macroNutrients[3].icon}
+                                                                name={macroNutrients[3].name}
+                                                                consumed={macroNutrients[3].consumed}
+                                                                goal={macroNutrients[3].goal}
+                                                                unit={macroNutrients[3].unit}
+                                                                color={macroNutrients[3].color}
+                                                        />
+                                                </View>
+                                        </View>
+                                </View>
+                        </View>
+                </>
+        );
+};
+
+// Weekly View Component
+const WeeklyView: React.FC<{
+        weeklyCaloriesNeeded: number;
+        weeklyCaloriesConsumed: number;
+        caloriesNeeded: number;
+        calorieProgress: number;
+        macroNutrients: any[];
+}> = ({ weeklyCaloriesNeeded, weeklyCaloriesConsumed, caloriesNeeded, calorieProgress, macroNutrients }) => {
+        return (
+                <>
+                        {/* Circular Progress and Weekly Bar Chart */}
+                        <View className="mb-6 flex-row justify-between px-2">
+                                {/* Circular Progress for Weekly Calories */}
+                                <View className="mx-2 items-center justify-center">
+                                        <CircularProgress
+                                                progress={calorieProgress}
+                                                size={100}
+                                                strokeWidth={8}
+                                                color="#4CAF50"
+                                                backgroundColor="#E5E5E5"
+                                        >
+                                                <View className="items-center gap-y-1">
+                                                        <CText size="2xl" weight="bold" className="!text-primary">
+                                                                {weeklyCaloriesConsumed}
+                                                        </CText>
+                                                        <View className="h-px w-12 bg-textPrimary dark:bg-textPrimary-dark" />
+                                                        <CText
+                                                                weight="medium"
+                                                                className="text-textPrimary dark:text-textPrimary-dark"
+                                                        >
+                                                                {weeklyCaloriesNeeded}
+                                                        </CText>
+                                                </View>
+                                        </CircularProgress>
+                                </View>
+
+                                {/* Weekly Bar Chart */}
+                                <View className="flex-1 justify-center">
+                                        <View className="flex-row justify-between gap-2">
+                                                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+                                                        <View key={index} className="items-center">
+                                                                <CText className="mb-1 text-sm text-textPrimary dark:text-textPrimary-dark">
+                                                                        {caloriesNeeded}
+                                                                </CText>
+                                                                <View className="mb-1 h-[100px] w-4 rounded-t-full bg-surfaceSecondary dark:bg-background" />
+                                                                <CText className="text-sm text-textPrimary dark:text-textPrimary-dark">
+                                                                        {day}
+                                                                </CText>
+                                                        </View>
+                                                ))}
+                                        </View>
+                                </View>
+                        </View>
+
+                        {/* Macronutrients - Vertical Layout */}
+                        <View className="px-4">
+                                <View className="gap-y-2">
+                                        {macroNutrients.map((macro, index) => (
+                                                <MacroNutrient
+                                                        key={index}
+                                                        icon={macro.icon}
+                                                        name={macro.name}
+                                                        consumed={macro.consumed}
+                                                        goal={macro.goal}
+                                                        unit={macro.unit}
+                                                        color={macro.color}
+                                                />
+                                        ))}
+                                </View>
+                        </View>
+                </>
+        );
+};
+
 interface CaloriesNutritionProps {
         profile: UserProfile | null;
         caloriesConsumed?: number;
         caloriesBurned?: number;
+        selectedView?: 'daily' | 'weekly';
+        onViewChange?: (view: 'daily' | 'weekly') => void;
 }
 
 export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         profile,
         caloriesConsumed = 0,
         caloriesBurned = 0,
+        selectedView = 'daily',
+        onViewChange,
 }) => {
         const [selectedDietMode, setSelectedDietMode] = useState<DietMode>(DIET_MODES[1]); // Default to Low Carb
         const [isDietModalVisible, setIsDietModalVisible] = useState(false);
@@ -37,18 +251,33 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         const caloriesNeeded = profile?.dailyCalorieGoal || 0;
         const actualConsumed = caloriesConsumed;
         const caloriesRemaining = caloriesNeeded - actualConsumed;
-        const calorieProgress = caloriesNeeded > 0 ? (actualConsumed / caloriesNeeded) * 100 : 0;
+
+        // For weekly view, multiply by 7
+        const weeklyCaloriesNeeded = caloriesNeeded * 7;
+        const weeklyCaloriesConsumed = actualConsumed * 7;
+        const weeklyCaloriesRemaining = weeklyCaloriesNeeded - weeklyCaloriesConsumed;
+
+        const calorieProgress =
+                selectedView === 'weekly'
+                        ? weeklyCaloriesNeeded > 0
+                                ? (weeklyCaloriesConsumed / weeklyCaloriesNeeded) * 100
+                                : 0
+                        : caloriesNeeded > 0
+                          ? (actualConsumed / caloriesNeeded) * 100
+                          : 0;
 
         // TODO: Implement proper macro nutrient calculation based on profile and selected diet mode
         const calculateMacroGoals = () => {
                 if (!profile) return { carbs: 0, protein: 0, fat: 0, fiber: 0 };
 
                 const calories = caloriesNeeded;
+                const multiplier = selectedView === 'weekly' ? 7 : 1; // Weekly = daily x 7
+
                 // Use selected diet mode ratios
-                const proteinGrams = Math.round((calories * selectedDietMode.proteinPercentage) / 100 / 4); // 4 cal/g
-                const fatGrams = Math.round((calories * selectedDietMode.fatPercentage) / 100 / 9); // 9 cal/g
-                const carbGrams = Math.round((calories * selectedDietMode.carbsPercentage) / 100 / 4); // 4 cal/g
-                const fiberGrams = Math.round(profile.weight * 0.5); // 0.5g per kg body weight
+                const proteinGrams = Math.round((calories * selectedDietMode.proteinPercentage) / 100 / 4) * multiplier; // 4 cal/g
+                const fatGrams = Math.round((calories * selectedDietMode.fatPercentage) / 100 / 9) * multiplier; // 9 cal/g
+                const carbGrams = Math.round((calories * selectedDietMode.carbsPercentage) / 100 / 4) * multiplier; // 4 cal/g
+                const fiberGrams = Math.round(profile.weight * 0.5) * multiplier; // 0.5g per kg body weight
 
                 return {
                         carbs: carbGrams,
@@ -59,10 +288,11 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         };
 
         const macroGoals = calculateMacroGoals();
+        const multiplier = selectedView === 'weekly' ? 7 : 1;
         const macroNutrients = [
                 {
                         name: 'Carbs',
-                        consumed: 0, // TODO: Get from actual data
+                        consumed: 0 * multiplier, // TODO: Get from actual data
                         goal: macroGoals.carbs,
                         unit: 'g',
                         icon: Wheat,
@@ -70,7 +300,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                 },
                 {
                         name: 'Protein',
-                        consumed: 0, // TODO: Get from actual data
+                        consumed: 0 * multiplier, // TODO: Get from actual data
                         goal: macroGoals.protein,
                         unit: 'g',
                         icon: Beef,
@@ -78,20 +308,25 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                 },
                 {
                         name: 'Fat',
-                        consumed: 0, // TODO: Get from actual data
+                        consumed: 0 * multiplier, // TODO: Get from actual data
                         goal: macroGoals.fat,
                         unit: 'g',
                         icon: Droplets,
                         color: '#2196F3',
                 },
-                {
-                        name: 'Fiber',
-                        consumed: 0, // TODO: Get from actual data
-                        goal: macroGoals.fiber,
-                        unit: 'g',
-                        icon: Sprout,
-                        color: '#4CAF50',
-                },
+                // Only show Fiber in daily view
+                ...(selectedView === 'daily'
+                        ? [
+                                  {
+                                          name: 'Fiber',
+                                          consumed: 0, // TODO: Get from actual data
+                                          goal: macroGoals.fiber,
+                                          unit: 'g',
+                                          icon: Sprout,
+                                          color: '#4CAF50',
+                                  },
+                          ]
+                        : []),
         ];
 
         return (
@@ -105,110 +340,57 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                                         >
                                                 Calories & Nutrition
                                         </CText>
-                                        <TouchableOpacity className="rounded-full border border-surfacePrimary px-4 py-1">
-                                                <CText weight="medium" className="text-primary">
-                                                        Statistics
-                                                </CText>
-                                        </TouchableOpacity>
+                                        {onViewChange && (
+                                                <View className="flex-row rounded-full bg-surfaceSecondary p-1 dark:bg-surfaceSecondary-dark">
+                                                        <TouchableOpacity
+                                                                className={`rounded-full px-4 py-1 ${selectedView === 'daily' ? 'bg-primary' : ''}`}
+                                                                onPress={() => onViewChange('daily')}
+                                                        >
+                                                                <CText
+                                                                        weight="medium"
+                                                                        className={`text-sm ${selectedView === 'daily' ? 'text-white' : 'text-textPrimary dark:text-textPrimary-dark'}`}
+                                                                >
+                                                                        Day
+                                                                </CText>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity
+                                                                className={`rounded-full px-4 py-1 ${selectedView === 'weekly' ? 'bg-primary' : ''}`}
+                                                                onPress={() => onViewChange('weekly')}
+                                                        >
+                                                                <CText
+                                                                        weight="medium"
+                                                                        className={`text-sm ${selectedView === 'weekly' ? 'text-white' : 'text-textPrimary dark:text-textPrimary-dark'}`}
+                                                                >
+                                                                        Week
+                                                                </CText>
+                                                        </TouchableOpacity>
+                                                </View>
+                                        )}
                                 </View>
 
-                                {/* Circular Progress and Calorie Summary */}
-                                <View className="mb-6 flex-row justify-between px-8">
-                                        {/* Circular Progress for Calories */}
-                                        <View className="items-center justify-center">
-                                                <CircularProgress
-                                                        progress={calorieProgress}
-                                                        size={160}
-                                                        strokeWidth={8}
-                                                        color="#4CAF50"
-                                                        backgroundColor="#E5E5E5"
-                                                >
-                                                        <View className="items-center">
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className="text-textSecondary dark:text-textSecondary-dark"
-                                                                >
-                                                                        Consumed
-                                                                </CText>
-                                                                <CText
-                                                                        size="3xl"
-                                                                        weight="bold"
-                                                                        className="!text-primary"
-                                                                >
-                                                                        {actualConsumed}
-                                                                </CText>
-                                                        </View>
-                                                </CircularProgress>
-                                        </View>
-
-                                        {/* Calorie Summary - Side by side with circle */}
-                                        <View className="justify-center space-y-4">
-                                                <View className="my-2 flex-row items-center">
-                                                        <ZapIcon size={24} color="#4CAF50" fill="#4CAF50" />
-                                                        <View className="ml-3 flex-col">
-                                                                <CText className="text-textPrimary dark:text-textPrimary-dark">
-                                                                        Needed
-                                                                </CText>
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className="text-textPrimary dark:text-textPrimary-dark"
-                                                                >
-                                                                        {caloriesNeeded}
-                                                                </CText>
-                                                        </View>
-                                                </View>
-                                                <View className="my-2 flex-row items-center">
-                                                        <Utensils size={24} color="#FF9800" fill="#FF9800" />
-                                                        <View className="ml-3 flex-col">
-                                                                <CText className="text-textPrimary dark:text-textPrimary-dark">
-                                                                        Remaining
-                                                                </CText>
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className="text-textPrimary dark:text-textPrimary-dark"
-                                                                >
-                                                                        {caloriesRemaining}
-                                                                </CText>
-                                                        </View>
-                                                </View>
-                                                <View className="my-2 flex-row items-center">
-                                                        <Flame size={24} color="#F44336" fill="#F44336" />
-                                                        <View className="ml-3 flex-col">
-                                                                <CText className="text-textPrimary dark:text-textPrimary-dark">
-                                                                        Burned
-                                                                </CText>
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className="text-textPrimary dark:text-textPrimary-dark"
-                                                                >
-                                                                        {caloriesBurned}
-                                                                </CText>
-                                                        </View>
-                                                </View>
-                                        </View>
-                                </View>
-
-                                {/* Macronutrients */}
-                                <View className="flex-row items-center justify-between px-2">
-                                        {macroNutrients.map((macro, index) => (
-                                                <View key={index} className="flex-1 items-center">
-                                                        <MacroNutrient
-                                                                icon={macro.icon}
-                                                                name={macro.name}
-                                                                consumed={macro.consumed}
-                                                                goal={macro.goal}
-                                                                unit={macro.unit}
-                                                                color={macro.color}
-                                                        />
-                                                </View>
-                                        ))}
-                                </View>
+                                {/* Render appropriate view based on selectedView */}
+                                {selectedView === 'daily' ? (
+                                        <DailyView
+                                                caloriesNeeded={caloriesNeeded}
+                                                actualConsumed={actualConsumed}
+                                                caloriesRemaining={caloriesRemaining}
+                                                caloriesBurned={caloriesBurned}
+                                                calorieProgress={calorieProgress}
+                                                macroNutrients={macroNutrients}
+                                        />
+                                ) : (
+                                        <WeeklyView
+                                                weeklyCaloriesNeeded={weeklyCaloriesNeeded}
+                                                weeklyCaloriesConsumed={weeklyCaloriesConsumed}
+                                                caloriesNeeded={caloriesNeeded}
+                                                calorieProgress={calorieProgress}
+                                                macroNutrients={macroNutrients}
+                                        />
+                                )}
 
                                 {/* Diet Mode */}
                                 <View className="mt-4 flex-row items-center justify-center px-4">
-                                        <CText className="text-textPrimary dark:text-textPrimary-dark">
-                                                You are currently on diet mode:{' '}
-                                        </CText>
+                                        <CText>You are currently on diet mode: </CText>
                                         <TouchableOpacity
                                                 className="flex-row items-center"
                                                 onPress={() => setIsDietModalVisible(true)}

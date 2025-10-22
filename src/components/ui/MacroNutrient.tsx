@@ -24,17 +24,26 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
         const clampedProgress = Math.min(progress, 100);
 
         return (
-                <View className="flex-col items-center px-2 py-1">
-                        {/* Icon and Name Row */}
-                        <View className="mb-2 flex-row items-center">
-                                <Icon size={16} color={color} />
-                                <CText weight="medium" className="ml-2 text-textPrimary dark:text-textPrimary-dark">
-                                        {name}
+                <View className="rounded-lg bg-surfaceSecondary p-3 dark:bg-surfaceSecondary-dark">
+                        {/* Top Row: Icon + Name + Value */}
+                        <View className="mb-2 flex-row items-center justify-between">
+                                <View className="flex-row items-center">
+                                        <Icon size={16} color={color} />
+                                        <CText
+                                                weight="medium"
+                                                className="ml-2 text-textPrimary dark:text-textPrimary-dark"
+                                        >
+                                                {name}
+                                        </CText>
+                                </View>
+                                <CText weight="medium" className="text-textPrimary dark:text-textPrimary-dark">
+                                        {consumed}/{goal}
+                                        {unit}
                                 </CText>
                         </View>
 
-                        {/* Progress Bar */}
-                        <View className="mb-2 h-2 w-20 rounded-full bg-background dark:bg-white">
+                        {/* Progress Bar - Full Width */}
+                        <View className="h-2 w-full rounded-full bg-white">
                                 <View
                                         className="h-2 rounded-full bg-primary"
                                         style={{
@@ -42,12 +51,6 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
                                         }}
                                 />
                         </View>
-
-                        {/* Consumed/Goal */}
-                        <CText weight="medium" className="text-textPrimary dark:text-textPrimary-dark">
-                                {consumed}/{goal}
-                                {unit}
-                        </CText>
                 </View>
         );
 };
