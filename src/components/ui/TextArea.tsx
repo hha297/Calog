@@ -4,32 +4,33 @@ import { CustomText } from './CustomText';
 import { colors } from '../../style/colors';
 
 // Types
-export type InputSize = 'large' | 'medium' | 'small';
+export type TextAreaSize = 'large' | 'medium' | 'small';
 
-export interface InputProps {
+export interface TextAreaProps {
   label?: string;
   placeholder?: string;
   value?: string;
-  size?: InputSize;
+  size?: TextAreaSize;
   errorMessage?: string;
   disabled?: boolean;
   className?: string;
+  numberOfLines?: number;
   onChangeText?: (text: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 }
 
 // Size configurations
-const getSizeClasses = (size: InputSize) => {
+const getSizeClasses = (size: TextAreaSize) => {
   switch (size) {
     case 'large':
-      return 'px-4 py-4 text-base';
+      return 'px-4 py-4 text-base min-h-24';
     case 'medium':
-      return 'px-4 py-3 text-sm';
+      return 'px-4 py-3 text-sm min-h-20';
     case 'small':
-      return 'px-3 py-2 text-sm';
+      return 'px-3 py-2 text-sm min-h-16';
     default:
-      return 'px-4 py-3 text-sm';
+      return 'px-4 py-3 text-sm min-h-20';
   }
 };
 
@@ -43,7 +44,6 @@ const getStateClasses = (
   if (disabled) {
     return {
       container: 'border border-lightGray/30 opacity-50',
-      text: ' opacity-50',
     };
   }
 
@@ -70,14 +70,15 @@ const getStateClasses = (
   };
 };
 
-const Input: React.FC<InputProps> = ({
+const TextArea: React.FC<TextAreaProps> = ({
   label,
-  placeholder = 'First name here',
+  placeholder = 'Placeholder',
   value,
   size = 'medium',
   errorMessage,
   disabled = false,
   className = '',
+  numberOfLines = 4,
   onChangeText,
   onFocus,
   onBlur,
@@ -128,11 +129,12 @@ const Input: React.FC<InputProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         editable={!disabled}
+        multiline
+        numberOfLines={numberOfLines}
+        textAlignVertical="top"
         style={{
-          color:
-            stateClasses.text === 'text-white'
-              ? colors.white
-              : colors.lightGray,
+          color: colors.lightGray,
+          textAlignVertical: 'top',
           fontFamily: 'SpaceGrotesk-Regular',
           fontSize: 14,
         }}
@@ -147,4 +149,4 @@ const Input: React.FC<InputProps> = ({
   );
 };
 
-export default Input;
+export default TextArea;
