@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, View } from 'react-native';
 
-import { Search } from './icons';
+import { Search } from '../../assets/icons/icons';
 import { colors } from '../../style/colors';
 
 // Types

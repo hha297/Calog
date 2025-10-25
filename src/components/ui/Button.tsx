@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { CustomText } from './CustomText';
-import { Google, Apple } from './icons';
+import { Google, Apple } from '../../assets/icons/icons';
 
 // Types
 export type ButtonVariant =
