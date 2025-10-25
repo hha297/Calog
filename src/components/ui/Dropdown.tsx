@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
 import { CustomText } from './CustomText';
-import { ChevronDown } from './icons';
+import { ChevronDown } from '../../assets/icons/icons';
 import { colors } from '../../style/colors';
 
 // Types

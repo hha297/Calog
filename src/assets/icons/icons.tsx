@@ -6,6 +6,7 @@ export { default as ChevronRight } from '../../assets/icons/chevron-right.svg';
 export { default as Google } from '../../assets/icons/google.svg';
 export { default as Apple } from '../../assets/icons/apple.svg';
 export { default as Camera } from '../../assets/icons/camera.svg';
+export { default as OutlineCamera } from '../../assets/icons/camera-outline.svg';
 export { default as Home } from '../../assets/icons/home.svg';
 export { default as Search } from '../../assets/icons/search.svg';
 export { default as Settings } from '../../assets/icons/settings.svg';
@@ -27,6 +28,7 @@ export { default as Protein } from '../../assets/icons/protein.svg';
 export { default as Carbs } from '../../assets/icons/carbs.svg';
 export { default as Fat } from '../../assets/icons/fat.svg';
 export { default as Analysis } from '../../assets/icons/analysis.svg';
+
 export { default as Diets } from '../../assets/icons/diets.svg';
 export { default as AI } from '../../assets/icons/ai.svg';
 export { default as Tick } from '../../assets/icons/tick.svg';

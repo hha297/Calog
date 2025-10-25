@@ -17,6 +17,7 @@ import TextArea from './src/components/ui/TextArea';
 import Checkbox from './src/components/ui/Checkbox';
 import RadioButton from './src/components/ui/RadioButton';
 import Switch from './src/components/ui/Switch';
+import Avatar from './src/components/ui/Avatar';
 import SplashScreen from './src/screens/SplashScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -244,6 +245,47 @@ function AppContent() {
             />
             <Switch value={true} size="small" label="Toggle Small" />
             <Switch value={false} size="small" label="Toggle Small" />
+          </View>
+        </View>
+
+        {/* Avatars Section */}
+        <View className="mb-8">
+          <CustomText
+            size="lg"
+            weight="semibold"
+            color="text-white"
+            className="mb-4"
+          >
+            Avatars
+          </CustomText>
+
+          <View className="gap-4">
+            <Avatar
+              source={{
+                uri: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+              }}
+              className="w-16 h-16"
+              editable
+              onEditPress={() => console.log('Edit avatar')}
+            />
+            <Avatar
+              className="w-16 h-16"
+              editable
+              onEditPress={() => console.log('Edit avatar')}
+            />
+            <Avatar
+              fallback="D"
+              className="w-16 h-16"
+              editable
+              onEditPress={() => console.log('Edit avatar')}
+            />
+            <Avatar className="w-12 h-12" />
+            <Avatar
+              fallback="A"
+              className="w-24 h-24"
+              editable
+              onEditPress={() => console.log('Edit avatar')}
+            />
           </View>
         </View>
       </ScrollView>

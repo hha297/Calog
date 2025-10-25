@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { CustomText } from './CustomText';
-import { Tick } from './icons';
+import { Tick } from '../../assets/icons/icons';
 import { colors } from '../../style/colors';
 
 // Types
