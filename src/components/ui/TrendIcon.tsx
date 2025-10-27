@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react-native';
 import { TrendDirection } from '../../utils/measurementUtils';
+import { COLORS } from '../../style/color';
 
 interface TrendIconProps {
         direction: TrendDirection;
@@ -9,7 +10,7 @@ interface TrendIconProps {
         color?: string;
 }
 
-export const TrendIcon: React.FC<TrendIconProps> = ({ direction, size = 16, color = '#666666' }) => {
+export const TrendIcon: React.FC<TrendIconProps> = ({ direction, size = 16, color = COLORS.GRAY_500 }) => {
         const getIcon = () => {
                 switch (direction) {
                         case 'up':

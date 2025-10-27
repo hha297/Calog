@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { LucideIcon } from 'lucide-react-native';
 import { CText } from './CText';
+import { COLORS } from '../../style/color';
 
 interface MacroNutrientProps {
         icon: LucideIcon;
@@ -18,7 +19,7 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
         consumed,
         goal,
         unit,
-        color = '#4CAF50',
+        color = COLORS.PRIMARY,
 }) => {
         const progress = goal > 0 ? (consumed / goal) * 100 : 0;
         const clampedProgress = Math.min(progress, 100);

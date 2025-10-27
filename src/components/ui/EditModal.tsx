@@ -7,6 +7,7 @@ import { Button } from './Button';
 import { TextField } from './TextField';
 import { Slider } from './Slider';
 import { useTheme } from '../../contexts';
+import { COLORS } from '../../style/color';
 
 export interface EditModalField {
         key: string;
@@ -70,7 +71,10 @@ export const EditModal: React.FC<EditModalProps> = ({
                                                 className={`flex-row items-center justify-between border-b ${isDark ? 'border-white/10' : 'border-gray-200'} px-6 py-4`}
                                         >
                                                 <TouchableOpacity onPress={onClose}>
-                                                        <X size={24} color={isDark ? '#FFFFFF' : '#000000'} />
+                                                        <X
+                                                                size={24}
+                                                                color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
+                                                        />
                                                 </TouchableOpacity>
                                                 <CText size="lg" weight="bold" className="">
                                                         {title}

@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { CText } from './CText';
 import { useTheme } from '../../contexts';
+import { COLORS } from '../../style/color';
 
 interface ButtonProps {
         title: string;
@@ -11,6 +12,7 @@ interface ButtonProps {
         loading?: boolean;
         disabled?: boolean;
         className?: string;
+        textClassName?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -21,6 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
         loading = false,
         disabled = false,
         className = '',
+        textClassName = '',
 }) => {
         const { isDark } = useTheme();
 
@@ -47,7 +50,10 @@ export const Button: React.FC<ButtonProps> = ({
                         activeOpacity={0.8}
                 >
                         {loading ? (
-                                <ActivityIndicator size="small" color={variant === 'ghost' ? '#4CAF50' : '#FFFFFF'} />
+                                <ActivityIndicator
+                                        size="small"
+                                        color={variant === 'ghost' ? COLORS.PRIMARY : COLORS.ICON_LIGHT}
+                                />
                         ) : (
                                 <CText
                                         size={size === 'small' ? 'sm' : size === 'medium' ? 'base' : 'lg'}
@@ -59,7 +65,7 @@ export const Button: React.FC<ButtonProps> = ({
                                                                   ? '!text-primary'
                                                                   : '!text-gray-700'
                                                           : '!text-text-light'
-                                        }`}
+                                        } ${textClassName}`}
                                 >
                                         {title}
                                 </CText>

@@ -15,16 +15,17 @@ module.exports = {
                                 // Light mode colors
                                 background: {
                                         DEFAULT: '#EEEEEE',
-                                        dark: '#181818',
+                                        dark: '#121212',
                                 },
+
                                 surfacePrimary: {
                                         DEFAULT: '#FFFFFF',
-                                        dark: '#252525',
+                                        dark: '#232220',
                                         // dark: '#222630',
                                 },
                                 surfaceSecondary: {
                                         DEFAULT: '#1A1A1A1A',
-                                        dark: '#EFEFEF1A',
+                                        dark: '#474747',
                                 },
                                 textPrimary: {
                                         DEFAULT: '#000000',
@@ -45,7 +46,11 @@ module.exports = {
                                 // Theme colors (same in both modes)
                                 primary: '#4CAF50',
                                 secondary: '#1e3738',
-                                accent: '#FFC107',
+                                accentGreen: '#45C588',
+                                accentPurple: '#DDC0FF',
+                                accentYellow: '#F5F378',
+                                accentTeal: '#450588',
+                                accentOrange: '#FF6F43',
 
                                 // Status colors
                                 status: {

@@ -7,6 +7,7 @@ import { Calendar } from 'react-native-calendars';
 import { CText } from '../../components/ui/CText';
 import { useTheme } from '../../contexts';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { COLORS, getThemeColor } from '../../style/color';
 
 export const CalendarTrackingScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -52,7 +53,10 @@ export const CalendarTrackingScreen: React.FC = () => {
                                 {/* Header */}
                                 <View className="flex-row items-center justify-between px-4 py-4">
                                         <TouchableOpacity onPress={handleBack}>
-                                                <ArrowLeftIcon size={24} color={isDark ? '#FFFFFF' : '#000000'} />
+                                                <ArrowLeftIcon
+                                                        size={24}
+                                                        color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
+                                                />
                                         </TouchableOpacity>
                                         <CText
                                                 size="2xl"
@@ -73,19 +77,33 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                                 height: 'auto',
                                                         }}
                                                         theme={{
-                                                                backgroundColor: isDark ? '#252525' : '#FFFFFF',
-                                                                calendarBackground: isDark ? '#252525' : '#FFFFFF',
-                                                                textSectionTitleColor: isDark ? '#FFFFFF' : '#666666',
-                                                                selectedDayBackgroundColor: '#4CAF50',
-                                                                selectedDayTextColor: '#FFFFFF',
-                                                                todayTextColor: '#4CAF50',
-                                                                dayTextColor: isDark ? '#FFFFFF' : '#000000',
-                                                                textDisabledColor: isDark ? '#666666' : '#CCCCCC',
-                                                                dotColor: '#4CAF50',
-                                                                selectedDotColor: '#FFFFFF',
-                                                                arrowColor: isDark ? '#FFFFFF' : '#666666',
-                                                                monthTextColor: isDark ? '#FFFFFF' : '#000000',
-                                                                indicatorColor: '#4CAF50',
+                                                                backgroundColor: isDark
+                                                                        ? COLORS.CALENDAR_DARK_BG
+                                                                        : COLORS.BACKGROUND_LIGHT,
+                                                                calendarBackground: isDark
+                                                                        ? COLORS.CALENDAR_DARK_BG
+                                                                        : COLORS.BACKGROUND_LIGHT,
+                                                                textSectionTitleColor: isDark
+                                                                        ? COLORS.CALENDAR_DARK_TEXT
+                                                                        : COLORS.GRAY_500,
+                                                                selectedDayBackgroundColor: COLORS.PRIMARY,
+                                                                selectedDayTextColor: COLORS.ICON_LIGHT,
+                                                                todayTextColor: COLORS.PRIMARY,
+                                                                dayTextColor: isDark
+                                                                        ? COLORS.CALENDAR_DARK_TEXT
+                                                                        : COLORS.CALENDAR_LIGHT_TEXT,
+                                                                textDisabledColor: isDark
+                                                                        ? COLORS.GRAY_500
+                                                                        : COLORS.GRAY_100,
+                                                                dotColor: COLORS.PRIMARY,
+                                                                selectedDotColor: COLORS.ICON_LIGHT,
+                                                                arrowColor: isDark
+                                                                        ? COLORS.CALENDAR_DARK_TEXT
+                                                                        : COLORS.GRAY_500,
+                                                                monthTextColor: isDark
+                                                                        ? COLORS.CALENDAR_DARK_TEXT
+                                                                        : COLORS.CALENDAR_LIGHT_TEXT,
+                                                                indicatorColor: COLORS.PRIMARY,
                                                                 textDayFontWeight: '600',
                                                                 textDayHeaderFontWeight: '600',
                                                                 textDayFontSize: 14,
@@ -105,7 +123,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                         markedDates={{
                                                                 [formatDateString(selectedDate)]: {
                                                                         selected: true,
-                                                                        selectedColor: '#4CAF50',
+                                                                        selectedColor: COLORS.PRIMARY,
                                                                 },
                                                         }}
                                                         hideArrows={false}
@@ -197,7 +215,7 @@ export const CalendarTrackingScreen: React.FC = () => {
 
                                                 <View className="space-y-3">
                                                         <View className="mb-1 flex-row items-center">
-                                                                <ZapIcon size={12} color="#4CAF50" />
+                                                                <ZapIcon size={12} color={COLORS.PRIMARY} />
                                                                 <CText className="ml-2 flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Total Calories Needed
                                                                 </CText>
@@ -210,7 +228,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                         </View>
 
                                                         <View className="mb-1 flex-row items-center">
-                                                                <ZapIcon size={12} color="#FF9800" />
+                                                                <ZapIcon size={12} color={COLORS.WARNING} />
                                                                 <CText className="ml-2 flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Total Calories Consumed
                                                                 </CText>
@@ -223,7 +241,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                         </View>
 
                                                         <View className="mb-1 flex-row items-center">
-                                                                <ZapIcon size={12} color="#4CAF50" />
+                                                                <ZapIcon size={12} color={COLORS.PRIMARY} />
                                                                 <CText className="ml-2 flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Calories Deficit Needed
                                                                 </CText>
@@ -236,7 +254,7 @@ export const CalendarTrackingScreen: React.FC = () => {
                                                         </View>
 
                                                         <View className="mb-1 flex-row items-center">
-                                                                <ZapIcon size={12} color="#FF9800" />
+                                                                <ZapIcon size={12} color={COLORS.WARNING} />
                                                                 <CText className="ml-2 flex-1 text-textPrimary dark:text-textPrimary-dark">
                                                                         Calories Deficit Achieved
                                                                 </CText>

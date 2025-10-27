@@ -174,8 +174,8 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                                                         color={
                                                                                                 selectedGoal ===
                                                                                                 option.value
-                                                                                                        ? '#FFFFFF'
-                                                                                                        : '#10B981'
+                                                                                                        ? COLORS.ICON_LIGHT
+                                                                                                        : COLORS.SUCCESS
                                                                                         }
                                                                                 />
                                                                         </View>
@@ -232,7 +232,10 @@ export const GoalSettingSlide: React.FC<GoalSettingSlideProps> = ({
                                                         {/* Target Weight Validation Error */}
                                                         {getTargetWeightError() && (
                                                                 <View className="mt-2 flex flex-row items-center rounded-lg border border-status-error/80 bg-status-error/20 p-3">
-                                                                        <AlertCircleIcon size={20} color="#F44336" />
+                                                                        <AlertCircleIcon
+                                                                                size={20}
+                                                                                color={COLORS.ERROR}
+                                                                        />
                                                                         <CText className="px-2 text-sm !text-status-error">
                                                                                 {getTargetWeightError()}
                                                                         </CText>

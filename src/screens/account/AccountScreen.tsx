@@ -27,6 +27,7 @@ import { CText, Switcher } from '../../components/ui';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuthStore } from '../../store';
 import { useTheme } from '../../contexts';
+import { COLORS } from '../../style/color';
 
 export const AccountScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -105,7 +106,7 @@ export const AccountScreen: React.FC = () => {
                                                                         className="size-16 rounded-full"
                                                                 />
                                                         ) : (
-                                                                <User size={32} color="#FFFFFF" />
+                                                                <User size={32} color={COLORS.ICON_LIGHT} />
                                                         )}
                                                 </View>
                                                 <View className="flex-1">
@@ -133,17 +134,17 @@ export const AccountScreen: React.FC = () => {
                                                         </View>
                                                         <CText className="">{user?.email || 'user@example.com'}</CText>
                                                 </View>
-                                                <ArrowRightIcon size={20} color="#FFFFFF" />
+                                                <ArrowRightIcon size={20} color={COLORS.ICON_LIGHT} />
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleLogout}
                                         >
-                                                <CreditCardIcon size={20} color="#4CAF50" />
+                                                <CreditCardIcon size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Manage Subscription</CText>
                                         </TouchableOpacity>
                                         <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
-                                                <LockIcon size={20} color="#4CAF50" />
+                                                <LockIcon size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Change Password</CText>
                                         </TouchableOpacity>
                                 </View>
@@ -153,13 +154,13 @@ export const AccountScreen: React.FC = () => {
                                         <View
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                         >
-                                                <Sun size={20} color="#4CAF50" />
+                                                <Sun size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Dark Mode</CText>
                                                 <Switcher value={isDark} onValueChange={handleDarkModeToggle} />
                                         </View>
 
                                         <View className="flex-row items-center p-4">
-                                                <BellIcon size={20} color="#4CAF50" />
+                                                <BellIcon size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Notifications</CText>
                                                 <Switcher
                                                         value={notificationsEnabled}
@@ -174,7 +175,7 @@ export const AccountScreen: React.FC = () => {
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleSendRequest}
                                         >
-                                                <Send size={20} color="#4CAF50" />
+                                                <Send size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Send Request</CText>
                                         </TouchableOpacity>
 
@@ -182,7 +183,7 @@ export const AccountScreen: React.FC = () => {
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleRateApp}
                                         >
-                                                <Star size={20} color="#4CAF50" />
+                                                <Star size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Rate Calog</CText>
                                         </TouchableOpacity>
 
@@ -190,7 +191,7 @@ export const AccountScreen: React.FC = () => {
                                                 className="flex-row items-center p-4"
                                                 onPress={handleFollowSocial}
                                         >
-                                                <Share2 size={20} color="#4CAF50" />
+                                                <Share2 size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Follow Calog</CText>
                                         </TouchableOpacity>
                                 </View>
@@ -199,7 +200,7 @@ export const AccountScreen: React.FC = () => {
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleTermsOfService}
                                         >
-                                                <HelpCircle size={20} color="#4CAF50" />
+                                                <HelpCircle size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Terms of Use</CText>
                                         </TouchableOpacity>
 
@@ -207,7 +208,7 @@ export const AccountScreen: React.FC = () => {
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handlePrivacyPolicy}
                                         >
-                                                <Shield size={20} color="#4CAF50" />
+                                                <Shield size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Privacy Policy</CText>
                                         </TouchableOpacity>
 
@@ -215,11 +216,11 @@ export const AccountScreen: React.FC = () => {
                                                 className={`flex-row items-center border-b-[0.5px] ${separatorClass} p-4`}
                                                 onPress={handleDeleteData}
                                         >
-                                                <Trash2 size={20} color="#F44336" />
+                                                <Trash2 size={20} color={COLORS.ERROR} />
                                                 <CText className="ml-3 flex-1 !text-status-error">Delete Account</CText>
                                         </TouchableOpacity>
                                         <TouchableOpacity className="flex-row items-center p-4" onPress={handleLogout}>
-                                                <LogOut size={20} color="#4CAF50" />
+                                                <LogOut size={20} color={COLORS.PRIMARY} />
                                                 <CText className="ml-3 flex-1">Sign Out</CText>
                                         </TouchableOpacity>
                                 </View>

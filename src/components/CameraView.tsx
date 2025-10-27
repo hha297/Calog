@@ -60,16 +60,11 @@ export const CameraView: React.FC<CameraViewProps> = ({ onBarcodeScanned, onClos
         }
 
         return (
-                <View className="overflow-hidden rounded-xl">
-                        <Camera
-                                style={{ height: 320, width: '100%' }}
-                                device={device}
-                                isActive={isActive}
-                                codeScanner={codeScanner}
-                        />
-                        <View className="absolute left-0 right-0 top-0 items-end p-3">
-                                <TouchableOpacity onPress={onClose} className="rounded-md bg-black/50 px-3 py-2">
-                                        <CText className="text-white">Close</CText>
+                <View className="flex-1">
+                        <Camera style={{ flex: 1 }} device={device} isActive={isActive} codeScanner={codeScanner} />
+                        <View className="absolute bottom-4 left-0 right-0 items-center p-4">
+                                <TouchableOpacity onPress={onClose} className="rounded-md bg-white px-3 py-3">
+                                        <CText className="!text-textPrimary">Close</CText>
                                 </TouchableOpacity>
                         </View>
                         <View className="pointer-events-none absolute left-6 right-6 top-1/2 -mt-16 h-32 border-2 border-primary/80" />

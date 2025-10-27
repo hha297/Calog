@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CText } from '../../components/ui/CText';
 import { Button } from '../../components/ui/Button';
 import { Smartphone, BarChart3, Bot } from 'lucide-react-native';
+import { COLORS } from '../../style/color';
 
 interface ValuePropositionSlideProps {
         onNext?: () => void;
@@ -64,7 +65,10 @@ export const ValuePropositionSlide: React.FC<ValuePropositionSlideProps> = ({ on
                                                 >
                                                         <View className="flex-row items-start">
                                                                 <View className="mr-4 rounded-lg bg-primary/20 p-3 dark:bg-primary/30">
-                                                                        <IconComponent size={24} color="#4CAF50" />
+                                                                        <IconComponent
+                                                                                size={24}
+                                                                                color={COLORS.PRIMARY}
+                                                                        />
                                                                 </View>
                                                                 <View className="flex-1">
                                                                         <CText

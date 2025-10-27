@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { CText } from './ui/CText';
+import { CText } from '../../ui/CText';
 
 interface DateItemProps {
         date: Date;

@@ -3,7 +3,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { CText } from '../../components/ui';
-import { DiaryHeader } from '../../components/DiaryHeader';
+import { DiaryHeader } from '../../components/home/header/DiaryHeader';
 import { CaloriesNutrition } from '../../components/home';
 import { useUserProfile } from '../../hooks/useUserProfile';
 

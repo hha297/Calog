@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, interpolateColor } from 'react-native-reanimated';
+import { COLORS } from '../../style/color';
 
 interface SwitcherProps {
         value: boolean;
@@ -26,7 +27,7 @@ export const Switcher: React.FC<SwitcherProps> = ({ value, onValueChange, disabl
                 const backgroundColor = interpolateColor(
                         animatedValue.value,
                         [0, 1],
-                        ['#E8E8E8', '#4CAF50'], // White when OFF, Green when ON
+                        [COLORS.BACKGROUND_GRAY_LIGHT, COLORS.PRIMARY], // Light gray when OFF, Green when ON
                 );
 
                 return {
@@ -40,7 +41,7 @@ export const Switcher: React.FC<SwitcherProps> = ({ value, onValueChange, disabl
                 const backgroundColor = interpolateColor(
                         animatedValue.value,
                         [0, 1],
-                        ['#4CAF50', '#FFFFFF'], // Green when OFF, White when ON
+                        [COLORS.PRIMARY, COLORS.ICON_LIGHT], // Green when OFF, White when ON
                 );
 
                 const translateX = animatedValue.value * (trackWidth - thumbSize);
@@ -84,7 +85,7 @@ export const Switcher: React.FC<SwitcherProps> = ({ value, onValueChange, disabl
                                                 {
                                                         position: 'absolute',
                                                         borderRadius: thumbSize / 2,
-                                                        shadowColor: '#000',
+                                                        shadowColor: COLORS.SHADOW,
                                                         shadowOffset: {
                                                                 width: 0,
                                                                 height: 2,

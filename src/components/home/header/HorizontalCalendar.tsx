@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, FlatList, Dimensions } from 'react-native';
-import { CText } from './ui/CText';
+import { CText } from '../../ui/CText';
 import { DateItem } from './DateItem';
 
 interface HorizontalCalendarProps {
