@@ -19,6 +19,7 @@ import { CText, CircularProgress, MacroNutrient } from '../ui';
 import { UserProfile } from '../../types';
 import { DietMode, DIET_MODES } from '../../types/dietModes';
 import { DietModeModal } from '../DietModeModal';
+import { COLORS } from '../../style/color';
 
 // Daily View Component
 const DailyView: React.FC<{
@@ -39,18 +40,18 @@ const DailyView: React.FC<{
                                                 progress={calorieProgress}
                                                 size={160}
                                                 strokeWidth={8}
-                                                color="#4CAF50"
-                                                backgroundColor="#E5E5E5"
+                                                color={COLORS.PRIMARY}
+                                                backgroundColor={COLORS.BACKGROUND_GRAY_LIGHT}
                                         >
                                                 <View className="items-center">
+                                                        <CText size="3xl" weight="bold" className="!text-primary">
+                                                                {actualConsumed}
+                                                        </CText>
                                                         <CText
                                                                 weight="medium"
                                                                 className="text-textSecondary dark:text-textSecondary-dark"
                                                         >
                                                                 Consumed
-                                                        </CText>
-                                                        <CText size="3xl" weight="bold" className="!text-primary">
-                                                                {actualConsumed}
                                                         </CText>
                                                 </View>
                                         </CircularProgress>
@@ -59,7 +60,7 @@ const DailyView: React.FC<{
                                 {/* Daily Summary */}
                                 <View className="justify-center space-y-4">
                                         <View className="my-2 flex-row items-center">
-                                                <ZapIcon size={24} color="#4CAF50" fill="#4CAF50" />
+                                                <ZapIcon size={24} color={COLORS.SUCCESS} fill={COLORS.SUCCESS} />
                                                 <View className="ml-3 flex-col">
                                                         <CText className="text-textPrimary dark:text-textPrimary-dark">
                                                                 Needed
@@ -73,7 +74,7 @@ const DailyView: React.FC<{
                                                 </View>
                                         </View>
                                         <View className="my-2 flex-row items-center">
-                                                <Utensils size={24} color="#FF9800" fill="#FF9800" />
+                                                <Utensils size={24} color={COLORS.WARNING} fill={COLORS.WARNING} />
                                                 <View className="ml-3 flex-col">
                                                         <CText className="text-textPrimary dark:text-textPrimary-dark">
                                                                 Remaining
@@ -87,7 +88,7 @@ const DailyView: React.FC<{
                                                 </View>
                                         </View>
                                         <View className="my-2 flex-row items-center">
-                                                <Flame size={24} color="#F44336" fill="#F44336" />
+                                                <Flame size={24} color={COLORS.ERROR} fill={COLORS.ERROR} />
                                                 <View className="ml-3 flex-col">
                                                         <CText className="text-textPrimary dark:text-textPrimary-dark">
                                                                 Burned
@@ -174,8 +175,8 @@ const WeeklyView: React.FC<{
                                                 progress={calorieProgress}
                                                 size={100}
                                                 strokeWidth={8}
-                                                color="#4CAF50"
-                                                backgroundColor="#E5E5E5"
+                                                color={COLORS.PRIMARY}
+                                                backgroundColor={COLORS.BACKGROUND_GRAY_LIGHT}
                                         >
                                                 <View className="items-center gap-y-1">
                                                         <CText size="2xl" weight="bold" className="!text-primary">
@@ -296,7 +297,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         goal: macroGoals.carbs,
                         unit: 'g',
                         icon: Wheat,
-                        color: '#FF9800',
+                        color: COLORS.WARNING,
                 },
                 {
                         name: 'Protein',
@@ -304,7 +305,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         goal: macroGoals.protein,
                         unit: 'g',
                         icon: Beef,
-                        color: '#F44336',
+                        color: COLORS.ERROR,
                 },
                 {
                         name: 'Fat',
@@ -312,7 +313,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         goal: macroGoals.fat,
                         unit: 'g',
                         icon: Droplets,
-                        color: '#2196F3',
+                        color: COLORS.INFO,
                 },
                 // Only show Fiber in daily view
                 ...(selectedView === 'daily'
@@ -323,7 +324,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                                           goal: macroGoals.fiber,
                                           unit: 'g',
                                           icon: Sprout,
-                                          color: '#4CAF50',
+                                          color: COLORS.PRIMARY,
                                   },
                           ]
                         : []),
@@ -332,7 +333,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         return (
                 <>
                         <View className="mb-6 rounded-2xl bg-surfacePrimary py-4 dark:bg-surfacePrimary-dark">
-                                <View className="mb-4 flex-row items-center justify-between px-4">
+                                <View className="mb-4 px-4">
                                         <CText
                                                 size="xl"
                                                 weight="bold"
@@ -340,32 +341,6 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                                         >
                                                 Calories & Nutrition
                                         </CText>
-                                        {onViewChange && (
-                                                <View className="flex-row rounded-full bg-surfaceSecondary p-1 dark:bg-surfaceSecondary-dark">
-                                                        <TouchableOpacity
-                                                                className={`rounded-full px-4 py-1 ${selectedView === 'daily' ? 'bg-primary' : ''}`}
-                                                                onPress={() => onViewChange('daily')}
-                                                        >
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className={`text-sm ${selectedView === 'daily' ? 'text-white' : 'text-textPrimary dark:text-textPrimary-dark'}`}
-                                                                >
-                                                                        Day
-                                                                </CText>
-                                                        </TouchableOpacity>
-                                                        <TouchableOpacity
-                                                                className={`rounded-full px-4 py-1 ${selectedView === 'weekly' ? 'bg-primary' : ''}`}
-                                                                onPress={() => onViewChange('weekly')}
-                                                        >
-                                                                <CText
-                                                                        weight="medium"
-                                                                        className={`text-sm ${selectedView === 'weekly' ? 'text-white' : 'text-textPrimary dark:text-textPrimary-dark'}`}
-                                                                >
-                                                                        Week
-                                                                </CText>
-                                                        </TouchableOpacity>
-                                                </View>
-                                        )}
                                 </View>
 
                                 {/* Render appropriate view based on selectedView */}
@@ -398,7 +373,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                                                 <CText weight="medium" className="mx-1 !text-primary underline">
                                                         {selectedDietMode.name}
                                                 </CText>
-                                                <ChevronDown size={16} color="#4CAF50" />
+                                                <ChevronDown size={16} color={COLORS.PRIMARY} />
                                         </TouchableOpacity>
                                 </View>
                         </View>

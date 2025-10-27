@@ -12,14 +12,16 @@ import {
         FoodEntry,
 } from '../services/api/foodApi';
 import { useAuthStore } from '../store';
+import { COLORS } from '../style/color';
 
 interface ScanScreenProps {
         navigation: any; // TODO: Add proper navigation typing
+        onScanningChange?: (isScanning: boolean) => void;
 }
 
-export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
+export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation, onScanningChange }) => {
         const { isAuthenticated, user } = useAuthStore();
-        const [scanning, setScanning] = useState(true);
+        const [scanning, setScanning] = useState(false);
         const [loading, setLoading] = useState(false);
         const [result, setResult] = useState<ParsedFoodData | null>(null);
         const [rawResponse, setRawResponse] = useState<any>(null);
@@ -28,7 +30,12 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
 
         const handleCloseScanner = useCallback(() => {
                 setScanning(false);
-        }, []);
+                onScanningChange?.(false);
+        }, [onScanningChange]);
+
+        React.useEffect(() => {
+                onScanningChange?.(scanning);
+        }, [scanning, onScanningChange]);
 
         const handleBarcode = useCallback(async (code: string) => {
                 setLoading(true);
@@ -105,103 +112,121 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
         }, [result, isAuthenticated, user]);
 
         return (
-                <SafeAreaView className="flex-1 bg-background pb-12 pt-4 dark:bg-background-dark">
-                        <ScrollView className="flex-1 px-6">
-                                <View className="py-8">
-                                        {/* Header */}
-                                        <View className="mb-8">
-                                                <CText size="2xl" weight="bold" className="mb-2 text-center">
-                                                        Scan Food
-                                                </CText>
-                                                <CText className="text-center">Scan barcode to log food items</CText>
-                                        </View>
-
-                                        {/* Inline Scanner */}
-                                        <TouchableOpacity
-                                                className="mb-6 overflow-hidden rounded-2xl border border-primary/30"
-                                                onPress={() => {
-                                                        if (!scanning) {
-                                                                setResult(null);
-                                                                setRawResponse(null);
-                                                                setScanning(true);
-                                                        }
-                                                }}
-                                        >
-                                                {scanning ? (
-                                                        <View>
-                                                                <CameraView
-                                                                        onBarcodeScanned={handleBarcode}
-                                                                        onClose={() => setScanning(false)}
-                                                                />
-                                                                {loading && (
-                                                                        <View className="absolute bottom-3 left-0 right-0 items-center">
-                                                                                <ActivityIndicator
-                                                                                        size="small"
-                                                                                        color="#4CAF50"
-                                                                                />
-                                                                                <CText className="mt-1 text-white/80">
-                                                                                        Looking up…
-                                                                                </CText>
-                                                                        </View>
-                                                                )}
-                                                        </View>
-                                                ) : (
-                                                        <View className="h-64 items-center justify-center bg-surfacePrimary dark:bg-surfacePrimary-dark">
-                                                                <CText className="text-textSecondary dark:text-textSecondary-dark">
-                                                                        Tap to scan again
-                                                                </CText>
-                                                        </View>
-                                                )}
-                                        </TouchableOpacity>
-
-                                        {/* Instructions */}
-                                        <View className="mb-6">
-                                                <CText className="mb-4 text-lg">How to Scan</CText>
-
-                                                <View className="space-y-3">
-                                                        <View className="mb-2 flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
-                                                                        <CText className="text-sm text-white">1</CText>
-                                                                </View>
-                                                                <CText className="">Point camera at barcode</CText>
-                                                        </View>
-
-                                                        <View className="mb-2 flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
-                                                                        <CText className="text-sm text-white">2</CText>
-                                                                </View>
-                                                                <CText className="">Wait for automatic detection</CText>
-                                                        </View>
-
-                                                        <View className="flex-row items-center">
-                                                                <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
-                                                                        <CText className="text-sm text-white">3</CText>
-                                                                </View>
-                                                                <CText className="">Review and log food item</CText>
-                                                        </View>
+                <>
+                        {scanning ? (
+                                <View className="flex-1">
+                                        <CameraView onBarcodeScanned={handleBarcode} onClose={handleCloseScanner} />
+                                        {loading && (
+                                                <View className="absolute bottom-10 left-0 right-0 items-center">
+                                                        <ActivityIndicator size="small" color={COLORS.PRIMARY} />
+                                                        <CText className="mt-1 text-white/80">Looking up…</CText>
                                                 </View>
-                                        </View>
-
-                                        {/* Manual Entry */}
-                                        <View className="mb-6 rounded-lg bg-primary p-4">
-                                                <CText className="mb-2 text-white">Can't scan?</CText>
-                                                <CText className="mb-3 text-sm text-white">
-                                                        You can manually add food items.
-                                                </CText>
-                                                <Button
-                                                        title="Add Food Manually"
-                                                        onPress={() => setShowManualModal(true)}
-                                                        variant="primary"
-                                                        className="bg-white/20"
-                                                />
-                                        </View>
-
-                                        {/* Footer */}
-                                        <View className="items-center">
-                                                <CText className="text-xs">Powered by Open Food Facts</CText>
-                                        </View>
+                                        )}
                                 </View>
-                        </ScrollView>
+                        ) : (
+                                <View className="flex-1">
+                                        <SafeAreaView className="flex-1 bg-background pb-12 pt-4 dark:bg-background-dark">
+                                                <ScrollView className="flex-1 px-6">
+                                                        <View className="py-8">
+                                                                {/* Header */}
+                                                                <View className="mb-8">
+                                                                        <CText
+                                                                                size="2xl"
+                                                                                weight="bold"
+                                                                                className="mb-2 text-center"
+                                                                        >
+                                                                                Scan Food
+                                                                        </CText>
+                                                                        <CText className="text-center">
+                                                                                Scan barcode to log food items
+                                                                        </CText>
+                                                                </View>
+
+                                                                {/* Tap to scan button */}
+                                                                <TouchableOpacity
+                                                                        className="mb-6 h-64 items-center justify-center rounded-2xl border border-primary/30 bg-surfacePrimary dark:bg-surfacePrimary-dark"
+                                                                        onPress={() => {
+                                                                                setResult(null);
+                                                                                setRawResponse(null);
+                                                                                setScanning(true);
+                                                                        }}
+                                                                >
+                                                                        <CText className="text-textSecondary dark:text-textSecondary-dark">
+                                                                                Tap to scan
+                                                                        </CText>
+                                                                </TouchableOpacity>
+
+                                                                {/* Instructions */}
+                                                                <View className="mb-6">
+                                                                        <CText className="mb-4 text-lg">
+                                                                                How to Scan
+                                                                        </CText>
+
+                                                                        <View className="space-4 gap-y-2">
+                                                                                <View className="mb-2 flex-row items-center">
+                                                                                        <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                                                                                <CText className="text-sm text-white">
+                                                                                                        1
+                                                                                                </CText>
+                                                                                        </View>
+                                                                                        <CText className="">
+                                                                                                Point camera at barcode
+                                                                                        </CText>
+                                                                                </View>
+
+                                                                                <View className="mb-2 flex-row items-center">
+                                                                                        <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                                                                                <CText className="text-sm text-white">
+                                                                                                        2
+                                                                                                </CText>
+                                                                                        </View>
+                                                                                        <CText className="">
+                                                                                                Wait for automatic
+                                                                                                detection
+                                                                                        </CText>
+                                                                                </View>
+
+                                                                                <View className="flex-row items-center">
+                                                                                        <View className="mr-3 h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                                                                                <CText className="text-sm text-white">
+                                                                                                        3
+                                                                                                </CText>
+                                                                                        </View>
+                                                                                        <CText className="">
+                                                                                                Review and log food item
+                                                                                        </CText>
+                                                                                </View>
+                                                                        </View>
+                                                                </View>
+
+                                                                {/* Manual Entry */}
+                                                                <View className="mb-6 rounded-lg bg-primary p-4 dark:bg-primary">
+                                                                        <CText className="mb-2 text-white">
+                                                                                Can't scan?
+                                                                        </CText>
+                                                                        <CText className="mb-3 text-sm text-white">
+                                                                                You can manually add food items.
+                                                                        </CText>
+                                                                        <Button
+                                                                                title="Add Food Manually"
+                                                                                onPress={() => setShowManualModal(true)}
+                                                                                variant="secondary"
+                                                                                className="bg-white"
+                                                                                textClassName="!text-textPrimary"
+                                                                        />
+                                                                </View>
+
+                                                                {/* Footer */}
+                                                                <View className="items-center">
+                                                                        <CText className="text-sm">
+                                                                                Powered by Open Food Facts
+                                                                        </CText>
+                                                                </View>
+                                                        </View>
+                                                </ScrollView>
+                                        </SafeAreaView>
+                                </View>
+                        )}
 
                         {/* Result modal */}
                         <Modal
@@ -384,6 +409,6 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({ navigation }) => {
                                         </View>
                                 </View>
                         </Modal>
-                </SafeAreaView>
+                </>
         );
 };

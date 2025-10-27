@@ -4,6 +4,7 @@ import AntDesign from '@react-native-vector-icons/ant-design';
 import FontAwesome from '@react-native-vector-icons/fontawesome';
 import { CText } from './CText';
 import { useTheme } from '../../contexts';
+import { COLORS } from '../../style/color';
 
 interface OAuthButtonProps {
         provider: 'google' | 'apple' | 'facebook';
@@ -20,7 +21,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                         case 'google':
                                 return {
                                         label: 'Continue with Google',
-                                        icon: <AntDesign name="google" size={18} color={'#000000'} />,
+                                        icon: <AntDesign name="google" size={18} color={COLORS.ICON_DARK} />,
                                 };
                         case 'apple':
                                 return {
@@ -29,7 +30,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                                                 <AntDesign
                                                         name="apple"
                                                         size={18}
-                                                        color={isDark ? '#FFFFFF' : '#000000'}
+                                                        color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
                                                 />
                                         ),
                                 };
@@ -40,7 +41,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                                                 <FontAwesome
                                                         name="facebook"
                                                         size={18}
-                                                        color={isDark ? '#FFFFFF' : '#000000'}
+                                                        color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
                                                 />
                                         ),
                                 };
@@ -51,7 +52,7 @@ export const OAuthButton: React.FC<OAuthButtonProps> = ({ provider, onPress, dis
                                                 <AntDesign
                                                         name="mail"
                                                         size={18}
-                                                        color={isDark ? '#FFFFFF' : '#000000'}
+                                                        color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
                                                 />
                                         ),
                                 };

@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { CText } from './CText';
 import { AlertTriangle } from 'lucide-react-native';
 import SliderComponent from '@react-native-community/slider';
+import { COLORS } from '../../style/color';
 
 export type SliderType = 'weight_goal' | 'height' | 'weight' | 'age' | 'custom';
 
@@ -245,9 +246,9 @@ export const Slider: React.FC<SliderProps> = ({
                                         value={localValue}
                                         onValueChange={handleValueChange}
                                         onSlidingComplete={handleSlidingComplete}
-                                        minimumTrackTintColor="#4CAF50"
-                                        maximumTrackTintColor="#374151"
-                                        thumbTintColor="#4CAF50"
+                                        minimumTrackTintColor={COLORS.PRIMARY}
+                                        maximumTrackTintColor={COLORS.GRAY_600}
+                                        thumbTintColor={COLORS.PRIMARY}
                                 />
                         </View>
 
@@ -258,7 +259,7 @@ export const Slider: React.FC<SliderProps> = ({
                         {showWarning && config.warningMessage && (
                                 <View className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
                                         <View className="flex-row items-center">
-                                                <AlertTriangle size={20} color="#EF4444" className="mr-3" />
+                                                <AlertTriangle size={20} color={COLORS.ERROR} className="mr-3" />
                                                 <CText className="flex-1 text-sm text-red-400">
                                                         {config.warningMessage}
                                                 </CText>

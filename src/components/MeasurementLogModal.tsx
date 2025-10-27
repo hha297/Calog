@@ -6,6 +6,7 @@ import { EditModal } from './ui/EditModal';
 import { TrendIcon } from './ui/TrendIcon';
 import { getMeasurementTrend, getTrendColor } from '../utils/measurementUtils';
 import { MeasurementLogEntry } from '../services/measurementLogStorage';
+import { COLORS } from '../style/color';
 
 interface MeasurementLogModalProps {
         visible: boolean;
@@ -73,7 +74,7 @@ export const MeasurementLogModal: React.FC<MeasurementLogModalProps> = ({ visibl
                                                         onPress={() => onDeleteLog(index)}
                                                         className="rounded-full bg-status-error p-2"
                                                 >
-                                                        <Trash2Icon size={16} color="#FFFFFF" />
+                                                        <Trash2Icon size={16} color={COLORS.ICON_LIGHT} />
                                                 </TouchableOpacity>
                                         )}
                                 </View>
@@ -87,7 +88,7 @@ export const MeasurementLogModal: React.FC<MeasurementLogModalProps> = ({ visibl
                                                 : getMeasurementTrend(measurementLogs as any[], index, type);
                                         const trendColor = measurementTrend
                                                 ? getTrendColor(measurementTrend.direction)
-                                                : '#666666';
+                                                : COLORS.GRAY_500;
 
                                         return (
                                                 <View key={type} className="mb-1 flex-row items-center justify-between">

@@ -3,6 +3,7 @@ import { View, TextInput, TouchableOpacity, ViewStyle, TextStyle } from 'react-n
 import AntDesign from '@react-native-vector-icons/ant-design';
 import { CText } from './CText';
 import { useTheme } from '../../contexts';
+import { COLORS, getThemeColor } from '../../style/color';
 
 interface TextFieldProps {
         label: string;
@@ -46,7 +47,7 @@ export const TextField: React.FC<TextFieldProps> = ({
                                                 isFocused ? 'border-primary' : 'border-transparent'
                                         } ${error ? 'border-status-error' : ''}`}
                                         placeholder={placeholder}
-                                        placeholderTextColor={isDark ? '#666666' : '#999999'}
+                                        placeholderTextColor={isDark ? COLORS.GRAY_500 : COLORS.GRAY_800}
                                         value={value}
                                         onChangeText={onChangeText}
                                         secureTextEntry={secureTextEntry && !isSecureVisible}
@@ -62,9 +63,13 @@ export const TextField: React.FC<TextFieldProps> = ({
                                                 onPress={() => setIsSecureVisible(!isSecureVisible)}
                                         >
                                                 {isSecureVisible ? (
-                                                        <AntDesign name="eye" size={16} color="#9E9E9E" />
+                                                        <AntDesign name="eye" size={16} color={COLORS.ICON_GRAY_DARK} />
                                                 ) : (
-                                                        <AntDesign name="eye-invisible" size={16} color="#9E9E9E" />
+                                                        <AntDesign
+                                                                name="eye-invisible"
+                                                                size={16}
+                                                                color={COLORS.ICON_GRAY_DARK}
+                                                        />
                                                 )}
                                         </TouchableOpacity>
                                 )}

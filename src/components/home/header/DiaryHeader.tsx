@@ -2,10 +2,11 @@ import React from 'react';
 import { View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BellIcon, CalendarIcon, User } from 'lucide-react-native';
-import { CText } from './ui/CText';
-import { useAuthStore } from '../store';
-import { useTheme } from '../contexts';
+import { CText } from '../../ui/CText';
+import { useAuthStore } from '../../../store';
+import { useTheme } from '../../../contexts';
 import { HorizontalCalendar } from './HorizontalCalendar';
+import { COLORS, getThemeColor } from '../../../style/color';
 
 interface DiaryHeaderProps {
         selectedDate: Date;
@@ -89,7 +90,7 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                                                                         className="size-12 rounded-full"
                                                                 />
                                                         ) : (
-                                                                <User size={24} color="#FFFFFF" />
+                                                                <User size={24} color={COLORS.ICON_LIGHT} />
                                                         )}
                                                 </View>
                                         </View>
@@ -115,7 +116,10 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                                 {/* Right Side - Notification */}
                                 <TouchableOpacity className="ml-4 flex-row items-center gap-3">
                                         <View className="size-10 items-center justify-center rounded-full bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
-                                                <BellIcon size={20} color={isDark ? '#FFFFFF' : '#666666'} />
+                                                <BellIcon
+                                                        size={20}
+                                                        color={isDark ? COLORS.ICON_LIGHT : COLORS.GRAY_500}
+                                                />
                                         </View>
                                 </TouchableOpacity>
                         </View>
@@ -138,7 +142,7 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                                                 <View className="size-10 items-center justify-center rounded-lg bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
                                                         <CalendarIcon
                                                                 size={20}
-                                                                color={isDark ? '#FFFFFF' : '#666666'}
+                                                                color={isDark ? COLORS.ICON_LIGHT : COLORS.GRAY_500}
                                                         />
                                                 </View>
                                         </TouchableOpacity>

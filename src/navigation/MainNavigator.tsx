@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { DiaryScreen } from '../screens/home/DiaryScreen';
@@ -9,12 +8,11 @@ import { ScanScreen } from '../screens/ScanScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { CalendarTrackingScreen } from '../screens/home/CalendarTrackingScreen';
 import { AccountNavigator } from './AccountNavigator';
-import { MainTabParamList } from '../types';
 import LottieView from 'lottie-react-native';
-import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon } from 'lucide-react-native';
+import { BookOpenIcon, ChartNoAxesCombinedIcon, HeadphonesIcon, UserRoundIcon, ScanLine } from 'lucide-react-native';
 import { useTheme } from '../contexts';
-import { CText } from '../components/ui';
-const Tab = createBottomTabNavigator<MainTabParamList>();
+import { COLORS } from '../style/color';
+
 const DiaryStack = createNativeStackNavigator();
 
 // Diary Stack Navigator
@@ -27,163 +25,139 @@ const DiaryStackNavigator = () => {
         );
 };
 
-// Custom floating action button with NativeWind
-const FloatingActionButton = ({ onPress }: { onPress: () => void }) => {
-        const { isDark } = useTheme();
+interface IconButtonProps {
+        icon: React.ComponentType<any>;
+        isActive: boolean;
+        onPress: () => void;
+        isDark: boolean;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({ icon: IconComponent, isActive, onPress, isDark }) => {
+        return (
+                <TouchableOpacity
+                        className={`size-14 items-center justify-center rounded-full ${isActive ? 'bg-primary' : 'bg-surfaceSecondary dark:bg-surfaceSecondary-dark'}`}
+                        onPress={onPress}
+                >
+                        <IconComponent
+                                size={24}
+                                color={
+                                        isActive
+                                                ? COLORS.ICON_LIGHT
+                                                : isDark
+                                                  ? COLORS.TEXT_PRIMARY_DARK
+                                                  : COLORS.TEXT_PRIMARY_LIGHT
+                                }
+                                strokeWidth={isActive ? 1 : 1}
+                        />
+                </TouchableOpacity>
+        );
+};
+
+// Custom Scan Button
+const ScanButton: React.FC<{ onPress: () => void; isActive: boolean; isDark: boolean }> = ({
+        onPress,
+        isActive = false,
+        isDark,
+}) => {
+        const scanColor = isActive ? COLORS.ICON_LIGHT : isDark ? COLORS.TEXT_PRIMARY_DARK : COLORS.TEXT_PRIMARY_LIGHT;
 
         return (
                 <TouchableOpacity
                         onPress={onPress}
-                        className={`} absolute -bottom-2 left-1/2 mx-auto h-[80px] w-[80px] -translate-x-1/2 items-center justify-center rounded-full border-8 border-surfacePrimary bg-primary dark:border-surfacePrimary-dark`}
+                        className={`size-14 items-center justify-center rounded-full ${isActive ? 'bg-primary' : 'bg-surfaceSecondary dark:bg-surfaceSecondary-dark'}`}
                 >
-                        <LottieView
-                                source={require('../assets/images/scan.json')}
-                                autoPlay
-                                loop
-                                style={{ width: 72, height: 72 }}
-                        />
+                        {isDark ? (
+                                <LottieView
+                                        source={require('../assets/images/scan.json')}
+                                        autoPlay
+                                        loop
+                                        colorFilters={[
+                                                {
+                                                        keypath: 'Outer shape.Shapes.Stroke 1',
+                                                        color: scanColor,
+                                                },
+                                                {
+                                                        keypath: 'Scanner.Shapes.Stroke 1',
+                                                        color: scanColor,
+                                                },
+                                        ]}
+                                        style={{ width: 48, height: 48 }}
+                                />
+                        ) : (
+                                <ScanLine size={24} color={scanColor} strokeWidth={1} />
+                        )}
                 </TouchableOpacity>
         );
 };
 
 export const MainNavigator: React.FC = () => {
         const { isDark } = useTheme();
+        const [activeTab, setActiveTab] = useState<'diary' | 'analytics' | 'scan' | 'help' | 'account'>('diary');
+        const [isScanning, setIsScanning] = useState(false);
+
+        const handleTabPress = (tab: 'diary' | 'analytics' | 'scan' | 'help' | 'account') => {
+                setActiveTab(tab);
+        };
+
+        const renderContent = () => {
+                switch (activeTab) {
+                        case 'diary':
+                                return <DiaryStackNavigator />;
+                        case 'analytics':
+                                return <AnalyticsScreen />;
+                        case 'scan':
+                                return <ScanScreen navigation={{}} onScanningChange={setIsScanning} />;
+                        case 'help':
+                                return <HelpScreen />;
+                        case 'account':
+                                return <AccountNavigator />;
+                        default:
+                                return <DiaryStackNavigator />;
+                }
+        };
 
         return (
-                <Tab.Navigator
-                        screenOptions={{
-                                headerShown: false, // Hide all headers
-                                tabBarActiveTintColor: '#4CAF50',
-                                tabBarInactiveTintColor: isDark ? '#FFFFFF' : '#666666',
-                                tabBarStyle: {
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        height: 80,
-                                        paddingTop: 16,
-                                        backgroundColor: isDark ? '#252525' : '#FFFFFF',
-                                        borderTopLeftRadius: 32,
-                                        borderTopRightRadius: 32,
-                                        borderTopWidth: 0,
-                                        // elevation: 8, // Android
-                                        // shadowColor: '#FFFFFF',
-                                        // shadowOffset: { width: 4, height: 0 },
-                                        // shadowOpacity: 0.5,
-                                        // shadowRadius: 32,
-                                },
-                                tabBarShowLabel: true,
-                        }}
-                >
-                        {/* Diary Tab */}
-                        <Tab.Screen
-                                name="Diary"
-                                component={DiaryStackNavigator}
-                                options={{
-                                        title: 'Diary',
-                                        tabBarIcon: ({ color, focused }) => (
-                                                <View className="items-center justify-center">
-                                                        <BookOpenIcon className="size-4" color={color} />
-                                                </View>
-                                        ),
-                                        tabBarLabel: ({ focused }) => (
-                                                <CText
-                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
-                                                        weight="medium"
-                                                        size="sm"
-                                                >
-                                                        Diary
-                                                </CText>
-                                        ),
-                                        tabBarShowLabel: true,
-                                }}
-                        />
-
-                        {/* Analytics Tab */}
-                        <Tab.Screen
-                                name="Analytics"
-                                component={AnalyticsScreen}
-                                options={{
-                                        title: 'Analytics',
-                                        tabBarIcon: ({ color, focused }) => (
-                                                <View className="items-center justify-center">
-                                                        <ChartNoAxesCombinedIcon className="size-4" color={color} />
-                                                </View>
-                                        ),
-                                        tabBarLabel: ({ focused }) => (
-                                                <CText
-                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
-                                                        weight="medium"
-                                                        size="sm"
-                                                >
-                                                        Analytics
-                                                </CText>
-                                        ),
-                                        tabBarShowLabel: true,
-                                }}
-                        />
-
-                        {/* Scan Tab (Floating Action Button) */}
-                        <Tab.Screen
-                                name="Scan"
-                                component={ScanScreen}
-                                options={({ navigation }) => ({
-                                        title: 'Scan',
-                                        tabBarIcon: () => null,
-                                        tabBarLabel: () => null,
-                                        tabBarButton: () => (
-                                                <FloatingActionButton onPress={() => navigation.navigate('Scan')} />
-                                        ),
-                                })}
-                        />
-
-                        {/* Help Tab */}
-                        <Tab.Screen
-                                name="Help"
-                                component={HelpScreen}
-                                options={{
-                                        title: 'Help',
-                                        tabBarIcon: ({ color, focused }) => (
-                                                <View className="items-center justify-center">
-                                                        <HeadphonesIcon className="size-4" color={color} />
-                                                </View>
-                                        ),
-                                        tabBarLabel: ({ focused }) => (
-                                                <CText
-                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
-                                                        weight="medium"
-                                                        size="sm"
-                                                >
-                                                        Help
-                                                </CText>
-                                        ),
-                                        tabBarShowLabel: true,
-                                }}
-                        />
-
-                        {/* Account Tab */}
-                        <Tab.Screen
-                                name="Account"
-                                component={AccountNavigator}
-                                options={{
-                                        title: 'Account',
-                                        tabBarIcon: ({ color, focused }) => (
-                                                <View className="items-center justify-center">
-                                                        <UserRoundIcon className="size-4" color={color} />
-                                                </View>
-                                        ),
-                                        tabBarLabel: ({ focused }) => (
-                                                <CText
-                                                        className={`${focused ? '!text-primary' : isDark ? '!text-white' : '!text-textSecondary'} mt-1`}
-                                                        weight="medium"
-                                                        size="sm"
-                                                >
-                                                        Account
-                                                </CText>
-                                        ),
-                                        tabBarShowLabel: true,
-                                }}
-                        />
-                </Tab.Navigator>
+                <View className="flex-1 bg-background" pointerEvents="box-none">
+                        {renderContent()}
+                        <View
+                                className="h-25 absolute bottom-0 left-0 right-0 items-center pb-12"
+                                pointerEvents="box-none"
+                                style={{ display: isScanning ? 'none' : 'flex' }}
+                        >
+                                <View className="z-[1000] mx-4">
+                                        <View className="flex-row items-center justify-between gap-3 rounded-full bg-surfacePrimary p-3 dark:bg-surfacePrimary-dark">
+                                                <IconButton
+                                                        icon={BookOpenIcon}
+                                                        isActive={activeTab === 'diary'}
+                                                        onPress={() => handleTabPress('diary')}
+                                                        isDark={isDark}
+                                                />
+                                                <IconButton
+                                                        icon={ChartNoAxesCombinedIcon}
+                                                        isActive={activeTab === 'analytics'}
+                                                        onPress={() => handleTabPress('analytics')}
+                                                        isDark={isDark}
+                                                />
+                                                <ScanButton
+                                                        onPress={() => handleTabPress('scan')}
+                                                        isActive={activeTab === 'scan'}
+                                                        isDark={isDark}
+                                                />
+                                                <IconButton
+                                                        icon={HeadphonesIcon}
+                                                        isActive={activeTab === 'help'}
+                                                        onPress={() => handleTabPress('help')}
+                                                        isDark={isDark}
+                                                />
+                                                <IconButton
+                                                        icon={UserRoundIcon}
+                                                        isActive={activeTab === 'account'}
+                                                        onPress={() => handleTabPress('account')}
+                                                        isDark={isDark}
+                                                />
+                                        </View>
+                                </View>
+                        </View>
+                </View>
         );
 };

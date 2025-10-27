@@ -3,6 +3,7 @@ import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { CText } from '../ui/CText';
 import { TextField } from '../ui/TextField';
 import { AlertCircle } from 'lucide-react-native';
+import { COLORS } from '../../style/color';
 
 export interface MeasurementsViewProps {
         formValues: Record<string, any>;
@@ -70,7 +71,7 @@ export const MeasurementsView: React.FC<MeasurementsViewProps> = ({ formValues, 
                                                         />
                                                         {error && (
                                                                 <View className="mt-2 flex-row items-center rounded-lg border border-status-error/80 bg-status-error/20 p-3">
-                                                                        <AlertCircle size={16} color="#F44336" />
+                                                                        <AlertCircle size={16} color={COLORS.ERROR} />
                                                                         <CText className="ml-2 text-xs !text-status-error">
                                                                                 {error}
                                                                         </CText>

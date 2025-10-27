@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { useAuthStore } from '../store';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { Target, TrendingUp, TrendingDown, Scale } from 'lucide-react-native';
+import { COLORS } from '../style/color';
 
 interface HomeScreenProps {
         navigation: any; // TODO: Add proper navigation typing
@@ -99,7 +100,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                 <View className="mb-6 rounded-lg bg-surfacePrimary p-6 dark:bg-surfacePrimary-dark">
                                                         <View className="items-center">
                                                                 <View className="mb-3 h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-                                                                        <Target size={24} color="#4CAF50" />
+                                                                        <Target size={24} color={COLORS.PRIMARY} />
                                                                 </View>
                                                                 <CText className="mb-2 text-xl text-textPrimary dark:text-textPrimary-dark">
                                                                         Daily Calorie Goal
@@ -119,7 +120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                                                                         <View className="flex-row items-center justify-center">
                                                                                 {React.createElement(getGoalIcon(), {
                                                                                         size: 16,
-                                                                                        color: '#4CAF50',
+                                                                                        color: COLORS.PRIMARY,
                                                                                 })}
                                                                                 <CText className="ml-2 text-sm text-textSecondary dark:text-textSecondary-dark">
                                                                                         {getGoalText()}

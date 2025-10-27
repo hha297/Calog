@@ -4,6 +4,7 @@ import { CText } from '../ui/CText';
 import { TextField } from '../ui/TextField';
 import { User, Camera } from 'lucide-react-native';
 import { selectAndUploadAvatar } from '../../services/avatarService';
+import { COLORS } from '../../style/color';
 
 export interface ProfileInfoViewProps {
         formValues: Record<string, any>;
@@ -61,13 +62,16 @@ export const ProfileInfoView: React.FC<ProfileInfoViewProps> = ({ formValues, se
                                                                 className="h-24 w-24 rounded-full"
                                                         />
                                                 ) : (
-                                                        <User size={48} color="#4CAF50" />
+                                                        <User size={48} color={COLORS.PRIMARY} />
                                                 )}
                                                 <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full bg-primary">
                                                         {isUploading ? (
-                                                                <ActivityIndicator size="small" color="#FFFFFF" />
+                                                                <ActivityIndicator
+                                                                        size="small"
+                                                                        color={COLORS.ICON_LIGHT}
+                                                                />
                                                         ) : (
-                                                                <Camera size={16} color="#FFFFFF" />
+                                                                <Camera size={16} color={COLORS.ICON_LIGHT} />
                                                         )}
                                                 </View>
                                         </TouchableOpacity>

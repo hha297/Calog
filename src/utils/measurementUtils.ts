@@ -1,3 +1,5 @@
+import { COLORS } from '../style/color';
+
 export interface MeasurementData {
         value: number;
         unit: string;
@@ -107,11 +109,11 @@ export const formatTrendChange = (trend: TrendResult): string => {
 export const getTrendColor = (direction: TrendDirection): string => {
         switch (direction) {
                 case 'up':
-                        return '#4CAF50'; // Green for increase
+                        return COLORS.SUCCESS; // Green for increase
                 case 'down':
-                        return '#F44336'; // Red for decrease
+                        return COLORS.ERROR; // Red for decrease
                 case 'same':
                 default:
-                        return '#666666'; // Gray for no change
+                        return COLORS.GRAY_500; // Gray for no change
         }
 };

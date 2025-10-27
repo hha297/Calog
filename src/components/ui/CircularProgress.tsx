@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { CText } from './CText';
+import { COLORS } from '../../style/color';
 
 interface CircularProgressProps {
         progress: number; // 0-100
@@ -16,8 +17,8 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
         progress,
         size = 120,
         strokeWidth = 8,
-        color = '#4CAF50',
-        backgroundColor = '#E5E5E5',
+        color = COLORS.PRIMARY,
+        backgroundColor = COLORS.BACKGROUND_GRAY_LIGHT,
         children,
 }) => {
         const radius = (size - strokeWidth) / 2;

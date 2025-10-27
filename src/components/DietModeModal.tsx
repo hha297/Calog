@@ -5,6 +5,7 @@ import WheelPicker from '@quidone/react-native-wheel-picker';
 import { CText, Button } from './ui';
 import { DietMode, DIET_MODES, validateMacroPercentages } from '../types/dietModes';
 import { useTheme } from '../contexts';
+import { COLORS } from '../style/color';
 
 interface DietModeModalProps {
         visible: boolean;
@@ -157,7 +158,7 @@ export const DietModeModal: React.FC<DietModeModalProps> = ({ visible, currentDi
                                                 zIndex: 10000,
                                                 maxHeight: '80%',
                                                 elevation: 10,
-                                                shadowColor: '#000',
+                                                shadowColor: COLORS.SHADOW,
                                                 shadowOffset: { width: 0, height: -2 },
                                                 shadowOpacity: 0.25,
                                                 shadowRadius: 3.84,
@@ -185,7 +186,11 @@ export const DietModeModal: React.FC<DietModeModalProps> = ({ visible, currentDi
                                                                 >
                                                                         <X
                                                                                 size={24}
-                                                                                color={isDark ? '#FFFFFF' : '#666'}
+                                                                                color={
+                                                                                        isDark
+                                                                                                ? COLORS.ICON_LIGHT
+                                                                                                : COLORS.GRAY_500
+                                                                                }
                                                                         />
                                                                 </TouchableOpacity>
                                                         </View>
@@ -207,14 +212,14 @@ export const DietModeModal: React.FC<DietModeModalProps> = ({ visible, currentDi
                                                                                         }}
                                                                                         overlayItemStyle={{
                                                                                                 backgroundColor:
-                                                                                                        '#4CAF50',
+                                                                                                        COLORS.PRIMARY,
                                                                                                 borderRadius: 8,
                                                                                                 opacity: 0.6,
                                                                                         }}
                                                                                         itemTextStyle={{
                                                                                                 color: isDark
-                                                                                                        ? '#FFFFFF'
-                                                                                                        : '#000000',
+                                                                                                        ? COLORS.ICON_LIGHT
+                                                                                                        : COLORS.ICON_DARK,
                                                                                                 fontSize: 18,
                                                                                                 fontFamily: 'SpaceGrotesk-Medium',
                                                                                                 fontWeight: '500',
@@ -269,14 +274,14 @@ export const DietModeModal: React.FC<DietModeModalProps> = ({ visible, currentDi
                                                                                         }}
                                                                                         overlayItemStyle={{
                                                                                                 backgroundColor:
-                                                                                                        '#4CAF50',
+                                                                                                        COLORS.PRIMARY,
                                                                                                 borderRadius: 8,
                                                                                                 opacity: 0.6,
                                                                                         }}
                                                                                         itemTextStyle={{
                                                                                                 color: isDark
-                                                                                                        ? '#FFFFFF'
-                                                                                                        : '#000000',
+                                                                                                        ? COLORS.ICON_LIGHT
+                                                                                                        : COLORS.ICON_DARK,
                                                                                                 fontSize: 18,
                                                                                                 fontFamily: 'SpaceGrotesk-Medium',
                                                                                                 fontWeight: '500',
@@ -331,14 +336,14 @@ export const DietModeModal: React.FC<DietModeModalProps> = ({ visible, currentDi
                                                                                         }}
                                                                                         overlayItemStyle={{
                                                                                                 backgroundColor:
-                                                                                                        '#4CAF50',
+                                                                                                        COLORS.PRIMARY,
                                                                                                 borderRadius: 8,
                                                                                                 opacity: 0.6,
                                                                                         }}
                                                                                         itemTextStyle={{
                                                                                                 color: isDark
-                                                                                                        ? '#FFFFFF'
-                                                                                                        : '#000000',
+                                                                                                        ? COLORS.ICON_LIGHT
+                                                                                                        : COLORS.ICON_DARK,
                                                                                                 fontSize: 18,
                                                                                                 fontFamily: 'SpaceGrotesk-Medium',
                                                                                                 fontWeight: '500',

@@ -6,6 +6,7 @@ import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
 import { TermsOfServiceScreen } from '../screens/auth/TermsOfServiceScreen';
 import { PrivacyPolicyScreen } from '../screens/auth/PrivacyPolicyScreen';
 import { AuthStackParamList } from '../types';
+import { COLORS } from '../style/color';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -15,7 +16,7 @@ export const AuthNavigator: React.FC = () => {
                         initialRouteName="Login"
                         screenOptions={{
                                 headerShown: false,
-                                contentStyle: { backgroundColor: '#142b30' }, // primary color
+                                contentStyle: { backgroundColor: COLORS.SECONDARY }, // primary color
                         }}
                 >
                         <Stack.Screen

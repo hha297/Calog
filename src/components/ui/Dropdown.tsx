@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Modal, Dimensions, ScrollView } from 'react-nat
 import { CText } from './CText';
 import { ChevronDown } from 'lucide-react-native';
 import { useTheme } from '../../contexts';
+import { COLORS } from '../../style/color';
 
 export interface DropdownOption {
         label: string;
@@ -61,7 +62,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                                 <CText className="flex-1 !text-textPrimary">{getSelectedLabel()}</CText>
                                 <ChevronDown
                                         size={20}
-                                        color="#9CA3AF"
+                                        color={COLORS.GRAY_300}
                                         style={{
                                                 transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
                                         }}

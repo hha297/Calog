@@ -14,6 +14,7 @@ import { useAuthStore } from '../../store';
 import { calculateBodyComposition, calculateTDEE, calculateBMI, getBMIStatus } from '../../utils/helpers';
 import { useTheme } from '../../contexts';
 import { MeasurementLogModal } from '../../components/MeasurementLogModal';
+import { COLORS } from '../../style/color';
 
 export const ProfileScreen: React.FC = () => {
         const navigation = useNavigation();
@@ -346,7 +347,7 @@ export const ProfileScreen: React.FC = () => {
                         {/* Header */}
                         <View className="flex-row items-center justify-between px-6 py-6">
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                                        <ArrowLeft size={20} color={isDark ? '#FFFFFF' : '#000000'} />
+                                        <ArrowLeft size={20} color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK} />
                                 </TouchableOpacity>
                                 <CText size="2xl" weight="bold">
                                         Profile
@@ -368,7 +369,7 @@ export const ProfileScreen: React.FC = () => {
                                                                         className="h-16 w-16 rounded-full"
                                                                 />
                                                         ) : (
-                                                                <User size={32} color="#FFFFFF" />
+                                                                <User size={32} color={COLORS.ICON_LIGHT} />
                                                         )}
                                                 </View>
                                                 <View className="flex-1">
@@ -378,7 +379,7 @@ export const ProfileScreen: React.FC = () => {
                                                         <CText>{user?.email || 'user@example.com'}</CText>
                                                 </View>
                                                 <View className="items-center">
-                                                        <PenBoxIcon size={20} color="#4CAF50" />
+                                                        <PenBoxIcon size={20} color={COLORS.PRIMARY} />
                                                 </View>
                                         </View>
                                 </TouchableOpacity>
@@ -484,7 +485,10 @@ export const ProfileScreen: React.FC = () => {
                                         {dailyCalorieGoal < bmr && (
                                                 <View className="mt-3 rounded-lg border bg-status-error p-3">
                                                         <View className="flex-col items-center justify-center">
-                                                                <AlertTriangleIcon size={24} color="#FFFFFF" />
+                                                                <AlertTriangleIcon
+                                                                        size={24}
+                                                                        color={COLORS.ICON_LIGHT}
+                                                                />
 
                                                                 <CText className="mt-1 text-sm" weight="medium">
                                                                         Eating below BMR may be unsafe and can harm your
