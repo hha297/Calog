@@ -121,32 +121,33 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
                                                         color={isDark ? COLORS.ICON_LIGHT : COLORS.GRAY_500}
                                                 />
                                         </View>
+                                        {/* Calendar Icon (fixed width) */}
+                                        <View className="my-1 flex-row items-center" style={{ width: 44 }}>
+                                                <View className="h-12 w-px bg-background dark:bg-gray-600" />
+                                                <TouchableOpacity onPress={onCalendarPress} className="ml-2">
+                                                        <View className="size-10 items-center justify-center rounded-lg bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
+                                                                <CalendarIcon
+                                                                        size={20}
+                                                                        color={
+                                                                                isDark
+                                                                                        ? COLORS.ICON_LIGHT
+                                                                                        : COLORS.GRAY_500
+                                                                        }
+                                                                />
+                                                        </View>
+                                                </TouchableOpacity>
+                                        </View>
                                 </TouchableOpacity>
                         </View>
 
                         {/* Date Picker Section */}
                         <View className="mb-4 flex-row items-center">
                                 {/* Horizontal calendar takes remaining width after the calendar button */}
-                                <View style={{ flex: 1 }}>
-                                        <HorizontalCalendar
-                                                onSelectDate={handleDateSelect}
-                                                selected={selectedDateString}
-                                                width={Math.round((Dimensions.get('window').width || 0) - 80)}
-                                        />
-                                </View>
-
-                                {/* Calendar Icon (fixed width) */}
-                                <View className="my-1 flex-row items-center" style={{ width: 44 }}>
-                                        <View className="h-12 w-px bg-background dark:bg-gray-600" />
-                                        <TouchableOpacity onPress={onCalendarPress} className="ml-2">
-                                                <View className="size-10 items-center justify-center rounded-lg bg-surfaceSecondary dark:bg-surfaceSecondary-dark">
-                                                        <CalendarIcon
-                                                                size={20}
-                                                                color={isDark ? COLORS.ICON_LIGHT : COLORS.GRAY_500}
-                                                        />
-                                                </View>
-                                        </TouchableOpacity>
-                                </View>
+                                <HorizontalCalendar
+                                        onSelectDate={handleDateSelect}
+                                        selected={selectedDateString}
+                                        width={Math.round((Dimensions.get('window').width || 0) - 80)}
+                                />
                         </View>
                 </View>
         );

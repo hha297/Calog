@@ -27,33 +27,55 @@ export const DateItem: React.FC<DateItemProps> = ({ date, onSelectDate, selected
         // Format day number
         const dayNumber = date.getDate().toString();
 
+        // Get day of week
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dayOfWeek = dayNames[date.getDay()];
+
         return (
                 <TouchableOpacity
                         onPress={() => onSelectDate(fullDate)}
                         className={`items-center justify-center ${!isCurrentMonth ? 'opacity-50' : ''}`}
                 >
-                        <View
-                                className={`mb-2 size-10 items-center justify-center rounded-full ${
-                                        isSelected
-                                                ? 'bg-primary'
-                                                : isToday
-                                                  ? 'border border-primary bg-primary/20'
-                                                  : 'border border-gray-300 bg-transparent dark:border-gray-500'
-                                }`}
-                        >
-                                <CText
-                                        size="sm"
-                                        weight="medium"
-                                        className={`${
-                                                isSelected
-                                                        ? 'text-white'
-                                                        : 'text-textPrimary dark:text-textPrimary-dark'
-                                        }`}
-                                >
-                                        {dayNumber}
-                                </CText>
-                        </View>
-                        {isToday && <View className="-mt-1 size-1 rounded-full bg-primary" />}
+                        {isSelected ? (
+                                // Pill shape for any selected date
+                                <View className="items-center justify-center rounded-full bg-primary p-2">
+                                        <CText weight="medium" className="mb-2 text-white">
+                                                {dayOfWeek}
+                                        </CText>
+                                        <View className="size-8 items-center justify-center rounded-full bg-background dark:bg-background-dark">
+                                                <CText
+                                                        size="sm"
+                                                        weight="medium"
+                                                        className="text-textPrimary dark:text-textPrimary-dark"
+                                                >
+                                                        {dayNumber}
+                                                </CText>
+                                        </View>
+                                </View>
+                        ) : (
+                                // Default layout
+                                <>
+                                        <CText
+                                                weight="medium"
+                                                className="mb-2 text-textSecondary dark:text-textSecondary-dark"
+                                        >
+                                                {dayOfWeek}
+                                        </CText>
+                                        <View
+                                                className={`size-8 items-center justify-center rounded-full ${
+                                                        isToday && 'border border-primary bg-primary/20'
+                                                }`}
+                                        >
+                                                <CText
+                                                        size="sm"
+                                                        weight="medium"
+                                                        className="text-textPrimary dark:text-textPrimary-dark"
+                                                >
+                                                        {dayNumber}
+                                                </CText>
+                                        </View>
+                                </>
+                        )}
                 </TouchableOpacity>
         );
 };

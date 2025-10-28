@@ -31,7 +31,7 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
 
                 // Split into pages of 7-8 days each
                 const pages: Date[][] = [];
-                const daysPerPage = 7;
+                const daysPerPage = 6;
 
                 for (let i = 0; i < allDates.length; i += daysPerPage) {
                         const page = allDates.slice(i, i + daysPerPage);
@@ -84,7 +84,7 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
                 return (
                         <View className="flex-row items-center justify-center" style={{ width: pageWidth }}>
                                 {page.map((date, index) => (
-                                        <View key={index} className="flex-1 items-center pr-3">
+                                        <View key={index} className="flex-1 items-center">
                                                 <DateItem date={date} onSelectDate={onSelectDate} selected={selected} />
                                         </View>
                                 ))}
@@ -95,7 +95,7 @@ export const HorizontalCalendar: React.FC<HorizontalCalendarProps> = ({ onSelect
         return (
                 <View className="mr-2 flex-1">
                         {/* Horizontal Paginated Calendar */}
-                        <View className="h-16 items-center">
+                        <View className="h-20 items-center">
                                 <FlatList
                                         ref={flatListRef}
                                         data={datePages}
