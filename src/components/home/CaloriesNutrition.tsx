@@ -39,7 +39,7 @@ const DailyView: React.FC<{
                                         <CircularProgress
                                                 progress={calorieProgress}
                                                 size={160}
-                                                strokeWidth={8}
+                                                strokeWidth={12}
                                                 color={COLORS.PRIMARY}
                                                 backgroundColor={COLORS.BACKGROUND_GRAY_LIGHT}
                                         >
