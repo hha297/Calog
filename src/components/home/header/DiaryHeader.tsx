@@ -77,7 +77,19 @@ export const DiaryHeader: React.FC<DiaryHeaderProps> = ({ selectedDate, onDateSe
         const selectedDateString = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
         return (
-                <View className="bg-surfacePrimary pl-4 pr-2 pt-4 dark:bg-surfacePrimary-dark">
+                <View
+                        className="border-b border-textSecondary/10 bg-surfacePrimary pl-4 pr-2 pt-4 dark:border-textSecondary/20 dark:bg-surfacePrimary-dark"
+                        style={{
+                                shadowColor: COLORS.SHADOW,
+                                shadowOffset: {
+                                        width: 0,
+                                        height: 4,
+                                },
+                                shadowOpacity: 0.4,
+                                shadowRadius: 6,
+                                elevation: 4,
+                        }}
+                >
                         {/* Top Section */}
                         <View className="mb-4 flex-row items-center justify-between">
                                 {/* Left Side - Avatar and Date */}
