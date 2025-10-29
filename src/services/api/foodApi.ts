@@ -6,6 +6,8 @@ export interface OpenFoodFactsProduct {
                 product_name?: string;
                 brands?: string;
                 image_url?: string;
+                image_front_url?: string;
+                image_front_small_url?: string;
                 categories?: string;
                 labels?: string;
                 ingredients_text?: string;
