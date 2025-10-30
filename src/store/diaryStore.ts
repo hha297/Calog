@@ -27,6 +27,7 @@ interface DiaryState {
         ) => void;
         removeEntry: (meal: MealType, id: string) => void;
         clearMeal: (meal: MealType) => void;
+        setMealLogs: (logs: Record<MealType, DiaryEntry[]>) => void;
         getCount: (meal: MealType) => number;
         getTotals: (meal: MealType) => { calories: number; protein: number; carbs: number; fat: number; fiber: number };
 }
@@ -63,6 +64,10 @@ export const useDiaryStore = create<DiaryState>()(
                         clearMeal: (meal) =>
                                 set((state) => ({
                                         mealLogs: { ...state.mealLogs, [meal]: [] },
+                                })),
+                        setMealLogs: (logs) =>
+                                set(() => ({
+                                        mealLogs: logs,
                                 })),
                         getCount: (meal) => get().mealLogs[meal]?.length || 0,
                         getTotals: (meal) => {

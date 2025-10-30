@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { CText } from '../../components/ui';
 import { DiaryHeader } from '../../components/home/header/DiaryHeader';
-import { CaloriesNutrition, FoodDiary } from '../../components/home';
+import { CaloriesNutrition, FoodDiary } from '../../components/home/food-diary';
 import { useUserProfile } from '../../hooks/useUserProfile';
 
 export const DiaryScreen: React.FC = () => {
@@ -67,7 +67,7 @@ export const DiaryScreen: React.FC = () => {
                                 />
 
                                 {/* Food Diary Section */}
-                                <FoodDiary />
+                                <FoodDiary selectedDate={selectedDate} />
                         </ScrollView>
                 </SafeAreaView>
         );

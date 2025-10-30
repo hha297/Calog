@@ -22,11 +22,12 @@ import {
         Beef,
         Droplet,
 } from 'lucide-react-native';
-import { CText, CircularProgress } from '../ui';
-import { useTheme } from '../../contexts';
-import { COLORS } from '../../style/color';
-import { useDiaryStore, MealType } from '../../store/diaryStore';
-import { fetchProductByBarcode, parseOpenFoodFactsData, OpenFoodFactsProduct } from '../../services/api/foodApi';
+import { CText, CircularProgress } from '../../ui';
+import { useTheme } from '../../../contexts';
+import { COLORS } from '../../../style/color';
+import { MealType } from '../../../store/diaryStore';
+import { addMealEntry, updateMealEntry } from '../../../services/api/mealLogApi';
+import { fetchProductByBarcode, parseOpenFoodFactsData, OpenFoodFactsProduct } from '../../../services/api/foodApi';
 import { MEAL_OPTIONS } from './FoodSearchModal';
 
 interface FoodDetailModalProps {
@@ -42,19 +43,34 @@ interface FoodDetailModalProps {
                 fiber?: number;
                 imageUrl?: string;
                 brand?: string;
+                quantityGrams?: number;
         };
         initialMealType: MealType;
+        selectedDate?: Date;
+        mode?: 'add' | 'update';
+        mealIndex?: number; // required when mode=update
+        onUpdated?: (payload: { quantityGrams: number }) => void;
 }
 
-export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ visible, onClose, food, initialMealType }) => {
+export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
+        visible,
+        onClose,
+        food,
+        initialMealType,
+        selectedDate,
+        mode = 'add',
+        mealIndex,
+        onUpdated,
+}) => {
         const { isDark } = useTheme();
-        const [servingSize, setServingSize] = useState<string>('100');
+        const [servingSize, setServingSize] = useState<string>(
+                food.quantityGrams !== undefined ? food.quantityGrams.toString() : '100',
+        );
         const [selectedMealType, setSelectedMealType] = useState<MealType>(initialMealType);
         const [showMealDropdown, setShowMealDropdown] = useState(false);
         const [showFullNutrition, setShowFullNutrition] = useState(false);
         const [fullNutritionData, setFullNutritionData] = useState<any>(null);
         const [loadingNutrition, setLoadingNutrition] = useState(false);
-        const addEntry = useDiaryStore((s) => s.addEntry);
 
         const selectedMeal = MEAL_OPTIONS.find((m) => m.key === selectedMealType);
 
@@ -100,21 +116,39 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ visible, onClo
                         fetchFullNutrition();
                 }
         }, [visible, showFullNutrition]);
+        useEffect(() => {
+                if (visible) {
+                        setServingSize(food.quantityGrams !== undefined ? food.quantityGrams.toString() : '100');
+                }
+        }, [food, visible]);
 
-        const handleAddToMeal = () => {
+        const handleSubmit = async () => {
                 if (!isValidServingSize) return; // Prevent adding if invalid
-                addEntry(selectedMealType, {
-                        code: food.code,
-                        name: food.name,
-                        calories: food.calories,
-                        protein: food.protein,
-                        carbs: food.carbs,
-                        fat: food.fat,
-                        fiber: food.fiber,
-                        imageUrl: food.imageUrl,
-                        brand: food.brand,
-                        quantityGrams: servingSizeNum,
-                });
+                const date = new Date(selectedDate || new Date());
+                date.setHours(0, 0, 0, 0);
+                try {
+                        if (mode === 'update' && typeof mealIndex === 'number') {
+                                await updateMealEntry(date.toISOString(), selectedMealType, mealIndex, {
+                                        quantityGrams: servingSizeNum,
+                                        timestamp: new Date().toISOString(),
+                                });
+                                onUpdated && onUpdated({ quantityGrams: servingSizeNum });
+                        } else {
+                                await addMealEntry(date.toISOString(), selectedMealType, {
+                                        code: food.code,
+                                        name: food.name,
+                                        brand: food.brand,
+                                        imageUrl: food.imageUrl,
+                                        calories: food.calories,
+                                        protein: food.protein,
+                                        carbs: food.carbs,
+                                        fat: food.fat,
+                                        fiber: food.fiber,
+                                        quantityGrams: servingSizeNum,
+                                        timestamp: new Date().toISOString(),
+                                });
+                        }
+                } catch (e) {}
                 onClose();
         };
 
@@ -138,7 +172,7 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ visible, onClo
                                                 />
                                         ) : (
                                                 <Image
-                                                        source={require('../../assets/images/logo.png')}
+                                                        source={require('../../../assets/images/logo.png')}
                                                         style={{ width: '100%', height: '100%' }}
                                                         resizeMode="cover"
                                                 />
@@ -620,10 +654,10 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ visible, onClo
                                         </View>
                                 </ScrollView>
 
-                                {/* Add Button */}
+                                {/* Submit Button */}
                                 <View className="border-t border-textSecondary/10 px-4 pb-4 pt-3 dark:border-textSecondary/20">
                                         <TouchableOpacity
-                                                onPress={handleAddToMeal}
+                                                onPress={handleSubmit}
                                                 disabled={!isValidServingSize}
                                                 className={`rounded-xl px-6 py-4 ${
                                                         isValidServingSize
@@ -640,7 +674,9 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({ visible, onClo
                                                                         : 'text-textSecondary dark:text-textSecondary-dark'
                                                         }`}
                                                 >
-                                                        Add to {selectedMeal?.label.toLowerCase()}
+                                                        {mode === 'update'
+                                                                ? 'Update'
+                                                                : `Add to ${selectedMeal?.label.toLowerCase()}`}
                                                 </CText>
                                         </TouchableOpacity>
                                 </View>
