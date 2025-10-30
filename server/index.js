@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const measurementLogRoutes = require('./routes/measurementLogs');
 const foodRoutes = require('./routes/food');
+const mealLogRoutes = require('./routes/mealLogs');
 const { ErrorUtils } = require('./utils');
 
 const app = express();
@@ -66,6 +67,7 @@ app.use('/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/measurement-logs', measurementLogRoutes);
 app.use('/api/food', foodRoutes);
+app.use('/api/meal-logs', mealLogRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

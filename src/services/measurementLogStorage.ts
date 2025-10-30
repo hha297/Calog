@@ -81,7 +81,6 @@ export const measurementLogStorage = {
         async getLogs(): Promise<MeasurementLogEntry[]> {
                 try {
                         const response = (await apiClient.get('/api/measurement-logs')) as any;
-                        console.log('getLogs response:', response);
 
                         // Handle different response formats
                         if (response.success && response.data) {

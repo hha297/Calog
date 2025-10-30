@@ -23,12 +23,11 @@ import {
         HandPlatter,
 } from 'lucide-react-native';
 import LottieView from 'lottie-react-native';
-import { CText } from '../ui/CText';
-import { useTheme } from '../../contexts';
-import { COLORS } from '../../style/color';
-import { CameraView } from '../CameraView';
-import { fetchProductByBarcode, parseOpenFoodFactsData } from '../../services/api/foodApi';
-import { useDiaryStore } from '../../store/diaryStore';
+import { CText } from '../../ui/CText';
+import { useTheme } from '../../../contexts';
+import { COLORS } from '../../../style/color';
+import { CameraView } from '../../CameraView';
+import { fetchProductByBarcode, parseOpenFoodFactsData } from '../../../services/api/foodApi';
 import { FoodDetailModal } from './FoodDetailModal';
 import { Flame, Sprout } from 'lucide-react-native';
 
@@ -94,6 +93,7 @@ interface FoodSearchModalProps {
         visible: boolean;
         onClose: () => void;
         initialMealType?: MealKey;
+        selectedDate?: Date;
         onSelectFood?: (food: FoodSearchResult, mealType: MealKey) => void;
 }
 
@@ -101,6 +101,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
         visible,
         onClose,
         initialMealType = 'breakfast',
+        selectedDate,
         onSelectFood,
 }) => {
         const { isDark } = useTheme();
@@ -114,11 +115,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
         const [showSummary, setShowSummary] = useState(false);
         const [summaryTab, setSummaryTab] = useState<MealKey>('breakfast');
         const [countryTag, setCountryTag] = useState<string | null>(null);
-        const countForSelected = useDiaryStore((s) => s.getCount(selectedMealType));
-        const addEntry = useDiaryStore((s) => s.addEntry);
-        const removeEntryFromStore = useDiaryStore((s) => s.removeEntry);
-        const itemsForTab = useDiaryStore((s) => s.mealLogs[summaryTab] || []);
-        const totalsForTab = useDiaryStore((s) => s.getTotals(summaryTab));
+
         const [showDetailModal, setShowDetailModal] = useState(false);
         const [selectedFoodForDetail, setSelectedFoodForDetail] = useState<FoodSearchResult | null>(null);
 
@@ -303,25 +300,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                 />
                                         </Pressable>
 
-                                        <TouchableOpacity onPress={() => setShowSummary(true)} activeOpacity={0.7}>
-                                                <View className="relative">
-                                                        <HandPlatter
-                                                                size={24}
-                                                                color={isDark ? COLORS.ICON_LIGHT : COLORS.ICON_DARK}
-                                                        />
-                                                        {countForSelected > 0 && (
-                                                                <View className="absolute -right-2 -top-2 min-w-4 items-center justify-center rounded-full bg-primary px-1">
-                                                                        <CText
-                                                                                size="xs"
-                                                                                weight="bold"
-                                                                                className="!text-white"
-                                                                        >
-                                                                                {countForSelected}
-                                                                        </CText>
-                                                                </View>
-                                                        )}
-                                                </View>
-                                        </TouchableOpacity>
+                                        <View />
                                 </View>
 
                                 {/* Meal Type Dropdown Modal */}
@@ -425,7 +404,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                         onPress={() => setShowScanner(true)}
                                                 >
                                                         <LottieView
-                                                                source={require('../../assets/images/scan.json')}
+                                                                source={require('../../../assets/images/scan.json')}
                                                                 autoPlay
                                                                 loop
                                                                 colorFilters={[
@@ -457,7 +436,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                 <View className="flex-1 items-center justify-center py-20">
                                                         <View className="size-32 overflow-hidden rounded-full">
                                                                 <Image
-                                                                        source={require('../../assets/images/not_found.jpeg')}
+                                                                        source={require('../../../assets/images/not_found.jpeg')}
                                                                         className="size-32"
                                                                         resizeMode="cover"
                                                                 />
@@ -503,7 +482,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                                                                 />
                                                                                         ) : (
                                                                                                 <Image
-                                                                                                        source={require('../../assets/images/not_found.jpeg')}
+                                                                                                        source={require('../../../assets/images/not_found.jpeg')}
                                                                                                         className="size-16"
                                                                                                         resizeMode="cover"
                                                                                                 />
@@ -544,18 +523,11 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                                                 className="size-10 items-center justify-center rounded-full bg-primary"
                                                                                 activeOpacity={0.7}
                                                                                 onPress={() => {
-                                                                                        // Add directly to diary
-                                                                                        addEntry(selectedMealType, {
-                                                                                                code: food.code,
-                                                                                                name: food.name,
-                                                                                                calories: food.calories,
-                                                                                                protein: food.protein,
-                                                                                                carbs: food.carbs,
-                                                                                                fat: food.fat,
-                                                                                                fiber: food.fiber,
-                                                                                                imageUrl: food.imageUrl,
-                                                                                                brand: food.brand,
-                                                                                        });
+                                                                                        onSelectFood &&
+                                                                                                onSelectFood(
+                                                                                                        food,
+                                                                                                        selectedMealType,
+                                                                                                );
                                                                                 }}
                                                                         >
                                                                                 <Plus
@@ -570,258 +542,7 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                         )}
                                 </ScrollView>
 
-                                {/* Summary Modal */}
-                                {showSummary && (
-                                        <Modal
-                                                visible
-                                                transparent
-                                                animationType="fade"
-                                                onRequestClose={() => setShowSummary(false)}
-                                        >
-                                                <View className="flex-1 bg-black/60">
-                                                        <SafeAreaView className="mt-auto rounded-t-3xl bg-surfacePrimary p-4 dark:bg-surfacePrimary-dark">
-                                                                <View className="mb-3 flex-row items-center justify-between">
-                                                                        <CText
-                                                                                size="lg"
-                                                                                weight="bold"
-                                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                                        >
-                                                                                Your meals
-                                                                        </CText>
-                                                                        <TouchableOpacity
-                                                                                onPress={() => setShowSummary(false)}
-                                                                        >
-                                                                                <X
-                                                                                        size={22}
-                                                                                        color={
-                                                                                                isDark
-                                                                                                        ? COLORS.ICON_LIGHT
-                                                                                                        : COLORS.ICON_DARK
-                                                                                        }
-                                                                                />
-                                                                        </TouchableOpacity>
-                                                                </View>
-                                                                {/* Tabs */}
-                                                                <View className="mb-3 flex-row items-center justify-between gap-2">
-                                                                        {(
-                                                                                [
-                                                                                        'breakfast',
-                                                                                        'lunch',
-                                                                                        'dinner',
-                                                                                        'snack',
-                                                                                ] as MealKey[]
-                                                                        ).map((t) => (
-                                                                                <TouchableOpacity
-                                                                                        key={t}
-                                                                                        onPress={() => setSummaryTab(t)}
-                                                                                        className={`flex-1 items-center rounded-full px-3 py-2 ${summaryTab === t ? 'bg-primary' : 'bg-surfaceSecondary dark:bg-surfaceSecondary-dark'}`}
-                                                                                >
-                                                                                        <CText
-                                                                                                weight="medium"
-                                                                                                className={`${summaryTab === t ? '!text-white' : 'text-textSecondary dark:text-textSecondary-dark'} capitalize`}
-                                                                                        >
-                                                                                                {t}
-                                                                                        </CText>
-                                                                                </TouchableOpacity>
-                                                                        ))}
-                                                                </View>
-
-                                                                {/* Items for selected tab */}
-                                                                <ScrollView className="max-h-[60%]">
-                                                                        {(() => {
-                                                                                const items = itemsForTab;
-                                                                                return items.length === 0 ? (
-                                                                                        <CText
-                                                                                                size="lg"
-                                                                                                weight="medium"
-                                                                                                className="pt-4 text-center text-textSecondary dark:text-textSecondary-dark"
-                                                                                        >
-                                                                                                No items
-                                                                                        </CText>
-                                                                                ) : (
-                                                                                        <View>
-                                                                                                {items.map((it) => (
-                                                                                                        <View
-                                                                                                                key={
-                                                                                                                        it.id
-                                                                                                                }
-                                                                                                                className="mb-2 flex-row items-center gap-3 rounded-xl bg-surfaceSecondary p-3 dark:bg-surfaceSecondary-dark"
-                                                                                                        >
-                                                                                                                <View className="size-12 overflow-hidden rounded-full bg-background">
-                                                                                                                        {it.imageUrl ? (
-                                                                                                                                <Image
-                                                                                                                                        source={{
-                                                                                                                                                uri: it.imageUrl,
-                                                                                                                                        }}
-                                                                                                                                        className="size-12"
-                                                                                                                                />
-                                                                                                                        ) : (
-                                                                                                                                <Image
-                                                                                                                                        source={require('../../assets/images/not_found.jpeg')}
-                                                                                                                                        className="size-12"
-                                                                                                                                />
-                                                                                                                        )}
-                                                                                                                </View>
-                                                                                                                <View className="flex-1">
-                                                                                                                        <CText
-                                                                                                                                weight="medium"
-                                                                                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                                                                                                numberOfLines={
-                                                                                                                                        1
-                                                                                                                                }
-                                                                                                                        >
-                                                                                                                                {
-                                                                                                                                        it.name
-                                                                                                                                }
-                                                                                                                        </CText>
-                                                                                                                        <CText
-                                                                                                                                size="sm"
-                                                                                                                                className="mt-1 text-textSecondary dark:text-textSecondary-dark"
-                                                                                                                        >
-                                                                                                                                {it.quantityGrams ??
-                                                                                                                                        100}{' '}
-                                                                                                                                g
-                                                                                                                                •{' '}
-                                                                                                                                {Math.round(
-                                                                                                                                        (it.calories ??
-                                                                                                                                                0) *
-                                                                                                                                                ((it.quantityGrams ??
-                                                                                                                                                        100) /
-                                                                                                                                                        100),
-                                                                                                                                )}{' '}
-                                                                                                                                kcal
-                                                                                                                        </CText>
-                                                                                                                </View>
-                                                                                                                <TouchableOpacity
-                                                                                                                        onPress={() =>
-                                                                                                                                removeEntryFromStore(
-                                                                                                                                        summaryTab,
-                                                                                                                                        it.id,
-                                                                                                                                )
-                                                                                                                        }
-                                                                                                                        className="bg-error size-8 items-center justify-center rounded-full"
-                                                                                                                >
-                                                                                                                        <X
-                                                                                                                                size={
-                                                                                                                                        14
-                                                                                                                                }
-                                                                                                                                color="#fff"
-                                                                                                                        />
-                                                                                                                </TouchableOpacity>
-                                                                                                        </View>
-                                                                                                ))}
-                                                                                        </View>
-                                                                                );
-                                                                        })()}
-                                                                </ScrollView>
-
-                                                                {/* Totals */}
-                                                                {(() => {
-                                                                        const totals = totalsForTab;
-                                                                        return (
-                                                                                <View className="mt-3">
-                                                                                        <View className="mb-2 flex-row items-center justify-between">
-                                                                                                <CText
-                                                                                                        weight="semibold"
-                                                                                                        className="text-primary"
-                                                                                                >
-                                                                                                        Nutrition total
-                                                                                                </CText>
-                                                                                                <CText
-                                                                                                        weight="semibold"
-                                                                                                        className="text-primary"
-                                                                                                >
-                                                                                                        {Math.round(
-                                                                                                                totals.calories,
-                                                                                                        )}{' '}
-                                                                                                        kcal
-                                                                                                </CText>
-                                                                                        </View>
-                                                                                        <View className="flex-row items-center justify-between gap-2">
-                                                                                                <View className="flex-1 flex-row items-center gap-2 rounded-full bg-primary/20 px-3 py-2">
-                                                                                                        <Wheat
-                                                                                                                size={
-                                                                                                                        16
-                                                                                                                }
-                                                                                                                color={
-                                                                                                                        COLORS.PRIMARY
-                                                                                                                }
-                                                                                                        />
-                                                                                                        <CText
-                                                                                                                weight="medium"
-                                                                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                                                                        >
-                                                                                                                {Math.round(
-                                                                                                                        totals.carbs,
-                                                                                                                )}{' '}
-                                                                                                                g
-                                                                                                        </CText>
-                                                                                                </View>
-                                                                                                <View className="bg-error/20 flex-1 flex-row items-center gap-2 rounded-full px-3 py-2">
-                                                                                                        <Beef
-                                                                                                                size={
-                                                                                                                        16
-                                                                                                                }
-                                                                                                                color={
-                                                                                                                        COLORS.ERROR
-                                                                                                                }
-                                                                                                        />
-                                                                                                        <CText
-                                                                                                                weight="medium"
-                                                                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                                                                        >
-                                                                                                                {Math.round(
-                                                                                                                        totals.protein,
-                                                                                                                )}{' '}
-                                                                                                                g
-                                                                                                        </CText>
-                                                                                                </View>
-                                                                                                <View className="bg-warning/20 flex-1 flex-row items-center gap-2 rounded-full px-3 py-2">
-                                                                                                        <Droplet
-                                                                                                                size={
-                                                                                                                        16
-                                                                                                                }
-                                                                                                                color={
-                                                                                                                        COLORS.WARNING
-                                                                                                                }
-                                                                                                        />
-                                                                                                        <CText
-                                                                                                                weight="medium"
-                                                                                                                className="text-textPrimary dark:text-textPrimary-dark"
-                                                                                                        >
-                                                                                                                {Math.round(
-                                                                                                                        totals.fat,
-                                                                                                                )}{' '}
-                                                                                                                g
-                                                                                                        </CText>
-                                                                                                </View>
-                                                                                        </View>
-
-                                                                                        {/* Save Food Diary Button */}
-                                                                                        <TouchableOpacity
-                                                                                                onPress={() => {
-                                                                                                        // Close summary modal after saving
-                                                                                                        setShowSummary(
-                                                                                                                false,
-                                                                                                        );
-                                                                                                }}
-                                                                                                className="mt-4 rounded-xl bg-primary px-6 py-4"
-                                                                                                activeOpacity={0.8}
-                                                                                        >
-                                                                                                <CText
-                                                                                                        weight="bold"
-                                                                                                        className="text-center text-base !text-white"
-                                                                                                >
-                                                                                                        Save food diary
-                                                                                                </CText>
-                                                                                        </TouchableOpacity>
-                                                                                </View>
-                                                                        );
-                                                                })()}
-                                                        </SafeAreaView>
-                                                </View>
-                                        </Modal>
-                                )}
+                                {/* Summary Modal removed */}
 
                                 {/* Scanner Overlay */}
                                 {showScanner && (
@@ -864,18 +585,11 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                                                                 fiber: parsed.nutrients
                                                                                                         .fiber,
                                                                                         } as FoodSearchResult;
-                                                                                        // Auto-add to diary (global store)
-                                                                                        addEntry(selectedMealType, {
-                                                                                                code: mapped.code,
-                                                                                                name: mapped.name,
-                                                                                                calories: mapped.calories,
-                                                                                                protein: mapped.protein,
-                                                                                                carbs: mapped.carbs,
-                                                                                                fat: mapped.fat,
-                                                                                                fiber: mapped.fiber,
-                                                                                                imageUrl: mapped.imageUrl,
-                                                                                                brand: mapped.brand,
-                                                                                        });
+                                                                                        onSelectFood &&
+                                                                                                onSelectFood(
+                                                                                                        mapped,
+                                                                                                        selectedMealType,
+                                                                                                );
                                                                                         setSearchResults([mapped]);
                                                                                         setSearchQuery(code);
                                                                                 }
@@ -898,6 +612,8 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                 }}
                                                 food={selectedFoodForDetail}
                                                 initialMealType={selectedMealType}
+                                                selectedDate={selectedDate}
+                                                mode={'add'}
                                         />
                                 )}
                         </SafeAreaView>
