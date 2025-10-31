@@ -55,10 +55,19 @@ export async function fetchProductByBarcode(barcode: string): Promise<OpenFoodFa
                                 Accept: 'application/json',
                         },
                 });
-                if (!res.ok) return null;
+                if (!res.ok) {
+                        console.warn(`OpenFoodFacts API returned status ${res.status} for barcode ${barcode}`);
+                        return null;
+                }
+                const contentType = res.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                        console.warn(`OpenFoodFacts API returned non-JSON response for barcode ${barcode}`);
+                        return null;
+                }
                 const data = (await res.json()) as OpenFoodFactsProduct;
                 return data ?? null;
-        } catch {
+        } catch (error) {
+                console.error(`Error fetching product by barcode ${barcode}:`, error);
                 return null;
         }
 }
@@ -198,8 +207,9 @@ export async function getFoodEntries(params?: {
                 if (params?.mealType) queryParams.append('mealType', params.mealType);
                 if (params?.date) queryParams.append('date', params.date);
 
-                const response = await apiClient.get(`/food?${queryParams}`);
-                return { success: true, data: (response as any).data };
+                const response = await apiClient.get(`/api/food?${queryParams}`);
+                // Server returns { foods, totalPages, currentPage, total }
+                return { success: true, data: response as any };
         } catch (error) {
                 console.error('Error fetching food entries:', error);
                 return { success: false, message: error instanceof Error ? error.message : 'Unknown error' };

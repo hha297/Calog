@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import { CText } from '../../components/ui';
 import { DiaryHeader } from '../../components/home/header/DiaryHeader';
 import { CaloriesNutrition, FoodDiary } from '../../components/home/food-diary';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { getDailyMeals } from '../../services/api/mealLogApi';
 
 export const DiaryScreen: React.FC = () => {
         const navigation = useNavigation<any>();
@@ -16,6 +17,51 @@ export const DiaryScreen: React.FC = () => {
         });
         const [selectedView, setSelectedView] = useState<'daily' | 'weekly'>('daily');
         const { profile, isLoading } = useUserProfile();
+
+        const [totals, setTotals] = useState({
+                calories: 0,
+                protein: 0,
+                carbs: 0,
+                fat: 0,
+                fiber: 0,
+        });
+
+        const selectedDateISO = useMemo(() => {
+                const d = new Date(selectedDate);
+                d.setHours(0, 0, 0, 0);
+                return d.toISOString();
+        }, [selectedDate]);
+
+        const loadTotals = React.useCallback(async () => {
+                try {
+                        const res: any = await getDailyMeals(selectedDateISO);
+                        const day = Array.isArray(res?.data) ? res.data[0] : res?.[0] || res?.data || null;
+                        const meals = day?.meals || {};
+                        const all = ['breakfast', 'lunch', 'dinner', 'snack'] as const;
+                        const sum = all.reduce(
+                                (acc, key) => {
+                                        const list = meals[key] || [];
+                                        list.forEach((it: any) => {
+                                                const factor = ((it?.quantityGrams ?? 100) as number) / 100;
+                                                acc.calories += (it?.calories ?? 0) * factor;
+                                                acc.protein += (it?.protein ?? 0) * factor;
+                                                acc.carbs += (it?.carbs ?? 0) * factor;
+                                                acc.fat += (it?.fat ?? 0) * factor;
+                                                acc.fiber += (it?.fiber ?? 0) * factor;
+                                        });
+                                        return acc;
+                                },
+                                { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+                        );
+                        setTotals(sum);
+                } catch {
+                        setTotals({ calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
+                }
+        }, [selectedDateISO]);
+
+        useEffect(() => {
+                loadTotals();
+        }, [loadTotals]);
 
         const handleDateSelect = (date: Date) => {
                 const newDate = new Date(date);
@@ -28,7 +74,7 @@ export const DiaryScreen: React.FC = () => {
         };
 
         // Get data from user profile
-        const caloriesConsumed = 0; // TODO: Calculate from food logs
+        const caloriesConsumed = Math.round(totals.calories);
         const caloriesBurned = 0; // TODO: Calculate from activity logs
 
         if (isLoading) {
@@ -64,10 +110,16 @@ export const DiaryScreen: React.FC = () => {
                                         caloriesBurned={caloriesBurned}
                                         selectedView={selectedView}
                                         onViewChange={setSelectedView}
+                                        consumedMacros={{
+                                                carbs: totals.carbs,
+                                                protein: totals.protein,
+                                                fat: totals.fat,
+                                                fiber: totals.fiber,
+                                        }}
                                 />
 
                                 {/* Food Diary Section */}
-                                <FoodDiary selectedDate={selectedDate} />
+                                <FoodDiary selectedDate={selectedDate} onMealsChange={loadTotals} />
                         </ScrollView>
                 </SafeAreaView>
         );
