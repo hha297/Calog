@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
         View,
         Modal,
@@ -8,6 +8,7 @@ import {
         Image,
         ActivityIndicator,
         Pressable,
+        Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -21,13 +22,14 @@ import {
         Wheat,
         Droplet,
         HandPlatter,
+        Loader2,
 } from 'lucide-react-native';
 import LottieView from 'lottie-react-native';
 import { CText } from '../../ui/CText';
 import { useTheme } from '../../../contexts';
 import { COLORS } from '../../../style/color';
 import { CameraView } from '../../CameraView';
-import { fetchProductByBarcode, parseOpenFoodFactsData } from '../../../services/api/foodApi';
+import { fetchProductByBarcode, parseOpenFoodFactsData, getFoodEntries } from '../../../services/api/foodApi';
 import { FoodDetailModal } from './FoodDetailModal';
 import { Flame, Sprout } from 'lucide-react-native';
 
@@ -94,7 +96,7 @@ interface FoodSearchModalProps {
         onClose: () => void;
         initialMealType?: MealKey;
         selectedDate?: Date;
-        onSelectFood?: (food: FoodSearchResult, mealType: MealKey) => void;
+        onSelectFood?: (food: FoodSearchResult, mealType: MealKey) => void | Promise<void>;
 }
 
 export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
@@ -118,6 +120,11 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
 
         const [showDetailModal, setShowDetailModal] = useState(false);
         const [selectedFoodForDetail, setSelectedFoodForDetail] = useState<FoodSearchResult | null>(null);
+        const [myFoodList, setMyFoodList] = useState<FoodSearchResult[]>([]);
+        const [isLoadingMyFood, setIsLoadingMyFood] = useState(false);
+        const [showMyFood, setShowMyFood] = useState(false);
+        const [addingFoodCode, setAddingFoodCode] = useState<string | null>(null); // Track which food is being added
+        const spinAnim = useRef(new Animated.Value(0)).current;
 
         // Update selectedMealType when initialMealType changes or modal opens
         useEffect(() => {
@@ -125,6 +132,79 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                         setSelectedMealType(initialMealType);
                 }
         }, [initialMealType, visible]);
+
+        // Spinning animation for loading icon
+        useEffect(() => {
+                if (addingFoodCode) {
+                        const spin = Animated.loop(
+                                Animated.timing(spinAnim, {
+                                        toValue: 1,
+                                        duration: 1000,
+                                        useNativeDriver: true,
+                                }),
+                        );
+                        spin.start();
+                        return () => spin.stop();
+                } else {
+                        spinAnim.setValue(0);
+                }
+        }, [addingFoodCode, spinAnim]);
+
+        const spin = spinAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '360deg'],
+        });
+
+        // Load My Food when modal opens
+        useEffect(() => {
+                if (visible) {
+                        loadMyFood();
+                }
+        }, [visible]);
+
+        // Load My Food from database
+        const loadMyFood = async () => {
+                setIsLoadingMyFood(true);
+                try {
+                        const response = await getFoodEntries({ limit: 1000 });
+                        if (response.success && response.data) {
+                                const foods = response.data.foods || response.data || [];
+
+                                // Create a map to get unique foods by name (or code if available)
+                                const uniqueFoodMap = new Map<string, any>();
+                                foods.forEach((food: any) => {
+                                        const key = food.barcode || food.id || food.foodName;
+                                        if (key && !uniqueFoodMap.has(key)) {
+                                                uniqueFoodMap.set(key, food);
+                                        }
+                                });
+
+                                const uniqueFoods = Array.from(uniqueFoodMap.values());
+
+                                // Convert Food entries to FoodSearchResult format
+                                const allFoods: FoodSearchResult[] = uniqueFoods.map((food: any) => ({
+                                        code: food.barcode || food.id || `food-${food.foodName}`,
+                                        name: food.foodName || '',
+                                        brand: food.brand,
+                                        imageUrl: food.imageUrl,
+                                        calories: food.nutrients?.calories || 0,
+                                        protein: food.nutrients?.protein || 0,
+                                        carbs: food.nutrients?.carbs || 0,
+                                        fat: food.nutrients?.fat || 0,
+                                        fiber: food.nutrients?.fiber || 0,
+                                }));
+
+                                setMyFoodList(allFoods);
+                        } else {
+                                setMyFoodList([]);
+                        }
+                } catch (error) {
+                        console.error('Error loading My Food:', error);
+                        setMyFoodList([]);
+                } finally {
+                        setIsLoadingMyFood(false);
+                }
+        };
 
         // Update summaryTab when summary modal opens to match selectedMealType
         useEffect(() => {
@@ -450,10 +530,207 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                         </CText>
                                                 </View>
                                         ) : searchQuery.trim() === '' ? (
-                                                <View className="py-4">
-                                                        <CText className="text-textSecondary dark:text-textSecondary-dark">
-                                                                Recent searches
-                                                        </CText>
+                                                <View className="py-2">
+                                                        {/* My Food Section */}
+                                                        <View className="">
+                                                                <TouchableOpacity
+                                                                        onPress={() => setShowMyFood(!showMyFood)}
+                                                                        activeOpacity={0.7}
+                                                                        className={`mb-3 self-start rounded-full border px-4 py-3 ${
+                                                                                showMyFood
+                                                                                        ? 'border-primary bg-primary'
+                                                                                        : 'border-textSecondary/20 dark:border-textSecondary/30'
+                                                                        }`}
+                                                                >
+                                                                        <View className="flex-row items-center gap-2">
+                                                                                <CText
+                                                                                        weight="semibold"
+                                                                                        className={
+                                                                                                showMyFood
+                                                                                                        ? 'text-white'
+                                                                                                        : 'text-textPrimary dark:text-textPrimary-dark'
+                                                                                        }
+                                                                                >
+                                                                                        My Food
+                                                                                </CText>
+                                                                                {isLoadingMyFood && (
+                                                                                        <ActivityIndicator
+                                                                                                size="small"
+                                                                                                color={
+                                                                                                        showMyFood
+                                                                                                                ? '#fff'
+                                                                                                                : COLORS.PRIMARY
+                                                                                                }
+                                                                                        />
+                                                                                )}
+                                                                        </View>
+                                                                </TouchableOpacity>
+                                                                {showMyFood && myFoodList.length > 0 && (
+                                                                        <View className="gap-2">
+                                                                                {myFoodList.map((food, index) => (
+                                                                                        <View
+                                                                                                key={`myfood-${food.code}-${index}`}
+                                                                                                className="flex-row items-center gap-3 rounded-xl bg-surfacePrimary p-3 dark:bg-surfacePrimary-dark"
+                                                                                        >
+                                                                                                <TouchableOpacity
+                                                                                                        onPress={() => {
+                                                                                                                setSelectedFoodForDetail(
+                                                                                                                        food,
+                                                                                                                );
+                                                                                                                setShowDetailModal(
+                                                                                                                        true,
+                                                                                                                );
+                                                                                                        }}
+                                                                                                        className="flex-1 flex-row items-center gap-3"
+                                                                                                        activeOpacity={
+                                                                                                                0.7
+                                                                                                        }
+                                                                                                >
+                                                                                                        {/* Circular Image */}
+                                                                                                        <View className="size-16 overflow-hidden rounded-full">
+                                                                                                                {food.imageUrl ? (
+                                                                                                                        <Image
+                                                                                                                                source={{
+                                                                                                                                        uri: food.imageUrl,
+                                                                                                                                }}
+                                                                                                                                className="size-16"
+                                                                                                                                resizeMode="cover"
+                                                                                                                        />
+                                                                                                                ) : (
+                                                                                                                        <Image
+                                                                                                                                source={require('../../../assets/images/not_found.jpeg')}
+                                                                                                                                className="size-16"
+                                                                                                                                resizeMode="cover"
+                                                                                                                        />
+                                                                                                                )}
+                                                                                                        </View>
+
+                                                                                                        {/* Food Info */}
+                                                                                                        <View className="flex-1">
+                                                                                                                <CText
+                                                                                                                        weight="medium"
+                                                                                                                        className="text-textPrimary dark:text-textPrimary-dark"
+                                                                                                                        numberOfLines={
+                                                                                                                                1
+                                                                                                                        }
+                                                                                                                >
+                                                                                                                        {
+                                                                                                                                food.name
+                                                                                                                        }
+                                                                                                                </CText>
+                                                                                                                {food.brand && (
+                                                                                                                        <CText
+                                                                                                                                size="sm"
+                                                                                                                                className="mt-1 text-textSecondary dark:text-textSecondary-dark"
+                                                                                                                        >
+                                                                                                                                {
+                                                                                                                                        food.brand
+                                                                                                                                }
+                                                                                                                        </CText>
+                                                                                                                )}
+                                                                                                                <CText
+                                                                                                                        size="sm"
+                                                                                                                        className="mt-1 text-textSecondary dark:text-textSecondary-dark"
+                                                                                                                >
+                                                                                                                        {food.calories
+                                                                                                                                ? `${food.calories} kcal`
+                                                                                                                                : 'N/A'}{' '}
+                                                                                                                        •
+                                                                                                                        100g
+                                                                                                                </CText>
+                                                                                                        </View>
+                                                                                                </TouchableOpacity>
+
+                                                                                                {/* Add Button */}
+                                                                                                <TouchableOpacity
+                                                                                                        className="size-10 items-center justify-center rounded-full bg-primary"
+                                                                                                        activeOpacity={
+                                                                                                                0.7
+                                                                                                        }
+                                                                                                        onPress={async () => {
+                                                                                                                if (
+                                                                                                                        addingFoodCode ===
+                                                                                                                        food.code
+                                                                                                                )
+                                                                                                                        return; // Prevent double click
+                                                                                                                setAddingFoodCode(
+                                                                                                                        food.code,
+                                                                                                                );
+                                                                                                                try {
+                                                                                                                        if (
+                                                                                                                                onSelectFood
+                                                                                                                        ) {
+                                                                                                                                await onSelectFood(
+                                                                                                                                        food,
+                                                                                                                                        selectedMealType,
+                                                                                                                                );
+                                                                                                                        }
+                                                                                                                } catch (error) {
+                                                                                                                        console.error(
+                                                                                                                                'Error adding food:',
+                                                                                                                                error,
+                                                                                                                        );
+                                                                                                                } finally {
+                                                                                                                        // Reset loading state after operation completes
+                                                                                                                        setAddingFoodCode(
+                                                                                                                                null,
+                                                                                                                        );
+                                                                                                                }
+                                                                                                        }}
+                                                                                                        disabled={
+                                                                                                                addingFoodCode ===
+                                                                                                                food.code
+                                                                                                        }
+                                                                                                >
+                                                                                                        {addingFoodCode ===
+                                                                                                        food.code ? (
+                                                                                                                <Animated.View
+                                                                                                                        style={{
+                                                                                                                                transform: [
+                                                                                                                                        {
+                                                                                                                                                rotate: spin,
+                                                                                                                                        },
+                                                                                                                                ],
+                                                                                                                        }}
+                                                                                                                >
+                                                                                                                        <Loader2
+                                                                                                                                size={
+                                                                                                                                        20
+                                                                                                                                }
+                                                                                                                                color="#fff"
+                                                                                                                        />
+                                                                                                                </Animated.View>
+                                                                                                        ) : (
+                                                                                                                <Plus
+                                                                                                                        size={
+                                                                                                                                20
+                                                                                                                        }
+                                                                                                                        color="#fff"
+                                                                                                                        strokeWidth={
+                                                                                                                                2
+                                                                                                                        }
+                                                                                                                />
+                                                                                                        )}
+                                                                                                </TouchableOpacity>
+                                                                                        </View>
+                                                                                ))}
+                                                                        </View>
+                                                                )}
+                                                                {showMyFood &&
+                                                                        myFoodList.length === 0 &&
+                                                                        !isLoadingMyFood && (
+                                                                                <CText className="py-4 text-center text-textSecondary dark:text-textSecondary-dark">
+                                                                                        No saved foods yet
+                                                                                </CText>
+                                                                        )}
+                                                        </View>
+
+                                                        {/* Recent searches */}
+                                                        <View className="mb-3">
+                                                                <CText className="text-textSecondary dark:text-textSecondary-dark">
+                                                                        Recent searches
+                                                                </CText>
+                                                        </View>
                                                 </View>
                                         ) : (
                                                 <View className="gap-2">
@@ -522,19 +799,54 @@ export const FoodSearchModal: React.FC<FoodSearchModalProps> = ({
                                                                         <TouchableOpacity
                                                                                 className="size-10 items-center justify-center rounded-full bg-primary"
                                                                                 activeOpacity={0.7}
-                                                                                onPress={() => {
-                                                                                        onSelectFood &&
-                                                                                                onSelectFood(
-                                                                                                        food,
-                                                                                                        selectedMealType,
+                                                                                onPress={async () => {
+                                                                                        if (
+                                                                                                addingFoodCode ===
+                                                                                                food.code
+                                                                                        )
+                                                                                                return; // Prevent double click
+                                                                                        setAddingFoodCode(food.code);
+                                                                                        try {
+                                                                                                if (onSelectFood) {
+                                                                                                        await onSelectFood(
+                                                                                                                food,
+                                                                                                                selectedMealType,
+                                                                                                        );
+                                                                                                }
+                                                                                        } catch (error) {
+                                                                                                console.error(
+                                                                                                        'Error adding food:',
+                                                                                                        error,
                                                                                                 );
+                                                                                        } finally {
+                                                                                                // Reset loading state after operation completes
+                                                                                                setAddingFoodCode(null);
+                                                                                        }
                                                                                 }}
+                                                                                disabled={addingFoodCode === food.code}
                                                                         >
-                                                                                <Plus
-                                                                                        size={20}
-                                                                                        color="#fff"
-                                                                                        strokeWidth={2}
-                                                                                />
+                                                                                {addingFoodCode === food.code ? (
+                                                                                        <Animated.View
+                                                                                                style={{
+                                                                                                        transform: [
+                                                                                                                {
+                                                                                                                        rotate: spin,
+                                                                                                                },
+                                                                                                        ],
+                                                                                                }}
+                                                                                        >
+                                                                                                <Loader2
+                                                                                                        size={20}
+                                                                                                        color="#fff"
+                                                                                                />
+                                                                                        </Animated.View>
+                                                                                ) : (
+                                                                                        <Plus
+                                                                                                size={20}
+                                                                                                color="#fff"
+                                                                                                strokeWidth={2}
+                                                                                        />
+                                                                                )}
                                                                         </TouchableOpacity>
                                                                 </View>
                                                         ))}

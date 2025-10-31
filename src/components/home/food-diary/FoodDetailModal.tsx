@@ -62,6 +62,8 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
         mealIndex,
         onUpdated,
 }) => {
+        console.log('food received in FoodDetailModal:', food);
+        console.log('food.protein:', food.protein, 'food.carbs:', food.carbs, 'food.fat:', food.fat);
         const { isDark } = useTheme();
         const [servingSize, setServingSize] = useState<string>(
                 food.quantityGrams !== undefined ? food.quantityGrams.toString() : '100',
@@ -71,6 +73,7 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
         const [showFullNutrition, setShowFullNutrition] = useState(false);
         const [fullNutritionData, setFullNutritionData] = useState<any>(null);
         const [loadingNutrition, setLoadingNutrition] = useState(false);
+        const [foodData, setFoodData] = useState(food); // Local state for food with updated nutrients
 
         const selectedMeal = MEAL_OPTIONS.find((m) => m.key === selectedMealType);
 
@@ -78,12 +81,21 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
         const servingSizeNum = servingSize.trim() === '' ? 0 : parseInt(servingSize) || 0;
         const isValidServingSize = servingSizeNum > 0;
 
+        // Use foodData (with updated nutrients) instead of food prop
+        const currentFood = foodData || food;
+
         // Calculate nutrition based on serving size
         const factor = servingSizeNum / 100;
-        const calories = Math.round((food.calories || 0) * factor);
-        const protein = (food.protein || 0) * factor;
-        const carbs = (food.carbs || 0) * factor;
-        const fat = (food.fat || 0) * factor;
+        // Ensure values are numbers (handle undefined/null)
+        const baseCalories = typeof currentFood.calories === 'number' ? currentFood.calories : 0;
+        const baseProtein = typeof currentFood.protein === 'number' ? currentFood.protein : 0;
+        const baseCarbs = typeof currentFood.carbs === 'number' ? currentFood.carbs : 0;
+        const baseFat = typeof currentFood.fat === 'number' ? currentFood.fat : 0;
+
+        const calories = Math.round(baseCalories * factor);
+        const protein = baseProtein * factor;
+        const carbs = baseCarbs * factor;
+        const fat = baseFat * factor;
 
         // Calculate percentages for circular progress
         const totalMacros = protein * 4 + carbs * 4 + fat * 9; // calories from macros
@@ -93,6 +105,42 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
 
         // Progress for circular chart (using fat as main indicator as shown in image)
         const progressPercent = fatPercent;
+
+        // Fetch nutrients from Open Food Facts if missing
+        const fetchNutrientsFromBarcode = async () => {
+                // Only fetch if we have a barcode and nutrients are missing (all 0)
+                if (!food.code || loadingNutrition) return;
+                const hasMissingNutrients =
+                        (food.protein === 0 && food.carbs === 0 && food.fat === 0) ||
+                        (!food.protein && !food.carbs && !food.fat);
+
+                if (!hasMissingNutrients) return;
+
+                setLoadingNutrition(true);
+                try {
+                        const product = await fetchProductByBarcode(food.code);
+                        if (product?.product) {
+                                const parsed = parseOpenFoodFactsData(product);
+                                if (parsed) {
+                                        // Update food data with fetched nutrients
+                                        setFoodData({
+                                                ...food,
+                                                calories: parsed.nutrients.calories || food.calories || 0,
+                                                protein: parsed.nutrients.protein || food.protein || 0,
+                                                carbs: parsed.nutrients.carbs || food.carbs || 0,
+                                                fat: parsed.nutrients.fat || food.fat || 0,
+                                                fiber: parsed.nutrients.fiber || food.fiber || 0,
+                                        });
+                                        console.log('Fetched nutrients from barcode:', parsed.nutrients);
+                                }
+                                setFullNutritionData(product.product);
+                        }
+                } catch (error) {
+                        console.error('Error fetching nutrients from barcode:', error);
+                } finally {
+                        setLoadingNutrition(false);
+                }
+        };
 
         // Fetch full nutrition data from Open Food Facts
         const fetchFullNutrition = async () => {
@@ -111,16 +159,20 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
                 }
         };
 
+        // Fetch nutrients when modal opens if missing
+        useEffect(() => {
+                if (visible) {
+                        setFoodData(food); // Reset to passed food
+                        fetchNutrientsFromBarcode();
+                        setServingSize(food.quantityGrams !== undefined ? food.quantityGrams.toString() : '100');
+                }
+        }, [food, visible]);
+
         useEffect(() => {
                 if (visible && showFullNutrition) {
                         fetchFullNutrition();
                 }
         }, [visible, showFullNutrition]);
-        useEffect(() => {
-                if (visible) {
-                        setServingSize(food.quantityGrams !== undefined ? food.quantityGrams.toString() : '100');
-                }
-        }, [food, visible]);
 
         const handleSubmit = async () => {
                 if (!isValidServingSize) return; // Prevent adding if invalid
@@ -135,15 +187,15 @@ export const FoodDetailModal: React.FC<FoodDetailModalProps> = ({
                                 onUpdated && onUpdated({ quantityGrams: servingSizeNum });
                         } else {
                                 await addMealEntry(date.toISOString(), selectedMealType, {
-                                        code: food.code,
-                                        name: food.name,
-                                        brand: food.brand,
-                                        imageUrl: food.imageUrl,
-                                        calories: food.calories,
-                                        protein: food.protein,
-                                        carbs: food.carbs,
-                                        fat: food.fat,
-                                        fiber: food.fiber,
+                                        code: currentFood.code,
+                                        name: currentFood.name,
+                                        brand: currentFood.brand,
+                                        imageUrl: currentFood.imageUrl,
+                                        calories: currentFood.calories,
+                                        protein: currentFood.protein,
+                                        carbs: currentFood.carbs,
+                                        fat: currentFood.fat,
+                                        fiber: currentFood.fiber,
                                         quantityGrams: servingSizeNum,
                                         timestamp: new Date().toISOString(),
                                 });

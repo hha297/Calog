@@ -237,6 +237,12 @@ interface CaloriesNutritionProps {
         caloriesBurned?: number;
         selectedView?: 'daily' | 'weekly';
         onViewChange?: (view: 'daily' | 'weekly') => void;
+        consumedMacros?: {
+                carbs: number;
+                protein: number;
+                fat: number;
+                fiber: number;
+        };
 }
 
 export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
@@ -245,6 +251,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         caloriesBurned = 0,
         selectedView = 'daily',
         onViewChange,
+        consumedMacros,
 }) => {
         const [selectedDietMode, setSelectedDietMode] = useState<DietMode>(DIET_MODES[1]); // Default to Low Carb
         const [isDietModalVisible, setIsDietModalVisible] = useState(false);
@@ -290,10 +297,16 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
 
         const macroGoals = calculateMacroGoals();
         const multiplier = selectedView === 'weekly' ? 7 : 1;
+        const consumed = {
+                carbs: (consumedMacros?.carbs || 0) * multiplier,
+                protein: (consumedMacros?.protein || 0) * multiplier,
+                fat: (consumedMacros?.fat || 0) * multiplier,
+                fiber: consumedMacros?.fiber || 0, // Fiber only shown in daily view below
+        };
         const macroNutrients = [
                 {
                         name: 'Carbs',
-                        consumed: 0 * multiplier, // TODO: Get from actual data
+                        consumed: consumed.carbs,
                         goal: macroGoals.carbs,
                         unit: 'g',
                         icon: Wheat,
@@ -301,7 +314,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                 },
                 {
                         name: 'Protein',
-                        consumed: 0 * multiplier, // TODO: Get from actual data
+                        consumed: consumed.protein,
                         goal: macroGoals.protein,
                         unit: 'g',
                         icon: Beef,
@@ -309,7 +322,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                 },
                 {
                         name: 'Fat',
-                        consumed: 0 * multiplier, // TODO: Get from actual data
+                        consumed: consumed.fat,
                         goal: macroGoals.fat,
                         unit: 'g',
                         icon: Droplets,
@@ -320,7 +333,7 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
                         ? [
                                   {
                                           name: 'Fiber',
-                                          consumed: 0, // TODO: Get from actual data
+                                          consumed: consumed.fiber,
                                           goal: macroGoals.fiber,
                                           unit: 'g',
                                           icon: Sprout,

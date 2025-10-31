@@ -23,6 +23,11 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
 }) => {
         const progress = goal > 0 ? (consumed / goal) * 100 : 0;
         const clampedProgress = Math.min(progress, 100);
+        const formatNumber = (n: number) => {
+                const rounded = Math.round((n + Number.EPSILON) * 10) / 10; // 1 decimal max
+                return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+        };
+        const barColorClass = consumed > goal ? 'bg-status-error' : 'bg-primary';
 
         return (
                 <View className="rounded-lg bg-surfaceSecondary p-3 dark:bg-surfaceSecondary-dark">
@@ -38,7 +43,7 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
                                         </CText>
                                 </View>
                                 <CText weight="medium" className="text-textPrimary dark:text-textPrimary-dark">
-                                        {consumed}/{goal}
+                                        {formatNumber(consumed)}/{formatNumber(goal)}
                                         {unit}
                                 </CText>
                         </View>
@@ -46,7 +51,7 @@ export const MacroNutrient: React.FC<MacroNutrientProps> = ({
                         {/* Progress Bar - Full Width */}
                         <View className="h-2 w-full rounded-full bg-white">
                                 <View
-                                        className="h-2 rounded-full bg-primary"
+                                        className={`h-2 rounded-full ${barColorClass}`}
                                         style={{
                                                 width: `${clampedProgress}%`,
                                         }}

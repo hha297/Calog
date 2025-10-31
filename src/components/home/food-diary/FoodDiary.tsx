@@ -8,6 +8,8 @@ import { FoodItemCard } from './FoodItemCard';
 import { FoodDetailModal } from './FoodDetailModal';
 import { addMealEntry, getDailyMeals, deleteMealEntry } from '../../../services/api/mealLogApi';
 import { useTheme } from '../../../contexts';
+import { fetchProductByBarcode, parseOpenFoodFactsData } from '../../../services/api/foodApi';
+import { updateMealEntry } from '../../../services/api/mealLogApi';
 
 type MealKey = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
@@ -39,7 +41,10 @@ interface DiaryEntry {
         quantityGrams?: number;
 }
 
-export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) => {
+export const FoodDiary: React.FC<{ selectedDate?: Date; onMealsChange?: () => void }> = ({
+        selectedDate,
+        onMealsChange,
+}) => {
         const { isDark } = useTheme();
         const [expanded, setExpanded] = useState<boolean>(true);
         const [showSearchModal, setShowSearchModal] = useState(false);
@@ -65,6 +70,15 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                 snack: [],
         });
 
+        const getMealCalories = (mealKey: MealKey) => {
+                const items = mealLogs[mealKey] || [];
+                const total = items.reduce((acc, it) => {
+                        const f = (it.quantityGrams ?? 100) / 100;
+                        return acc + (it.calories || 0) * f;
+                }, 0);
+                return Math.round(total);
+        };
+
         const startOfDayISO = useMemo(() => {
                 const d = new Date(selectedDate || new Date());
                 d.setHours(0, 0, 0, 0);
@@ -78,8 +92,10 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                 const day = Array.isArray(res?.data) ? res.data[0] : res?.[0] || null;
                                 if (day?.meals) {
                                         const m = day.meals;
-                                        setMealLogs({
-                                                breakfast: (m.breakfast || []).map((e: any) => ({
+
+                                        // Helper function to map meal entries
+                                        const mapMealEntries = (entries: any[]) => {
+                                                return entries.map((e: any) => ({
                                                         id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
                                                         code: e.code,
                                                         name: e.name,
@@ -92,50 +108,122 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                                         fiber: e.fiber,
                                                         quantityGrams: e.quantityGrams || 100,
                                                         timestamp: new Date(e.timestamp || day.date).toISOString(),
-                                                })),
-                                                lunch: (m.lunch || []).map((e: any) => ({
-                                                        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-                                                        code: e.code,
-                                                        name: e.name,
-                                                        brand: e.brand,
-                                                        imageUrl: e.imageUrl,
-                                                        calories: e.calories,
-                                                        protein: e.protein,
-                                                        carbs: e.carbs,
-                                                        fat: e.fat,
-                                                        fiber: e.fiber,
-                                                        quantityGrams: e.quantityGrams || 100,
-                                                        timestamp: new Date(e.timestamp || day.date).toISOString(),
-                                                })),
-                                                dinner: (m.dinner || []).map((e: any) => ({
-                                                        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-                                                        code: e.code,
-                                                        name: e.name,
-                                                        brand: e.brand,
-                                                        imageUrl: e.imageUrl,
-                                                        calories: e.calories,
-                                                        protein: e.protein,
-                                                        carbs: e.carbs,
-                                                        fat: e.fat,
-                                                        fiber: e.fiber,
-                                                        quantityGrams: e.quantityGrams || 100,
-                                                        timestamp: new Date(e.timestamp || day.date).toISOString(),
-                                                })),
-                                                snack: (m.snack || []).map((e: any) => ({
-                                                        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-                                                        code: e.code,
-                                                        name: e.name,
-                                                        brand: e.brand,
-                                                        imageUrl: e.imageUrl,
-                                                        calories: e.calories,
-                                                        protein: e.protein,
-                                                        carbs: e.carbs,
-                                                        fat: e.fat,
-                                                        fiber: e.fiber,
-                                                        quantityGrams: e.quantityGrams || 100,
-                                                        timestamp: new Date(e.timestamp || day.date).toISOString(),
-                                                })),
+                                                }));
+                                        };
+
+                                        const mappedMeals = {
+                                                breakfast: mapMealEntries(m.breakfast || []),
+                                                lunch: mapMealEntries(m.lunch || []),
+                                                dinner: mapMealEntries(m.dinner || []),
+                                                snack: mapMealEntries(m.snack || []),
+                                        };
+
+                                        setMealLogs(mappedMeals);
+
+                                        // Fetch missing nutrients for entries with barcode but missing nutrients
+                                        const allEntries: Array<{
+                                                mealType: MealKey;
+                                                index: number;
+                                                entry: DiaryEntry;
+                                        }> = [];
+                                        (['breakfast', 'lunch', 'dinner', 'snack'] as MealKey[]).forEach((mealType) => {
+                                                mappedMeals[mealType].forEach((entry, index) => {
+                                                        const hasCode = entry.code && entry.code.trim() !== '';
+                                                        const hasMissingNutrients =
+                                                                (entry.protein === 0 &&
+                                                                        entry.carbs === 0 &&
+                                                                        entry.fat === 0) ||
+                                                                (!entry.protein && !entry.carbs && !entry.fat);
+                                                        if (
+                                                                hasCode &&
+                                                                hasMissingNutrients &&
+                                                                entry.calories &&
+                                                                entry.calories > 0
+                                                        ) {
+                                                                allEntries.push({ mealType, index, entry });
+                                                        }
+                                                });
                                         });
+
+                                        // Fetch nutrients for entries that need it
+                                        for (const { mealType, index, entry } of allEntries) {
+                                                try {
+                                                        const product = await fetchProductByBarcode(entry.code!);
+                                                        if (!product?.product) {
+                                                                continue;
+                                                        }
+                                                        const parsed = parseOpenFoodFactsData(product);
+                                                        if (!parsed?.nutrients) {
+                                                                continue;
+                                                        }
+                                                        const nutrients = parsed.nutrients;
+                                                        // Update in database
+                                                        try {
+                                                                await updateMealEntry(startOfDayISO, mealType, index, {
+                                                                        protein: nutrients.protein || 0,
+                                                                        carbs: nutrients.carbs || 0,
+                                                                        fat: nutrients.fat || 0,
+                                                                        fiber: nutrients.fiber || 0,
+                                                                        calories:
+                                                                                nutrients.calories ||
+                                                                                entry.calories ||
+                                                                                0,
+                                                                });
+                                                                // Update local state
+                                                                setMealLogs((prev) => {
+                                                                        const updated = { ...prev };
+                                                                        const list = [...updated[mealType]];
+                                                                        if (list[index]) {
+                                                                                list[index] = {
+                                                                                        ...list[index],
+                                                                                        protein: nutrients.protein || 0,
+                                                                                        carbs: nutrients.carbs || 0,
+                                                                                        fat: nutrients.fat || 0,
+                                                                                        fiber: nutrients.fiber || 0,
+                                                                                        calories:
+                                                                                                nutrients.calories ||
+                                                                                                list[index].calories ||
+                                                                                                0,
+                                                                                };
+                                                                                updated[mealType] = list;
+                                                                        }
+                                                                        return updated;
+                                                                });
+                                                                // Notify parent to refresh totals
+                                                                onMealsChange?.();
+                                                        } catch (updateError) {
+                                                                console.error(
+                                                                        `Error updating meal entry for ${entry.name}:`,
+                                                                        updateError,
+                                                                );
+                                                                // Still update local state even if DB update fails
+                                                                setMealLogs((prev) => {
+                                                                        const updated = { ...prev };
+                                                                        const list = [...updated[mealType]];
+                                                                        if (list[index]) {
+                                                                                list[index] = {
+                                                                                        ...list[index],
+                                                                                        protein: nutrients.protein || 0,
+                                                                                        carbs: nutrients.carbs || 0,
+                                                                                        fat: nutrients.fat || 0,
+                                                                                        fiber: nutrients.fiber || 0,
+                                                                                        calories:
+                                                                                                nutrients.calories ||
+                                                                                                list[index].calories ||
+                                                                                                0,
+                                                                                };
+                                                                                updated[mealType] = list;
+                                                                        }
+                                                                        return updated;
+                                                                });
+                                                        }
+                                                } catch (error) {
+                                                        console.error(
+                                                                `Error fetching nutrients for ${entry.name}:`,
+                                                                error,
+                                                        );
+                                                }
+                                        }
                                 } else {
                                         setMealLogs({ breakfast: [], lunch: [], dinner: [], snack: [] });
                                 }
@@ -156,40 +244,111 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                 setShowSearchModal(true);
         };
 
-        const handleSelectFood = (
+        const handleSelectFood = async (
                 food: { code: string; name: string; calories?: number; imageUrl?: string; brand?: string },
                 mealType: MealKey,
         ) => {
                 const date = new Date(selectedDate || new Date());
                 date.setHours(0, 0, 0, 0);
-                addMealEntry(date.toISOString(), mealType, {
-                        code: food.code,
-                        name: food.name,
-                        brand: food.brand,
-                        imageUrl: food.imageUrl,
-                        calories: food.calories,
-                        quantityGrams: 100,
-                        timestamp: new Date().toISOString(),
-                })
-                        .then(() => {
-                                setMealLogs((prev) => ({
-                                        ...prev,
-                                        [mealType]: [
-                                                ...prev[mealType],
-                                                {
-                                                        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-                                                        code: food.code,
-                                                        name: food.name,
-                                                        brand: food.brand,
-                                                        imageUrl: food.imageUrl,
-                                                        calories: food.calories,
-                                                        quantityGrams: 100,
-                                                        timestamp: new Date().toISOString(),
-                                                },
-                                        ],
-                                }));
-                        })
-                        .catch(() => {});
+                const newIndex = (mealLogs[mealType] || []).length; // index in server after append
+                try {
+                        await addMealEntry(date.toISOString(), mealType, {
+                                code: food.code,
+                                name: food.name,
+                                brand: food.brand,
+                                imageUrl: food.imageUrl,
+                                calories: food.calories,
+                                quantityGrams: 100,
+                                timestamp: new Date().toISOString(),
+                        });
+                        setMealLogs((prev) => ({
+                                ...prev,
+                                [mealType]: [
+                                        ...prev[mealType],
+                                        {
+                                                id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+                                                code: food.code,
+                                                name: food.name,
+                                                brand: food.brand,
+                                                imageUrl: food.imageUrl,
+                                                calories: food.calories,
+                                                protein: 0,
+                                                carbs: 0,
+                                                fat: 0,
+                                                quantityGrams: 100,
+                                                timestamp: new Date().toISOString(),
+                                        },
+                                ],
+                        }));
+                        onMealsChange?.();
+
+                        // If macros are missing, try to fetch from barcode and update server and local state
+                        // Run this in background without blocking the main add operation
+                        if (food.code) {
+                                (async () => {
+                                        try {
+                                                const product = await fetchProductByBarcode(food.code!);
+                                                if (!product?.product) {
+                                                        return; // No product found, skip
+                                                }
+                                                const parsed = parseOpenFoodFactsData(product);
+                                                if (!parsed?.nutrients) {
+                                                        return; // No nutrients found, skip
+                                                }
+                                                const n = parsed.nutrients;
+                                                // Update in database, but don't fail the whole operation if this fails
+                                                try {
+                                                        await updateMealEntry(date.toISOString(), mealType, newIndex, {
+                                                                protein: n.protein || 0,
+                                                                carbs: n.carbs || 0,
+                                                                fat: n.fat || 0,
+                                                                fiber: n.fiber || 0,
+                                                                calories:
+                                                                        typeof food.calories === 'number'
+                                                                                ? food.calories
+                                                                                : n.calories || 0,
+                                                        });
+                                                } catch (updateError: any) {
+                                                        console.error(
+                                                                'Error updating meal entry with nutrients:',
+                                                                updateError?.message || updateError,
+                                                        );
+                                                        // Continue to update local state even if DB update fails
+                                                }
+                                                // Always update local state with nutrients
+                                                setMealLogs((prev) => {
+                                                        const list = [...prev[mealType]];
+                                                        if (list[newIndex]) {
+                                                                list[newIndex] = {
+                                                                        ...list[newIndex],
+                                                                        protein: n.protein || 0,
+                                                                        carbs: n.carbs || 0,
+                                                                        fat: n.fat || 0,
+                                                                        fiber: n.fiber || 0,
+                                                                        calories:
+                                                                                typeof food.calories === 'number'
+                                                                                        ? food.calories
+                                                                                        : n.calories ||
+                                                                                          list[newIndex].calories ||
+                                                                                          0,
+                                                                } as any;
+                                                        }
+                                                        return { ...prev, [mealType]: list } as any;
+                                                });
+                                                onMealsChange?.();
+                                        } catch (error: any) {
+                                                console.error(
+                                                        'Error fetching nutrients from barcode:',
+                                                        error?.message || error,
+                                                );
+                                                // Don't throw - allow food to be added even if nutrients fetch fails
+                                        }
+                                })();
+                        }
+                } catch (error) {
+                        console.error('Error adding meal entry:', error);
+                        throw error; // Re-throw to let FoodSearchModal handle it
+                }
         };
 
         return (
@@ -212,6 +371,22 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                                                                 className="size-16"
                                                                                 resizeMode="cover"
                                                                         />
+                                                                        {(() => {
+                                                                                const kcal = getMealCalories(meal.key);
+                                                                                if (kcal > 0) {
+                                                                                        return (
+                                                                                                <View className="absolute inset-0 items-center justify-center bg-background-dark/80">
+                                                                                                        <CText
+                                                                                                                weight="semibold"
+                                                                                                                className="text-center text-white"
+                                                                                                        >
+                                                                                                                {kcal}
+                                                                                                        </CText>
+                                                                                                </View>
+                                                                                        );
+                                                                                }
+                                                                                return null;
+                                                                        })()}
                                                                 </View>
                                                                 <View className="absolute -bottom-1 -right-1 h-6 w-6 items-center justify-center rounded-full bg-primary">
                                                                         <Plus size={16} color="#fff" strokeWidth={2} />
@@ -291,19 +466,26 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                                                                 fat={e.fat}
                                                                                 onPress={() => {
                                                                                         setDetailMealType(meal);
-                                                                                        setDetailFood({
+                                                                                        const foodData = {
                                                                                                 code: e.code || '',
                                                                                                 name: e.name,
                                                                                                 brand: e.brand,
                                                                                                 imageUrl: e.imageUrl,
-                                                                                                calories: e.calories,
-                                                                                                protein: e.protein,
-                                                                                                carbs: e.carbs,
-                                                                                                fat: e.fat,
-                                                                                                fiber: e.fiber,
+                                                                                                calories:
+                                                                                                        e.calories ?? 0,
+                                                                                                protein: e.protein ?? 0,
+                                                                                                carbs: e.carbs ?? 0,
+                                                                                                fat: e.fat ?? 0,
+                                                                                                fiber: e.fiber ?? 0,
                                                                                                 quantityGrams:
-                                                                                                        e.quantityGrams,
-                                                                                        });
+                                                                                                        e.quantityGrams ??
+                                                                                                        100,
+                                                                                        };
+                                                                                        console.log(
+                                                                                                'Setting detailFood in FoodDiary:',
+                                                                                                foodData,
+                                                                                        );
+                                                                                        setDetailFood(foodData);
                                                                                         setShowDetailModal(true);
                                                                                 }}
                                                                                 onDelete={() => {
@@ -335,6 +517,7 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                                                                                                         ),
                                                                                                                 }),
                                                                                                         );
+                                                                                                        onMealsChange?.();
                                                                                                 })
                                                                                                 .catch(() => {});
                                                                                 }}
@@ -492,6 +675,7 @@ export const FoodDiary: React.FC<{ selectedDate?: Date }> = ({ selectedDate }) =
                                                         }
                                                         return { ...prev, [detailMealType]: list } as any;
                                                 });
+                                                onMealsChange?.();
                                         }}
                                 />
                         )}
