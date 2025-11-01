@@ -177,6 +177,78 @@ server/
 
 ## 🗄️ Database Schema
 
+### MealLog Model
+
+Each user has one MealLog document containing all their daily meal logs organized by date.
+
+```javascript
+// meal_logs
+{
+  userId: ObjectId,        // Reference to User
+  mealLogs: [{
+    date: Date,            // Normalized to start of day
+    meals: {
+      breakfast: [mealEntrySchema],
+      lunch: [mealEntrySchema],
+      dinner: [mealEntrySchema],
+      snack: [mealEntrySchema]
+    },
+    createdAt: Date,
+    updatedAt: Date
+  }],
+  createdAt: Date,
+  updatedAt: Date
+}
+
+// mealEntrySchema fields:
+{
+  code: String,           // Barcode or food identifier
+  name: String,           // Required
+  brand: String,
+  imageUrl: String,
+  quantityGrams: Number,  // Default: 100
+  calories: Number,       // Default: 0
+  protein: Number,        // Default: 0
+  carbs: Number,          // Default: 0
+  fat: Number,            // Default: 0
+  fiber: Number,          // Default: 0
+  timestamp: Date
+}
+```
+
+Indexes:
+```
+db.meal_logs.createIndex({ userId: 1 })
+db.meal_logs.createIndex({ userId: 1, 'mealLogs.date': -1 })
+```
+
+### Food Model
+
+Food entries saved by users for quick access in "My Food" section.
+
+```javascript
+{
+  id: String,             // Unique food ID
+  userId: String,         // User who saved this
+  foodName: String,
+  brand: String,
+  barcode: String,
+  imageUrl: String,
+  nutrients: {
+    calories: Number,
+    protein: Number,
+    carbs: Number,
+    fat: Number,
+    fiber: Number,
+    // ... other nutrients
+  },
+  isFavorite: Boolean,   // For favorites functionality
+  createdAt: Date,
+  updatedAt: Date,
+  deletedAt: Date        // Soft delete
+}
+```
+
 ### User Model
 
 ```javascript
@@ -391,3 +463,22 @@ Body composition metrics are calculated in real-time when:
 - Profile information is modified
 
 The frontend uses helper functions in `src/utils/helpers.ts` for consistent calculations across the app.
+
+## 🍽️ Meal Logging System
+
+### Features
+
+- **Daily Meal Organization**: Meals organized by date with breakfast, lunch, dinner, and snack categories
+- **Nutrition Tracking**: Each meal entry stores calories, protein, carbs, fat, and fiber
+- **Auto-fetch Nutrients**: System automatically fetches missing macronutrients from OpenFoodFacts API when barcode is available
+- **Real-time Updates**: Calories & Nutrition dashboard automatically updates when meals are added/updated/deleted
+- **Background Processing**: Nutrient fetching runs in background without blocking user interactions
+
+### Meal Entry Flow
+
+1. User adds food → Entry saved to database with available nutrients
+2. If nutrients missing (protein/carbs/fat = 0) and barcode exists:
+   - System automatically fetches from OpenFoodFacts API
+   - Updates entry in database with complete nutrient data
+   - Updates local state for immediate UI feedback
+3. Calories & Nutrition dashboard automatically refreshes to show updated totals

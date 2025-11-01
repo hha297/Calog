@@ -57,6 +57,10 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 - **Manual Food Entry**: Add food items manually when scanning isn't available
 - **Nutrition Analysis**: Complete macronutrient tracking (calories, protein, carbs, fat, fiber, etc.)
 - **Meal Categorization**: Organize food by meal types (breakfast, lunch, dinner, snacks)
+- **Real-time Calorie Tracking**: Calories & Nutrition dashboard automatically fetches and displays data from meal logs database
+- **My Food Section**: Access saved foods from database directly in search modal
+- **Auto-fetch Nutrients**: Automatically fetches missing macronutrients (protein, carbs, fat) from OpenFoodFacts API when available
+- **Visual Feedback**: Loading animations on add buttons, progress bars change color when goals exceeded
 
 ### 🔐 Authentication & Security
 
@@ -107,11 +111,13 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 
 ### 📊 Analytics & Tracking
 
-- **Daily Calorie Tracking**: Monitor calorie intake vs. goals
+- **Daily Calorie Tracking**: Monitor calorie intake vs. goals with real-time updates from database
+- **Macronutrient Progress**: Visual progress bars for carbs, protein, fat, and fiber with color-coded warnings
 - **Weekly/Monthly Views**: Switch between different time periods
 - **Calendar Integration**: Visual calendar for tracking progress
 - **Progress Visualization**: Charts and graphs for fitness metrics
 - **Analytics Dashboard**: Comprehensive overview of health and fitness data
+- **Meal Details Overlay**: Visual kcal display on meal icons when meals have logged entries
 
 ### 🌍 Multi-Language Support
 
@@ -414,16 +420,32 @@ npm run dev:ios  # iOS + Backend
 
 ### Food Tracking
 
-- `GET /api/food` - Get user's food entries
+- `GET /api/food` - Get user's food entries (with pagination, filtering by mealType/date)
      - **Headers**: `Authorization: Bearer <token>`
+     - **Query**: `page`, `limit`, `mealType`, `date`
 - `POST /api/food` - Add new food entry
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ foodEntry }`
 - `PUT /api/food/:id` - Update food entry
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ updatedFoodEntry }`
-- `DELETE /api/food/:id` - Delete food entry
+- `DELETE /api/food/:id` - Delete food entry (soft delete)
      - **Headers**: `Authorization: Bearer <token>`
+
+### Meal Logs
+
+- `POST /api/meal-logs/add` - Add meal entry to specific date and meal type
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ date: ISOString, mealType: 'breakfast'|'lunch'|'dinner'|'snack', entry: { code, name, calories, protein, carbs, fat, fiber, ... } }`
+- `GET /api/meal-logs?date=ISOString` - Get daily meals for specific date
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Query**: `date` (ISO string)
+- `PUT /api/meal-logs/update` - Update meal entry by index
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Body**: `{ date: ISOString, mealType, index: number, entry: { ...updates } }`
+- `DELETE /api/meal-logs/remove?date=ISOString&mealType=...&index=...` - Remove meal entry
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Query**: `date`, `mealType`, `index`
 
 ### Body Measurements
 
