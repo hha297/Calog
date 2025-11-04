@@ -635,7 +635,7 @@ export const FoodDiary: React.FC<{ selectedDate?: Date; onMealsChange?: () => vo
                                                                 weight="medium"
                                                                 className="text-white dark:text-textPrimary-dark"
                                                         >
-                                                                Add your meal !
+                                                                Add your meal
                                                         </CText>
                                                 </TouchableOpacity>
                                         </View>
