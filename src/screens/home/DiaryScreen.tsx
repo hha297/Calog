@@ -5,8 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { CText } from '../../components/ui';
 import { DiaryHeader } from '../../components/home/header/DiaryHeader';
 import { CaloriesNutrition, FoodDiary } from '../../components/home/food-diary';
+import { ExerciseDiary } from '../../components/home/exercise-diary';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { getDailyMeals } from '../../services/api/mealLogApi';
+import { getDailyExercises } from '../../services/api/exerciseLogApi';
 
 export const DiaryScreen: React.FC = () => {
         const navigation = useNavigation<any>();
@@ -25,6 +27,7 @@ export const DiaryScreen: React.FC = () => {
                 fat: 0,
                 fiber: 0,
         });
+        const [caloriesBurned, setCaloriesBurned] = useState(0);
 
         const selectedDateISO = useMemo(() => {
                 const d = new Date(selectedDate);
@@ -59,9 +62,24 @@ export const DiaryScreen: React.FC = () => {
                 }
         }, [selectedDateISO]);
 
+        const loadCaloriesBurned = React.useCallback(async () => {
+                try {
+                        const res: any = await getDailyExercises(selectedDateISO);
+                        const day = Array.isArray(res?.data) ? res.data[0] : res?.[0] || res?.data || null;
+                        const exercises = day?.exercises || [];
+                        const total = exercises.reduce((acc: number, it: any) => {
+                                return acc + (it?.calories || 0);
+                        }, 0);
+                        setCaloriesBurned(Math.round(total));
+                } catch {
+                        setCaloriesBurned(0);
+                }
+        }, [selectedDateISO]);
+
         useEffect(() => {
                 loadTotals();
-        }, [loadTotals]);
+                loadCaloriesBurned();
+        }, [loadTotals, loadCaloriesBurned]);
 
         const handleDateSelect = (date: Date) => {
                 const newDate = new Date(date);
@@ -75,7 +93,6 @@ export const DiaryScreen: React.FC = () => {
 
         // Get data from user profile
         const caloriesConsumed = Math.round(totals.calories);
-        const caloriesBurned = 0; // TODO: Calculate from activity logs
 
         if (isLoading) {
                 return (
@@ -120,6 +137,14 @@ export const DiaryScreen: React.FC = () => {
 
                                 {/* Food Diary Section */}
                                 <FoodDiary selectedDate={selectedDate} onMealsChange={loadTotals} />
+
+                                {/* Exercise Diary Section */}
+                                <View className="mt-4">
+                                        <ExerciseDiary
+                                                selectedDate={selectedDate}
+                                                onExercisesChange={loadCaloriesBurned}
+                                        />
+                                </View>
                         </ScrollView>
                 </SafeAreaView>
         );

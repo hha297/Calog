@@ -186,8 +186,12 @@ export async function addFoodEntry(foodData: FoodEntry): Promise<ApiResponse<any
         try {
                 console.log('Adding food entry:', foodData);
                 console.log('API Base URL:', apiClient.getBaseUrl());
-                const response = await apiClient.post('/api/food', foodData);
-                return { success: true, data: (response as any).data };
+                const response = await apiClient.post('/api/user-foods', foodData);
+                // Handle both old and new response formats
+                if (response && typeof response === 'object' && 'success' in response) {
+                        return response as ApiResponse<any>;
+                }
+                return { success: true, data: response as any };
         } catch (error) {
                 console.error('Error adding food entry:', error);
                 return { success: false, message: error instanceof Error ? error.message : 'Unknown error' };
@@ -207,8 +211,15 @@ export async function getFoodEntries(params?: {
                 if (params?.mealType) queryParams.append('mealType', params.mealType);
                 if (params?.date) queryParams.append('date', params.date);
 
-                const response = await apiClient.get(`/api/food?${queryParams}`);
-                // Server returns { foods, totalPages, currentPage, total }
+                const response = await apiClient.get(`/api/user-foods?${queryParams}`);
+                // Handle both old and new response formats
+                if (response && typeof response === 'object' && 'success' in response) {
+                        return response as ApiResponse<any>;
+                }
+                // If response is data object directly
+                if (response && typeof response === 'object' && 'foods' in response) {
+                        return { success: true, data: response };
+                }
                 return { success: true, data: response as any };
         } catch (error) {
                 console.error('Error fetching food entries:', error);
