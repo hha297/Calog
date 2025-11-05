@@ -60,31 +60,65 @@ class ApiClient {
                 try {
                         const response = await fetch(url, config);
 
-                        // Handle non-JSON responses
-                        const contentType = response.headers.get('content-type');
-                        if (!contentType || !contentType.includes('application/json')) {
-                                throw new Error('Invalid response format');
+                        // Handle 401 Unauthorized before parsing response
+                        if (response.status === 401) {
+                                // Clear token and trigger logout
+                                this.accessToken = null;
+                                if (this.onUnauthorized) {
+                                        this.onUnauthorized();
+                                }
+                                // Throw specific error for auth failures
+                                throw new Error('unauthorized');
                         }
 
-                        const data = await response.json();
+                        // Handle 204 No Content responses
+                        if (response.status === 204) {
+                                if (!response.ok) {
+                                        throw new Error(`HTTP ${response.status}`);
+                                }
+                                return {} as T;
+                        }
+
+                        // Try to parse as JSON, but handle non-JSON responses gracefully
+                        const contentType = response.headers.get('content-type');
+                        let data: any;
+                        try {
+                                const text = await response.text();
+                                if (!text || text.trim() === '') {
+                                        // Empty response body
+                                        if (!response.ok) {
+                                                throw new Error(`HTTP ${response.status}`);
+                                        }
+                                        return {} as T;
+                                }
+                                data = JSON.parse(text);
+                        } catch (parseError) {
+                                // If content-type suggests JSON but parsing failed
+                                if (contentType && contentType.includes('application/json')) {
+                                        const errorMsg = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+                                        throw new Error(`Invalid JSON response: ${errorMsg}`);
+                                }
+                                // If response is ok but not JSON, return empty object
+                                if (response.ok) {
+                                        return {} as T;
+                                }
+                                // If response is not ok and not JSON, throw error
+                                const errorMsg = parseError instanceof Error ? parseError.message : 'Invalid response';
+                                throw new Error(`HTTP ${response.status}: ${errorMsg}`);
+                        }
 
                         if (!response.ok) {
-                                // Handle 401 Unauthorized - token expired or invalid
-                                if (response.status === 401) {
-                                        // Clear token and trigger logout
-                                        this.accessToken = null;
-                                        if (this.onUnauthorized) {
-                                                this.onUnauthorized();
-                                        }
-                                        // Throw specific error for auth failures
-                                        throw new Error('unauthorized');
-                                }
-                                throw new Error(data.message || `HTTP ${response.status}`);
+                                throw new Error(data.message || data.error || `HTTP ${response.status}`);
                         }
 
                         // Handle new response format from refactored backend
-                        if (data.success !== undefined) {
-                                return data.data || data;
+                        if (data && typeof data === 'object' && 'success' in data) {
+                                // If success is false, throw an error even if HTTP status is 200
+                                if (data.success === false) {
+                                        throw new Error(data.message || data.error || 'Request failed');
+                                }
+                                // Return data field if present, otherwise return the whole object
+                                return data.data !== undefined ? data.data : data;
                         }
 
                         return data;

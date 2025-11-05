@@ -70,7 +70,7 @@ router.post('/add', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
         try {
                 const userId = req.user.userId;
-                const { date } = req.query || {};
+                const { date, month, year } = req.query || {};
 
                 const doc = await MealLog.findOne({ userId });
                 if (!doc) return res.json({ success: true, data: [] });
@@ -79,6 +79,18 @@ router.get('/', auth, async (req, res) => {
                         const day = startOfDay(date);
                         const found = doc.mealLogs.find((d) => new Date(d.date).getTime() === day.getTime());
                         return res.json({ success: true, data: found ? [found] : [] });
+                }
+
+                // Filter by month and year if provided
+                if (month && year) {
+                        const monthNum = parseInt(month, 10);
+                        const yearNum = parseInt(year, 10);
+                        const filtered = doc.mealLogs.filter((log) => {
+                                const logDate = new Date(log.date);
+                                return logDate.getMonth() + 1 === monthNum && logDate.getFullYear() === yearNum;
+                        });
+                        const sorted = [...filtered].sort((a, b) => new Date(a.date) - new Date(b.date));
+                        return res.json({ success: true, data: sorted });
                 }
 
                 const sorted = [...doc.mealLogs].sort((a, b) => new Date(b.date) - new Date(a.date));

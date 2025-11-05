@@ -25,6 +25,11 @@ export async function getDailyMeals(dateISO: string) {
         return apiClient.get(`/api/meal-logs?${params}`);
 }
 
+export async function getMonthlyMeals(month: number, year: number) {
+        const params = new URLSearchParams({ month: String(month), year: String(year) }).toString();
+        return apiClient.get(`/api/meal-logs?${params}`);
+}
+
 export async function deleteMealEntry(dateISO: string, mealType: MealType, index: number) {
         const params = new URLSearchParams({ date: dateISO, mealType, index: String(index) }).toString();
         return apiClient.delete(`/api/meal-logs/remove?${params}`);
