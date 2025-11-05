@@ -30,6 +30,12 @@ const DailyView: React.FC<{
         calorieProgress: number;
         macroNutrients: any[];
 }> = ({ caloriesNeeded, actualConsumed, caloriesRemaining, caloriesBurned, calorieProgress, macroNutrients }) => {
+        const isExceed = caloriesRemaining < 0;
+        const caloriesExceed = isExceed ? Math.abs(caloriesRemaining) : 0;
+        const displayValue = isExceed ? caloriesExceed : caloriesRemaining;
+        const progressColor = isExceed ? COLORS.ERROR : COLORS.PRIMARY;
+        const progressValue = isExceed ? Math.min(calorieProgress, 100) : calorieProgress;
+
         return (
                 <>
                         {/* Circular Progress and Calorie Summary */}
@@ -37,14 +43,18 @@ const DailyView: React.FC<{
                                 {/* Circular Progress for Calories */}
                                 <View className="items-center justify-center">
                                         <CircularProgress
-                                                progress={calorieProgress}
+                                                progress={progressValue}
                                                 size={160}
                                                 strokeWidth={12}
-                                                color={COLORS.PRIMARY}
+                                                color={progressColor}
                                                 backgroundColor={COLORS.BACKGROUND_GRAY_LIGHT}
                                         >
                                                 <View className="items-center">
-                                                        <CText size="3xl" weight="bold" className="!text-primary">
+                                                        <CText 
+                                                                size="3xl" 
+                                                                weight="bold" 
+                                                                className={isExceed ? "!text-status-error" : "!text-primary"}
+                                                        >
                                                                 {actualConsumed}
                                                         </CText>
                                                         <CText
@@ -74,16 +84,20 @@ const DailyView: React.FC<{
                                                 </View>
                                         </View>
                                         <View className="my-2 flex-row items-center">
-                                                <Utensils size={24} color={COLORS.WARNING} fill={COLORS.WARNING} />
+                                                <Utensils 
+                                                        size={24} 
+                                                        color={isExceed ? COLORS.ERROR : COLORS.WARNING} 
+                                                        fill={isExceed ? COLORS.ERROR : COLORS.WARNING} 
+                                                />
                                                 <View className="ml-3 flex-col">
                                                         <CText className="text-textPrimary dark:text-textPrimary-dark">
-                                                                Remaining
+                                                                {isExceed ? 'Exceed' : 'Remaining'}
                                                         </CText>
                                                         <CText
                                                                 weight="medium"
-                                                                className="text-textPrimary dark:text-textPrimary-dark"
+                                                                className={isExceed ? "!text-status-error" : "text-textPrimary dark:text-textPrimary-dark"}
                                                         >
-                                                                {caloriesRemaining}
+                                                                {isExceed ? '+' : ''}{displayValue}
                                                         </CText>
                                                 </View>
                                         </View>
@@ -165,6 +179,10 @@ const WeeklyView: React.FC<{
         calorieProgress: number;
         macroNutrients: any[];
 }> = ({ weeklyCaloriesNeeded, weeklyCaloriesConsumed, caloriesNeeded, calorieProgress, macroNutrients }) => {
+        const isExceed = weeklyCaloriesConsumed > weeklyCaloriesNeeded;
+        const progressColor = isExceed ? COLORS.ERROR : COLORS.PRIMARY;
+        const progressValue = isExceed ? Math.min(calorieProgress, 100) : calorieProgress;
+
         return (
                 <>
                         {/* Circular Progress and Weekly Bar Chart */}
@@ -172,14 +190,18 @@ const WeeklyView: React.FC<{
                                 {/* Circular Progress for Weekly Calories */}
                                 <View className="mx-2 items-center justify-center">
                                         <CircularProgress
-                                                progress={calorieProgress}
+                                                progress={progressValue}
                                                 size={100}
                                                 strokeWidth={8}
-                                                color={COLORS.PRIMARY}
+                                                color={progressColor}
                                                 backgroundColor={COLORS.BACKGROUND_GRAY_LIGHT}
                                         >
                                                 <View className="items-center gap-y-1">
-                                                        <CText size="2xl" weight="bold" className="!text-primary">
+                                                        <CText 
+                                                                size="2xl" 
+                                                                weight="bold" 
+                                                                className={isExceed ? "!text-status-error" : "!text-primary"}
+                                                        >
                                                                 {weeklyCaloriesConsumed}
                                                         </CText>
                                                         <View className="h-px w-12 bg-textPrimary dark:bg-textPrimary-dark" />
@@ -268,10 +290,10 @@ export const CaloriesNutrition: React.FC<CaloriesNutritionProps> = ({
         const calorieProgress =
                 selectedView === 'weekly'
                         ? weeklyCaloriesNeeded > 0
-                                ? (weeklyCaloriesConsumed / weeklyCaloriesNeeded) * 100
+                                ? Math.min((weeklyCaloriesConsumed / weeklyCaloriesNeeded) * 100, 100)
                                 : 0
                         : caloriesNeeded > 0
-                          ? (actualConsumed / caloriesNeeded) * 100
+                          ? Math.min((actualConsumed / caloriesNeeded) * 100, 100)
                           : 0;
 
         // TODO: Implement proper macro nutrient calculation based on profile and selected diet mode

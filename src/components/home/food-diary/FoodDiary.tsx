@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Image, ImageSourcePropType, View, TouchableOpacity } from 'react-native';
 import { CText } from '../../ui';
 import { Plus, ChevronDown, ChevronUp, X as XIcon, Wheat, Beef, Droplet } from 'lucide-react-native';
@@ -41,9 +41,14 @@ interface DiaryEntry {
         quantityGrams?: number;
 }
 
-export const FoodDiary: React.FC<{ selectedDate?: Date; onMealsChange?: () => void }> = ({
+export const FoodDiary: React.FC<{ 
+        selectedDate?: Date; 
+        onMealsChange?: () => void;
+        onTotalsChange?: (totals: { calories: number; protein: number; carbs: number; fat: number; fiber: number }) => void;
+}> = ({
         selectedDate,
         onMealsChange,
+        onTotalsChange,
 }) => {
         const { isDark } = useTheme();
         const [expanded, setExpanded] = useState<boolean>(true);
@@ -79,11 +84,44 @@ export const FoodDiary: React.FC<{ selectedDate?: Date; onMealsChange?: () => vo
                 return Math.round(total);
         };
 
+        // Calculate totals from current mealLogs state
+        const calculateTotals = useCallback(() => {
+                const all = ['breakfast', 'lunch', 'dinner', 'snack'] as MealKey[];
+                const totals = all.reduce(
+                        (acc, mealKey) => {
+                                const items = mealLogs[mealKey] || [];
+                                items.forEach((it) => {
+                                        const f = (it.quantityGrams ?? 100) / 100;
+                                        acc.calories += (it.calories || 0) * f;
+                                        acc.protein += (it.protein || 0) * f;
+                                        acc.carbs += (it.carbs || 0) * f;
+                                        acc.fat += (it.fat || 0) * f;
+                                        acc.fiber += (it.fiber || 0) * f;
+                                });
+                                return acc;
+                        },
+                        { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+                );
+                return {
+                        calories: Math.round(totals.calories),
+                        protein: Math.round(totals.protein * 10) / 10,
+                        carbs: Math.round(totals.carbs * 10) / 10,
+                        fat: Math.round(totals.fat * 10) / 10,
+                        fiber: Math.round(totals.fiber * 10) / 10,
+                };
+        }, [mealLogs]);
+
         const startOfDayISO = useMemo(() => {
                 const d = new Date(selectedDate || new Date());
                 d.setHours(0, 0, 0, 0);
                 return d.toISOString();
         }, [selectedDate]);
+
+        // Update parent totals whenever mealLogs changes
+        useEffect(() => {
+                const totals = calculateTotals();
+                onTotalsChange?.(totals);
+        }, [mealLogs, calculateTotals, onTotalsChange]);
 
         useEffect(() => {
                 const load = async () => {

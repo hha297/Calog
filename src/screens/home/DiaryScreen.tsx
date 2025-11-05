@@ -62,6 +62,17 @@ export const DiaryScreen: React.FC = () => {
                 }
         }, [selectedDateISO]);
 
+        // Handle totals change from FoodDiary (immediate update)
+        const handleTotalsChange = React.useCallback((newTotals: {
+                calories: number;
+                protein: number;
+                carbs: number;
+                fat: number;
+                fiber: number;
+        }) => {
+                setTotals(newTotals);
+        }, []);
+
         const loadCaloriesBurned = React.useCallback(async () => {
                 try {
                         const res: any = await getDailyExercises(selectedDateISO);
@@ -136,7 +147,11 @@ export const DiaryScreen: React.FC = () => {
                                 />
 
                                 {/* Food Diary Section */}
-                                <FoodDiary selectedDate={selectedDate} onMealsChange={loadTotals} />
+                                <FoodDiary 
+                                        selectedDate={selectedDate} 
+                                        onMealsChange={loadTotals}
+                                        onTotalsChange={handleTotalsChange}
+                                />
 
                                 {/* Exercise Diary Section */}
                                 <View className="mt-4">
