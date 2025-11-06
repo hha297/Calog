@@ -1,0 +1,17 @@
+services:
+        calog-api:
+                build: ./server
+                ports:
+                        - '4000:4000'
+                env_file:
+                        - ./server/.env
+                depends_on:
+                        - mongo
+        mongo:
+                image: mongo:latest
+                restart: always
+                volumes:
+                        - mongodb_data:/data/db
+
+volumes:
+        mongodb_data:
