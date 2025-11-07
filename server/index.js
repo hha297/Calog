@@ -16,6 +16,8 @@ const userFoodRoutes = require('./routes/userFoods');
 const { ErrorUtils } = require('./utils');
 
 const app = express();
+// Allow Express to trust the first proxy (e.g. Render/Heroku) so rate limiter can read client IPs
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 4000;
 const MONGO_URI = process.env.MONGO_URI;
 
