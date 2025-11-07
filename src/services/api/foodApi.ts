@@ -180,12 +180,8 @@ export interface ApiResponse<T> {
         message?: string;
 }
 
-const API_BASE_URL = 'http://localhost:3000/api'; // Adjust based on your server
-
 export async function addFoodEntry(foodData: FoodEntry): Promise<ApiResponse<any>> {
         try {
-                console.log('Adding food entry:', foodData);
-                console.log('API Base URL:', apiClient.getBaseUrl());
                 const response = await apiClient.post('/api/user-foods', foodData);
                 // Handle both old and new response formats
                 if (response && typeof response === 'object' && 'success' in response) {

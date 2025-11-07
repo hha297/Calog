@@ -23,6 +23,8 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 
 **Daily Calorie Management**: Set personalized daily calorie targets based on your weight goals (lose, maintain, or gain weight) and activity level. Get real-time feedback on your progress and recommendations to stay on track with your fitness journey.
 
+**Monthly Statistics & Calendar Tracking**: View comprehensive monthly statistics including diet summary (days within recommended range, below BMR, above required) and calorie statistics (total needed, consumed, deficit needed, deficit achieved). Navigate through months with an interactive calendar to track your progress over time.
+
 ## ⚡ Tech Stack
 
 ### Frontend (React Native)
@@ -114,7 +116,11 @@ Calog is a full-stack fitness tracking application that combines React Native wi
 - **Daily Calorie Tracking**: Monitor calorie intake vs. goals with real-time updates from database
 - **Macronutrient Progress**: Visual progress bars for carbs, protein, fat, and fiber with color-coded warnings
 - **Weekly/Monthly Views**: Switch between different time periods
-- **Calendar Integration**: Visual calendar for tracking progress
+- **Calendar Integration**: Visual calendar for tracking progress with monthly statistics
+- **Monthly Statistics Dashboard**: Comprehensive monthly tracking with:
+     - **Diet Summary**: Days eating within recommended range (±5%), days below BMR, days above required amount
+     - **Calorie Statistics**: Total calories needed, consumed, deficit needed, and deficit achieved for the month
+     - **Automatic Calculation**: Real-time calculation from meal logs with quantity-based calorie adjustments
 - **Progress Visualization**: Charts and graphs for fitness metrics
 - **Analytics Dashboard**: Comprehensive overview of health and fitness data
 - **Meal Details Overlay**: Visual kcal display on meal icons when meals have logged entries
@@ -166,7 +172,7 @@ calog/
 │   ├── screens/                                    # Application screens
 │   │   ├── auth/                                   # Authentication screens (Login, Signup, etc.)
 │   │   ├── onboarding/                             # User onboarding flow (4 slides)
-│   │   ├── home/                                   # Home screens (Diary, Calendar)
+│   │   ├── home/                                   # Home screens (Diary, CalendarTracking)
 │   │   ├── account/                                # Account management screens
 │   │   ├── ScanScreen.tsx                          # Barcode scanning interface
 │   │   ├── AnalyticsScreen.tsx                     # Analytics and progress tracking
@@ -390,6 +396,8 @@ npm run dev:ios  # iOS + Backend
 
 ## 🔗 API Endpoints
 
+**Base URL**: `https://calog.onrender.com` (Production) | `http://localhost:4000` (Development)
+
 ### Authentication
 
 - `GET  /auth/google` - Initiate Google OAuth flow
@@ -436,10 +444,14 @@ npm run dev:ios  # iOS + Backend
 
 - `POST /api/meal-logs/add` - Add meal entry to specific date and meal type
      - **Headers**: `Authorization: Bearer <token>`
-     - **Body**: `{ date: ISOString, mealType: 'breakfast'|'lunch'|'dinner'|'snack', entry: { code, name, calories, protein, carbs, fat, fiber, ... } }`
+     - **Body**: `{ date: ISOString, mealType: 'breakfast'|'lunch'|'dinner'|'snack', entry: { code, name, calories, protein, carbs, fat, fiber, quantityGrams, ... } }`
 - `GET /api/meal-logs?date=ISOString` - Get daily meals for specific date
      - **Headers**: `Authorization: Bearer <token>`
      - **Query**: `date` (ISO string)
+- `GET /api/meal-logs?month=X&year=Y` - Get monthly meals for specific month and year
+     - **Headers**: `Authorization: Bearer <token>`
+     - **Query**: `month` (1-12), `year` (e.g., 2025)
+     - **Returns**: Array of daily meal logs for the specified month, sorted by date ascending
 - `PUT /api/meal-logs/update` - Update meal entry by index
      - **Headers**: `Authorization: Bearer <token>`
      - **Body**: `{ date: ISOString, mealType, index: number, entry: { ...updates } }`
