@@ -12,8 +12,9 @@ RUN npm ci --omit=dev
 # Copy source code
 COPY . .
 
-# Expose port
-EXPOSE 4000
+# Use Render's dynamic port
+ENV PORT=4000
+EXPOSE $PORT
 
 # Start the server
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm start"]
