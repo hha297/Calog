@@ -5,7 +5,7 @@ const API_BASE_URL = __DEV__
         ? Platform.OS === 'android'
                 ? 'http://10.0.0.2:4000' // Android emulator
                 : 'http://localhost:4000' // iOS simulator
-        : 'https://production-api.calog.com';
+        : 'https://calog.onrender.com';
 
 // API Client class
 class ApiClient {
@@ -95,7 +95,10 @@ class ApiClient {
                         } catch (parseError) {
                                 // If content-type suggests JSON but parsing failed
                                 if (contentType && contentType.includes('application/json')) {
-                                        const errorMsg = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
+                                        const errorMsg =
+                                                parseError instanceof Error
+                                                        ? parseError.message
+                                                        : 'Unknown parsing error';
                                         throw new Error(`Invalid JSON response: ${errorMsg}`);
                                 }
                                 // If response is ok but not JSON, return empty object

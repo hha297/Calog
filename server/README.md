@@ -175,6 +175,11 @@ server/
 - **express-rate-limit**: Rate limiting
 - **dotenv**: Environment variables
 
+## 🌐 API Base URL
+
+**Production**: `https://calog.onrender.com`  
+**Development**: `http://localhost:4000`
+
 ## 🗄️ Database Schema
 
 ### MealLog Model
@@ -469,7 +474,9 @@ The frontend uses helper functions in `src/utils/helpers.ts` for consistent calc
 ### Features
 
 - **Daily Meal Organization**: Meals organized by date with breakfast, lunch, dinner, and snack categories
-- **Nutrition Tracking**: Each meal entry stores calories, protein, carbs, fat, and fiber
+- **Nutrition Tracking**: Each meal entry stores calories, protein, carbs, fat, and fiber with quantity-based calculations
+- **Quantity-Based Calories**: Calories are stored per 100g and automatically adjusted based on `quantityGrams` field
+- **Monthly Statistics**: Fetch meal logs by month and year for comprehensive monthly tracking
 - **Auto-fetch Nutrients**: System automatically fetches missing macronutrients from OpenFoodFacts API when barcode is available
 - **Real-time Updates**: Calories & Nutrition dashboard automatically updates when meals are added/updated/deleted
 - **Background Processing**: Nutrient fetching runs in background without blocking user interactions
@@ -482,3 +489,25 @@ The frontend uses helper functions in `src/utils/helpers.ts` for consistent calc
    - Updates entry in database with complete nutrient data
    - Updates local state for immediate UI feedback
 3. Calories & Nutrition dashboard automatically refreshes to show updated totals
+
+### Monthly Statistics API
+
+**GET `/api/meal-logs?month=X&year=Y`**
+
+Fetches all meal logs for a specific month and year, enabling monthly statistics calculation:
+
+- **Query Parameters**:
+  - `month`: Month number (1-12)
+  - `year`: Year (e.g., 2025)
+- **Response**: Array of daily meal logs sorted by date ascending
+- **Use Cases**:
+  - Monthly calorie statistics (total needed, consumed, deficit)
+  - Diet summary (days within range, below BMR, above required)
+  - Calendar tracking with monthly overview
+
+### Calorie Calculation
+
+Calories are calculated with quantity adjustment:
+- **Stored Format**: Calories per 100g in database
+- **Calculation**: `actualCalories = (storedCalories / 100) × quantityGrams`
+- **Default Quantity**: 100g if `quantityGrams` is not specified
