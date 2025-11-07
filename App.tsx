@@ -8,7 +8,6 @@
 import './global.css';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
-import BootSplash from 'react-native-bootsplash';
 import Toast from 'react-native-toast-message';
 import { useEffect, useState } from 'react';
 import { initializeAuth, useAuthStore } from './src/store';
@@ -38,8 +37,6 @@ function AppContent() {
                         } catch (err) {
                                 console.error('App init error:', err);
                         } finally {
-                                // Hide splash screen
-                                BootSplash.hide({ fade: true });
                                 setReady(true);
                         }
                 };
