@@ -31,7 +31,7 @@ app.use(
         cors({
                 origin:
                         process.env.NODE_ENV === 'production'
-                                ? ['https://your-app-domain.com']
+                                ? ['https://calog.onrender.com']
                                 : [
                                           'http://localhost:3000',
                                           'http://localhost:8081',
